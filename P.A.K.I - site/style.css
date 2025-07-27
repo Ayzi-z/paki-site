@@ -1,0 +1,133 @@
+/* Estilização da Página geral*/
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+}
+
+.conteudo_pagina{
+    background-color: red;
+    width: 100%;
+}
+/* Estilização do cabeçalho header*/
+nav{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #61dba8;
+    height: 17vh;
+    gap: 40%;
+}
+
+.logo_paki{
+    max-width: 100%;
+    max-height: 80%;
+    border-radius: 5px;
+}
+
+#area_usuario{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.7s;
+}
+
+#area_usuario i{
+  font-size: 80px;
+}
+
+#area_usuario:hover{
+   background-color: rgb(0, 103, 110);
+   color: white;
+}
+
+#botao_menu {
+  cursor: pointer;
+  font-size: 60px;
+  padding: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: 0.4s;
+  color:#3a4347;
+}
+
+#botao_menu:hover{
+    background-color: rgb(0, 103, 110);
+    color: white;
+}
+
+#botao_menu.botaomenu_clicado{
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+}
+
+/* Estilização menu lateral*/
+
+#menu_lateral{
+    display: none;
+}
+
+#menu_lateral a{
+    background-color: rgba(0, 85, 42, 0.767);
+    width: 75%;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 25px;
+    text-align: center;
+    transition: transform 0.4s ;
+    color: rgb(245, 245, 245);
+    cursor: pointer;
+    border: none;
+    transition: 0.6s;
+    text-decoration: none;
+    font-weight: 800;
+}
+#menu_lateral a:hover{
+    background-color: rgba(2, 212, 212, 0.767);
+    scale: 1.1;
+}
+
+#menu_lateral.menu_lateralexibir{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    background-color: #61dba8;
+    border-radius: 10px;
+    opacity: 100%;
+    margin: 0;
+    display: flex;
+    padding: 20px;
+    gap: 10px;
+}
+
+#botao_tema{
+    width: 100%;
+    border: none;
+    padding: 15px;
+    border-radius: 20px;
+    font-size: 30px;
+    text-align: center;
+    background-color: rgba(0, 116, 81, 0.842);
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+/* Estilização conteudo paginas*/
+main{
+    background: url(/imagens/background/background_frutas.jpg) no-repeat center center ;
+    background-size: cover;
+    height: 99vh;
+    display: flex;
+    
+}
