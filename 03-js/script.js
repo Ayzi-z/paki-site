@@ -257,3 +257,14 @@ function pesquisar_produtos() {
         containerLoja.appendChild(containerMsg);
     };
 };
+
+/* Função de troca menu médico*/
+function trocar_imagem() {
+    let img = document.querySelector(".esboco-medico");
+
+    if (img.src.includes("med1.png")) {
+        img.src = "/imagens/med2.png";
+    } else {
+        img.src = "/imagens/med1.png";
+    }
+}

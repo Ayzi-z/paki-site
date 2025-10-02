@@ -678,6 +678,39 @@ blockquote cite {
     align-items: center;
     gap: 10px;
 }
+.container-carrinho{
+    z-index: 1;
+}
+.container-carrinho i{
+    font-size: 35px;
+    z-index: 40;
+}
+
+.container-func-consulta-medico{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-func-consulta-medico img{
+    width: 100%;
+}
+
+.container-func-consulta-medico button{
+    width: 200px;
+    padding: 15px;
+    background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
 
 /* ============================= */
 /* 📌 PÁGINA DE FUNCIONALIDADES CLIENTE */
