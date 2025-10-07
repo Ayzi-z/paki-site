@@ -268,3 +268,34 @@ function trocar_imagem() {
         img.src = "/imagens/med1.png";
     }
 }
+
+
+function classificarIMC(imc) {
+    if (imc < 18.5) return "Abaixo do peso";
+    if (imc < 24.9) return "Peso normal";
+    if (imc < 29.9) return "Sobrepeso";
+    if (imc < 34.9) return "Obesidade grau I";
+    if (imc < 39.9) return "Obesidade grau II";
+    return "Obesidade grau III";
+}
+
+function resultado_imc(event) {
+    event.preventDefault();
+    const peso = parseFloat(document.getElementById("peso").value);
+    const altura = parseFloat(document.getElementById("altura").value);
+    const resultadoDiv = document.getElementById("listaResultado");
+
+    if (!peso || !altura) {
+        resultadoDiv.innerHTML = "Por favor, insira peso e altura válidos.";
+        resultadoDiv.style.color = "red";
+        return;
+    }
+
+    const alturaMetros = altura / 100;
+    const imc = peso / (alturaMetros * alturaMetros);
+    const imcFormatado = imc.toFixed(2);
+    const classificacao = classificarIMC(imc);
+
+    resultadoDiv.style.color = "black";
+    resultadoDiv.innerHTML = `Seu IMC é <b>${imcFormatado}</b> (${classificacao})`;
+}
