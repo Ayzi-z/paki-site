@@ -268,3 +268,87 @@ function trocar_imagem() {
         img.src = "/imagens/med1.png";
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formulario-atividade");
+  const lista = document.getElementById("lista-atividades");
+  const filtros = document.querySelectorAll(".filtro-botao");
+
+  let atividades = JSON.parse(localStorage.getItem("atividades")) || [];
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nome = document.getElementById("atividade").value;
+    const duracao = document.getElementById("duracao").value;
+    const calorias = document.getElementById("calorias").value;
+    const data = new Date().toLocaleDateString();
+
+    if (!nome || !duracao || !calorias) return;
+
+    const atividade = { nome, duracao, calorias, data };
+    atividades.push(atividade);
+    salvarAtividades();
+    form.reset();
+    renderAtividades();
+  });
+
+  function salvarAtividades() {
+    localStorage.setItem("atividades", JSON.stringify(atividades));
+  }
+
+  function renderAtividades(filtro = "todas") {
+    lista.innerHTML = "";
+    const hoje = new Date().toLocaleDateString();
+    const filtradas = atividades.filter(a => {
+      if (filtro === "hoje") return a.data === hoje;
+      return true;
+    });
+
+    if (filtradas.length === 0) {
+      lista.innerHTML = `<p style="text-align:center;color:#777;">Nenhuma atividade registrada.</p>`;
+      return;
+    }
+
+    filtradas.forEach((a, i) => {
+      const card = document.createElement("div");
+      card.className = "cartao-atividade";
+      card.innerHTML = `
+        <h3>${a.nome}</h3>
+        <p><strong>Duração:</strong> ${a.duracao} min</p>
+        <p><strong>Calorias:</strong> ${a.calorias} kcal</p>
+        <p><strong>Data:</strong> ${a.data}</p>
+        <div class="botoes-atividade">
+          <button class="btn-editar">Editar</button>
+          <button class="btn-excluir">Excluir</button>
+        </div>
+      `;
+
+      card.querySelector(".btn-excluir").onclick = () => {
+        atividades.splice(i, 1);
+        salvarAtividades();
+        renderAtividades(filtro);
+      };
+
+      card.querySelector(".btn-editar").onclick = () => {
+        const novoNome = prompt("Editar atividade:", a.nome);
+        if (novoNome) {
+          atividades[i].nome = novoNome;
+          salvarAtividades();
+          renderAtividades(filtro);
+        }
+      };
+
+      lista.appendChild(card);
+    });
+  }
+
+  filtros.forEach(btn => {
+    btn.addEventListener("click", () => {
+      filtros.forEach(b => b.classList.remove("ativo"));
+      btn.classList.add("ativo");
+      renderAtividades(btn.dataset.filtro);
+    });
+  });
+
+  renderAtividades();
+});

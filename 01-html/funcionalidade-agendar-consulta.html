@@ -39,73 +39,32 @@
 
     <!-- ================= CONTEÚDO PRINCIPAL ================= -->
     <main>           
-        <div class="container_pagina_funcionalidades">
-            <section class="conteudo_pagina_funcionalidades">
-                
-                <div class="cartao_funcionalidade claro">                    
-                    
-                    <div class="imagem_funcionalidade">
-                          <img src="/imagens/funcionalidades_cliente/agendar_consulta.png" alt="">
-                    </div>
-                  
-                    
-                    <div class="cartao_funcionalidade_descricao">
-                        <h1>Agendar Consulta</h1>
-                        <h2>Agende sua consulta conosco! </h2>
-                        <a href="ferramenta_cliente_consulta.html">Acessar</a>
-                    </div>
-                </div>  
-                
-                <div class="cartao_funcionalidade claro">                    
-                    <img src="/imagens/funcionalidades_cliente/monitoramento_sono.png" alt="">
-                    
-                    <div class="cartao_funcionalidade_descricao">
-                        <h1>Monitoramento do Sono</h1>
-                        <h2>Monitore seu sono com o PAKI ! </h2>
-                        <button>Acessar</button>
-                    </div>
-                </div>  
-                
-                <div class="cartao_funcionalidade claro">                    
-                    <img src="/imagens/funcionalidades_cliente/monitoramento_peso.png" alt="">
-                    <div class="cartao_funcionalidade_descricao">
-                        <h1>Gerenciar peso</h1>
-                        <h2>Acompanhe seu peso ! </h2>
-                        <button>Acessar</button>
-                    </div>
-                </div> 
-            
-                <div class="cartao_funcionalidade claro">                    
-                    <img src="/imagens/funcionalidades_cliente/monitoramento_remedio.png" alt="">
-                    
-                    <div class="cartao_funcionalidade_descricao">
-                        <h1>Monitoramento de remédios</h1>
-                        <h2>Gerencie suas doses diárias! </h2>
-                        <button>Acessar</button>
-                    </div>
-                </div>  
+        <div class="container-func-consulta-cliente">
+            <section class="conteudo-func-consulta-cliente">
+                <div class="funcionalidade-consulta">
+                    <form id="formulario_agendarconsulta">
+                        <h1>AGENDADOR DE CONSULTA</h1>
+                        <label for="motivo_consulta">Conte-nos o motivo da sua consulta:</label>
+                        <input type="text" id="descricao_consulta">
 
-                <div class="cartao_funcionalidade claro">                    
-                    <img src="/imagens/funcionalidades_cliente/calculador_proteina.png" alt="">
-                    
-                    <div class="cartao_funcionalidade_descricao">
-                        <h1>Calculador de proteínas</h1>
-                        <h2>Calcule a proteinas que deve consumir! </h2>
-                        <button>Acessar</button>
-                    </div>
+                    <label for="tipo_consulta">Escolha o tipo da consulta:</label>
+                        <div class="opcoes">
+                        <input type="radio" name="tipo_consulta" value="rotina"/> Rotina
+                        <input type="radio" name="tipo_consulta" value="exame"/> Exame
+                        </div>
+
+                        <label for="urgencia">Escolha a urgência da consulta:</label>
+                        <div class="opcoes">
+                        <input type="radio" name="urgencia" value="alta"/> Alta
+                        <input type="radio" name="urgencia" value="baixa"/> Baixa
+                        </div>
+                        <button type="submit" id="btnAdicionar">Adicionar Consulta</button>
+                    </form>
+
+                    <ul id="lista_consultas">
+                    </ul>
                 </div>
-
-                <div class="cartao_funcionalidade claro">                    
-                    <img src="/imagens/funcionalidades_cliente/monitoramento_atividade_fisica.png" alt="">
-                    
-                    <div class="cartao_funcionalidade_descricao">
-                        <h1>Monitoramento Atividade Fisica</h1>
-                        <h2>Acompanhe suas atividades! </h2>
-                        <a href="ferramenta-monitoramento-atividadefisica.html">Acessar</a>
-                    </div>
-                </div>
-
-                
+             
             </section>
         </div>  
     </main>
@@ -160,6 +119,6 @@
     </footer>
 
   <!-- ================= JS ================= -->
-  <script src="../03-js/script.js"></script>
+  <script src="/03-js/script.js"></script>
 </body>
 </html>
