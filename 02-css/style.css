@@ -424,9 +424,9 @@ blockquote cite {
     gap: 10px;
     padding: 10px;
     border-radius: 10px;
-    background-color: white;
     width: 40%;
     text-align: center;
+    background-color: white;
 }
 
 .btn-mensagem{
@@ -993,6 +993,10 @@ blockquote cite {
     padding-left: 14px;
     cursor: pointer;
 }
+
+.container-carrinho a{
+    color: black;
+}
 .container-carrinho i{
     font-size: 35px;
     z-index: 40;
@@ -1158,6 +1162,27 @@ blockquote cite {
     border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
+}
+
+/*Funcionalidade calculo IMC*/
+
+#container-func-imc{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    gap: 2%;
+    width: 100%;
+}
+
+#formulario-imc{
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border: 2px solid #3cc771;
+    padding: 30px;
+    border-radius: 10px;
+    gap: 10PX;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ============================= */
@@ -1770,6 +1795,7 @@ blockquote cite {
 /* 📌 ESTILIZAÇÃO CLASSES DO MODO ESCURO */
 /* ============================= */
 
+/* Body Geral */
 body.escuro {
     background-color: rgb(48, 47, 47);
     color: #f0f0f0;
@@ -1812,10 +1838,32 @@ body.escuro a.footer_link {
     color:#4267B2
 }
 
+
+body.escuro .mensagem-popup{
+    background-color: rgb(48, 47, 47);
+}
+
+/*Classes da Loja de Produtos*/
+body.escuro .descricao-produto h1{
+    color: #3cc771
+}
+
+body.escuro .descricao-produto h2, body.escuro .descricao-produto p, body.escuro #btn-adicionar-carrinho {
+   color: white;
+}
+
+body.escuro #btn-adicionar-carrinho{
+    border: 2px solid rgba(2, 125, 152, 0.672);
+}
+
 body.escuro .servico-card, body.escuro blockquote, body.escuro .mission-card, body.escuro .history-section, body.escuro .values-section, body.escuro li.value,
 body.escuro .cartao_produto, body.escuro .cartao_produto_descricao{
     background-color: #222;
     color: #fff;
+}
+
+body.escuro .container-carrinho a{
+    color: white;
 }
 
 /* ============================= */
@@ -2640,7 +2688,6 @@ body.escuro .cartao_produto, body.escuro .cartao_produto_descricao{
     .mensagem-popup{
         width: 90%;
     }
-
 }
 
  /* Responsividade do Monitoramento de Remedio*/
