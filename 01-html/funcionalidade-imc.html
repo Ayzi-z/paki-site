@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P.A.K.I</title>
-
-  <!-- ✅ Ícones (use só um, removi o Boxicons porque você já usa Font Awesome) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <!-- ✅ CSS principal -->
-  <link rel="stylesheet" href="../02-css/style.css">
-
-  <!-- ✅ Fontes movidas para cá -->
-  <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento do peso</title>
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../02-css/style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
 </head>
 <body>
-  <!-- ================= HEADER ================= -->
   <header> 
             <div class="container_header">
               <button id="botao-menu-mobile">☰</button>
@@ -38,44 +34,36 @@
                     <li><a href="login.html">Login</a></li>
                 </ul>
             </nav>
-  </header>
+    </header>
 
-  <!-- ================= CONTEÚDO PRINCIPAL ================= -->
-  <main>
-    <!-- Aqui vai o conteúdo da página inicial -->
+    <main>
+      
+      <div id="container-func-imc">
+        <h2 class="section-title">Calculador de IMC</h2>
+        <form id="formulario-imc" onsubmit="resultado_imc(event)">
+        <label for="peso">Seu peso</label>
+        <input type="text" id="peso" required placeholder="Ex: 73">
 
-    <section class="redes-sociais">
-    <h2 class="section-title">Nossas redes Sociais</h2>
-      <div class="redes-sociais-grid">
-        <div class="rede-social-card">
-          <i class='bx bxl-instagram'></i>
-          <h3>Instagram</h3>
-          <p>Acompanhe as novidades no nosso Instagram!</p>
-        </div>
-        <div class="rede-social-card">
-          <i class='bx bxl-tiktok' ></i>
-          <h3>TikTok</h3>
-          <p>Acompanhe nossos vídeos curtos!</p>
-        </div>
-        <div class="rede-social-card">
-          <i class='bx bxl-twitter' ></i>
-          <h3>X</h3>
-          <p>Acesse nossa página no X!</p>
-        </div>
-        <div class="rede-social-card">
-          <i class='bx bxl-whatsapp'></i>
-          <h3>Whatsapp</h3>
-          <p>Entre em contato conosco!</p>
-        </div>
+        <label for="altura">Sua altura (em centímetros)</label>
+        <input type="text" id="altura" required placeholder="Ex: 180">
+
+        <label for="resultado-imc">Resultado:</label>
+        <div id="listaResultado"></div>
+
+        <button type="submit" class="botao-adicionar">Calcular IMC</button>
+        </form>
+         
       </div>
-    </section>
+      
 
-    <div>
-      <button id="botao-tema">🌙</button>
-    </div>
-  </main>
+       
 
-  <!-- ================= FOOTER ================= -->
+      <div>
+        <button id="botao-tema">🌙</button>
+      </div>
+    </main>
+
+
   <footer>
     <div id="conteudo_footer">
       <!-- Parte 1 -->
@@ -124,8 +112,9 @@
       </div>
     </div>
   </footer>
-
+  
   <!-- ================= JS ================= -->
+
   <script src="../03-js/script.js"></script>
 </body>
 </html>

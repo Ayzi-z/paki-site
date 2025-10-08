@@ -424,9 +424,9 @@ blockquote cite {
     gap: 10px;
     padding: 10px;
     border-radius: 10px;
-    background-color: white;
     width: 40%;
     text-align: center;
+    background-color: white;
 }
 
 .btn-mensagem{
@@ -488,13 +488,13 @@ blockquote cite {
     background: #f9f9f9;
     border-radius: 15px;
     border: 0.5px solid rgba(0, 0, 0, 0.219);
-    width: 300px; 
-    height: 390px;  
+    max-width: 300px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     transition: transform 0.3s;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 5px;
 }
 
 .cartao_produto:hover {
@@ -503,8 +503,7 @@ blockquote cite {
 }
 
 .cartao_produto_imagem {
-    padding: 5px;
-    width: 100%;
+      
     display: flex;
     justify-content: center;
 }
@@ -546,7 +545,7 @@ blockquote cite {
 .cartao_produto a{
     background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 10px;
     font-size: 20px;
     text-align: center;
     transition: transform 0.4s;
@@ -743,7 +742,6 @@ blockquote cite {
     font-weight: 600;
 }
 .resumo-itens .valor{
-    color: #0b6b3b;
     font-weight: 800;
 }
 
@@ -769,10 +767,8 @@ blockquote cite {
     width: 80%;
     box-shadow: 0 6px 22px rgba(0,0,0,0.06);
     border-radius: 12px;
-    border: 2px solid #3cc771;
-    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,255,250,0.98));
+    border: 3px solid #3cc771;
 }
-
 
 #conteudo_pagina_carrinho section{
    flex-grow: 1;
@@ -785,20 +781,20 @@ blockquote cite {
     flex-direction: column;
     color: #0a8949;
     font-size: 15px;
+    background-color: trans;
 }
 
 #tabela-produtos-carrinho{
     border-spacing: 0;  
     border-radius: 10px;
     width: 100%;
-    background: #fff;
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
 #tabela-produtos-carrinho thead th{
     text-align: left;
     padding: 14px 16px;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     letter-spacing: 1px;
 }
 
@@ -808,7 +804,7 @@ blockquote cite {
 
 #tabela-produtos-carrinho tbody td{
     padding: 14px 16px;
-    color: #233;
+    background-color: transparent;
     font-weight: 500;
     font-size: 0.95rem;
     align-items: center;
@@ -993,6 +989,10 @@ blockquote cite {
     padding-left: 14px;
     cursor: pointer;
 }
+
+.container-carrinho a{
+    color: black;
+}
 .container-carrinho i{
     font-size: 35px;
     z-index: 40;
@@ -1160,6 +1160,27 @@ blockquote cite {
     flex-wrap: wrap;
 }
 
+/*Funcionalidade calculo IMC*/
+
+#container-func-imc{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    gap: 2%;
+    width: 100%;
+}
+
+#formulario-imc{
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border: 2px solid #3cc771;
+    padding: 30px;
+    border-radius: 10px;
+    gap: 10PX;
+    display: flex;
+    flex-direction: column;
+}
+
 /* ============================= */
 /* 📌 PÁGINA DE LOGIN, RECUPERACAO E CADASTRO */
 /* ============================= */
@@ -1176,6 +1197,7 @@ blockquote cite {
 .container-login {
     display: flex;
     width: 100%;
+    height: 100%;
     max-width: 1200px;
     margin: 0 auto;
     justify-content: center;
@@ -1770,7 +1792,8 @@ blockquote cite {
 /* 📌 ESTILIZAÇÃO CLASSES DO MODO ESCURO */
 /* ============================= */
 
-body.escuro {
+/* Body Geral */
+body.escuro{
     background-color: rgb(48, 47, 47);
     color: #f0f0f0;
 }
@@ -1812,11 +1835,61 @@ body.escuro a.footer_link {
     color:#4267B2
 }
 
+
+body.escuro .mensagem-popup{
+    background-color: rgb(48, 47, 47);
+}
+
+/*Classes modo escuro da Loja de Produtos*/
+
+body.escuro #conteudo_pagina_carrinho{
+    background-color: rgb(48, 47, 47);
+}
+body.escuro .cartao_produto_descricao h1, body.escuro .cartao_produto_descricao p{
+    color:#25d366
+}
+
+body.escuro .cartao_produto_descricao h2{
+    color: rgb(196, 190, 190);
+}
+
+
+body.escuro .descricao-produto h2, body.escuro .descricao-produto p, body.escuro #btn-adicionar-carrinho {
+   color: white;
+}
+
+body.escuro #btn-adicionar-carrinho{
+    border: 2px solid rgba(2, 125, 152, 0.672);
+}
+
+body.escuro .container-carrinho a{
+    color: white;
+}
+
+body.escuro #conteudo_pagina_carrinho, body.escuro #conteudo_pagina_carrinho section, body.escuro #conteudo_pagina_carrinho aside {
+    color: rgb(219, 216, 216);    
+    background-color: rgb(48, 47, 47);
+}
+
+body.escuro #tabela-produtos-carrinho thead tr{
+    background: linear-gradient(90deg,#017f31 0%, #129665 100%);
+}
+
+body.escuro #tabela-produtos-carrinho tbody tr h2 {
+    color: rgb(219, 216, 216);
+}
+
+body.escuro #tabela-produtos-carrinho tbody tr h1{
+    color:#25d366
+}
+
 body.escuro .servico-card, body.escuro blockquote, body.escuro .mission-card, body.escuro .history-section, body.escuro .values-section, body.escuro li.value,
 body.escuro .cartao_produto, body.escuro .cartao_produto_descricao{
     background-color: #222;
     color: #fff;
 }
+
+
 
 /* ============================= */
 /* 📌 Funcionalidade de Monitoramento de Remédios */
@@ -2136,6 +2209,7 @@ body.escuro .cartao_produto, body.escuro .cartao_produto_descricao{
 /* 📌 RESPONSIVIDADES */
 /* ============================= */
 
+/*RESPONSIVIDADE PARA TABLETS*/
 @media (max-width: 1150px) {
     /*RESPONSIVIDADE GERAL */
     /* MAIN */
@@ -2457,10 +2531,18 @@ body.escuro .cartao_produto, body.escuro .cartao_produto_descricao{
     }
 
     /*RESPONSIVIDADE LOJA */
+    
     #searchbar-produtos{
-        width: 80%;
+        width: 60%;
     }
-
+    .btn-group-produto{
+        padding: 10px;
+    }
+    .cartao_produto a{
+        font-size: 12px;
+        padding: 5px;
+        width: 100%;
+    }
     .msg-sem-produto{
         width: 90%;
         font-size: 12px;
@@ -2474,18 +2556,19 @@ body.escuro .cartao_produto, body.escuro .cartao_produto_descricao{
         font-size: 90px;
     }
     .conteudo_pagina_loja {
-        padding: 40px 10px 10px;
-        gap: 30;        
+        padding: 40px 10px 10px;     
     }
     .cartao_produto {
         background: #f9f9f9;
         border-radius: 15px;
         border: 0.5px solid rgba(0, 0, 0, 0.219);
         padding: 15px;
-        width: 150px;
+        width: 140px;
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         transition: transform 0.3s;
     }
+
+
     
     .cartao_produto img {
         border-radius: 20px;
@@ -2640,11 +2723,11 @@ body.escuro .cartao_produto, body.escuro .cartao_produto_descricao{
     .mensagem-popup{
         width: 90%;
     }
-
 }
 
- /* Responsividade do Monitoramento de Remedio*/
+/* RESPONSIVIDADE PARA CELULARES*/
 @media (max-width: 768px) {
+    /*Responsividade do Monitoramento de Remedio*/
     .linha-formulario {
         flex-direction: column;
         gap: 0.5rem;
