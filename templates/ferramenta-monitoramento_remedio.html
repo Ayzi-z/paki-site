@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoramento de Remédios - P.A.K.I</title>
+  
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  
+  <!-- CSS principal -->
+  <link rel="stylesheet" href="../02-css/style.css">
+  <!-- CSS específico para monitoramento de remédios -->
+  <link rel="stylesheet" href="../02-css/monitoramento-remedios.css">
+  
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- ================= HEADER ================= -->
+  <header> 
+    <div class="container_header">
+      <button id="botao-menu-mobile">☰</button>
+      <img src="/imagens/logos/logo_paki.png" alt="Logo da P.A.K.I" class="logo_paki" loading="lazy">
+      
+      <div class="area-usuario-header">
+        <i class="fa fa-user"></i>
+        <h1>Ronaldo</h1>
+        <h2 class="tipo-usuario">Paciente</h2>
+      </div>
+    </div>
+    
+    <nav class="menu_nav">
+      <ul class="menu_nav_lista">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="sobre.html">Quem Somos?</a></li>
+        <li><a href="loja.html">Produtos</a></li>
+        <li><a href="funcionalidades_cliente.html">Ferramentas</a></li>
+        <li><a href="contato.html">Redes Sociais</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ================= CONTEÚDO PRINCIPAL ================= -->
+  <main>
+    <div class="container-monitoramento-remedios">
+      <div class="conteudo-monitoramento-remedios">
+        <h1>Monitoramento de Remédios</h1>
+        <p>Acompanhe seus medicamentos e nunca mais esqueça de tomar seus remédios.</p>
+        
+        <!-- Formulário para adicionar remédio -->
+        <div class="formulario-adicionar-remedio">
+          <h2>Adicionar Novo Remédio</h2>
+          <form id="formAdicionarRemedio">
+            <div class="linha-formulario">
+              <div class="grupo-formulario">
+                <label for="nomeRemedio">Nome do Remédio</label>
+                <input type="text" id="nomeRemedio" required placeholder="Ex: Paracetamol">
+              </div>
+              <div class="grupo-formulario">
+                <label for="dosagem">Dosagem</label>
+                <input type="text" id="dosagem" required placeholder="Ex: 500mg">
+              </div>
+            </div>
+            
+            <div class="linha-formulario">
+              <div class="grupo-formulario">
+                <label for="frequencia">Frequência</label>
+                <select id="frequencia" required>
+                  <option value="">Selecione</option>
+                  <option value="1">Uma vez ao dia</option>
+                  <option value="2">Duas vezes ao dia</option>
+                  <option value="3">Três vezes ao dia</option>
+                  <option value="4">Quatro vezes ao dia</option>
+                  <option value="personalizado">Personalizado</option>
+                </select>
+              </div>
+              <div class="grupo-formulario">
+                <label for="duracao">Duração do Tratamento</label>
+                <input type="text" id="duracao" placeholder="Ex: 7 dias, contínuo">
+              </div>
+            </div>
+            
+            <div class="linha-formulario">
+              <div class="grupo-formulario">
+                <label for="horario1">Horário 1</label>
+                <input type="time" id="horario1" required>
+              </div>
+              <div class="grupo-formulario" id="grupoHorario2">
+                <label for="horario2">Horário 2</label>
+                <input type="time" id="horario2">
+              </div>
+            </div>
+            
+            <div class="linha-formulario" id="grupoHorario3">
+              <div class="grupo-formulario">
+                <label for="horario3">Horário 3</label>
+                <input type="time" id="horario3">
+              </div>
+              <div class="grupo-formulario" id="grupoHorario4">
+                <label for="horario4">Horário 4</label>
+                <input type="time" id="horario4">
+              </div>
+            </div>
+            
+            <div class="linha-formulario">
+              <div class="grupo-formulario">
+                <label for="observacoes">Observações</label>
+                <input type="text" id="observacoes" placeholder="Ex: Tomar após as refeições">
+              </div>
+            </div>
+            
+            <button type="submit" class="botao-adicionar">Adicionar Remédio</button>
+          </form>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="filtros-remedios">
+          <button class="filtro-botao ativo" data-filtro="todos">Todos</button>
+          <button class="filtro-botao" data-filtro="pendentes">Pendentes</button>
+          <button class="filtro-botao" data-filtro="tomados">Tomados</button>
+          <button class="filtro-botao" data-filtro="atrasados">Atrasados</button>
+        </div>
+        
+        <!-- Lista de remédios -->
+        <div class="lista-remedios" id="listaRemedios">
+          <!-- Os remédios serão adicionados dinamicamente aqui -->
+          <div class="mensagem-sem-remedios" id="mensagemSemRemedios">
+            <i class="fas fa-pills"></i>
+            <h3>Nenhum remédio cadastrado</h3>
+            <p>Adicione seus remédios usando o formulário acima para começar o monitoramento.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div>
+      <button id="botao-tema">🌙</button>
+    </div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <div id="conteudo_footer">
+      <!-- Parte 1 -->
+      <div id="conteudo1_footer">
+        <div id="logo_footer">
+          <h1>
+            <img src="/imagens/logos/logo_paki.png" alt="Logo da P.A.K.I" width="100" loading="lazy">
+          </h1>
+          <p>P.A.K.I seu painel de saúde digital!</p>
+        </div>
+
+        <div class="container_informacoes_footer">
+          <ul class="lista_footer">
+            <li><h3>Lojas Parceiras</h3></li>
+            <li><a href="#" class="footer_link">Saúde</a></li>
+            <li><a href="#" class="footer_link">Exercícios</a></li>
+            <li><a href="#" class="footer_link">Dieta</a></li>
+          </ul>
+
+          <ul class="lista_footer">
+            <li><h3>Produtos</h3></li>
+            <li><a href="#" class="footer_link">App</a></li>
+            <li><a href="#" class="footer_link">Desktop</a></li>
+            <li><a href="#" class="footer_link">Cloud</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Parte 2 -->
+      <div id="conteudo2_footer">
+        <div id="redes_sociais_footer">
+          <a href="#" class="footer_link" id="instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="footer_link" id="facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#" class="footer_link" id="whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+
+        <div class="mensagem_direitos">
+          <p>©2025 todos os direitos reservados</p>
+        </div>
+
+        <ul class="lista_footer_horizontal">
+          <li><a href="#" class="footer_link">Termos</a></li>
+          <li><a href="#" class="footer_link">Plano de saúde</a></li>
+          <li><a href="#" class="footer_link">Contrato</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= JS ================= -->
+  <script src="../03-js/script.js"></script>
+</body>
+</html>
