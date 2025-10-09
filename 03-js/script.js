@@ -243,7 +243,7 @@ function pesquisar_produtos() {
 
         icone.innerHTML = '<i class="fa-solid fa-face-frown-open" style="color: #63E6BE;"></i>';
         icone.classList.add('icone');
-        h1.textContent = "Que pena, não econtramos nenhum produto com esse nome ou descrição.";   
+        h1.textContent = "Que pena, não encontramos nenhum produto com esse nome ou descrição.";   
         h2.textContent = "Mas faremos o possível para adicionar esse produto em nosso estoque o mais rápido possível!";
         
         
