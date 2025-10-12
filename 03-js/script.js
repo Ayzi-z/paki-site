@@ -1,4 +1,47 @@
-/* Funcionalidade de cadastro de consulta do Cliente */
+/* ============================= */
+/* FUNÇÕES E FUNCIONALIDADES DO PACIENTE */
+/* ============================= */
+
+/*Sistema de slider das perguntas de consulta*/
+document.addEventListener('DOMContentLoaded', () => {
+    const containerSlider = document.querySelector(".container-slider");
+    const sliderPerguntas = document.querySelector(".slider-perguntas");
+    const btnVoltar = document.querySelector(".container-slider .controles-slider #voltar-slider");
+    const btnAvancar = document.querySelector(".container-slider .controles-slider #avancar-slider");
+    const perguntas = document.querySelectorAll(".slider-perguntas .pergunta")
+
+    let pergunta_atual = 0;
+    const qntPerguntas = perguntas.length;
+
+    console.log(`Temos ${qntPerguntas} perguntas`)
+   
+   function transicaoPergunta(){
+        let movimento = pergunta_atual * -100;
+        sliderPerguntas.style.transform = `translateX(${movimento}%)`;  
+   }
+
+   btnAvancar.addEventListener("click", () =>{
+        if ((pergunta_atual + 1) < qntPerguntas){
+            pergunta_atual += 1;
+        }
+        transicaoPergunta();
+        console.log(`Pergunta Atual ${pergunta_atual}`)
+   })
+
+    btnVoltar.addEventListener("click", () =>{
+        if ((pergunta_atual - 1) >= 0){
+            pergunta_atual -= 1;
+        }
+        transicaoPergunta();
+        console.log(`Pergunta Atual ${pergunta_atual}`)
+   })
+  
+});
+
+
+
+
+
 window.onload = function() {
     listarItens();
     document.getElementById("formulario_agendarconsulta").addEventListener("submit", adicionarItem);
@@ -107,6 +150,10 @@ function carregarLocalStorage() {
     }
 }
 
+function agendar_consulta(){
+    window.location.href = "agendar-consulta.html";
+}
+
 /*SISTEMA DE CHAMAR E ESCONDER MENU MOBILE E TABLET*/
 
 /* Função para sempre exibir o menu no pc e ocultar inicialmente no mobile (para evitar bugs entre mudar do mobile para o pc)*/
@@ -147,7 +194,7 @@ function mensagem_popup(texto, tipo){
         h1.textContent = "Alerta!"
 
     } else if (tipo === 'confirmacao'){
-
+        imagem.src = "/imagens/icones animados/alerta.gif"
     }; 
 
     p.textContent = texto
@@ -243,7 +290,7 @@ function pesquisar_produtos() {
 
         icone.innerHTML = '<i class="fa-solid fa-face-frown-open" style="color: #63E6BE;"></i>';
         icone.classList.add('icone');
-        h1.textContent = "Que pena, não econtramos nenhum produto com esse nome ou descrição.";   
+        h1.textContent = "Que pena, não encontramos nenhum produto com esse nome ou descrição.";   
         h2.textContent = "Mas faremos o possível para adicionar esse produto em nosso estoque o mais rápido possível!";
         
         

@@ -39,33 +39,17 @@
 
     <!-- ================= CONTEÚDO PRINCIPAL ================= -->
     <main>           
-        <div class="container-func-consulta-cliente">
-            <section class="conteudo-func-consulta-cliente">
-                <div class="funcionalidade-consulta">
-                    <form id="formulario_agendarconsulta">
-                        <h1>AGENDADOR DE CONSULTA</h1>
-                        <label for="motivo_consulta">Conte-nos o motivo da sua consulta:</label>
-                        <input type="text" id="descricao_consulta">
-
-                    <label for="tipo_consulta">Escolha o tipo da consulta:</label>
-                        <div class="opcoes">
-                        <input type="radio" name="tipo_consulta" value="rotina"/> Rotina
-                        <input type="radio" name="tipo_consulta" value="exame"/> Exame
-                        </div>
-
-                        <label for="urgencia">Escolha a urgência da consulta:</label>
-                        <div class="opcoes">
-                        <input type="radio" name="urgencia" value="alta"/> Alta
-                        <input type="radio" name="urgencia" value="baixa"/> Baixa
-                        </div>
-                        <button type="submit" id="btnAdicionar">Adicionar Consulta</button>
-                    </form>
-
-                    <ul id="lista_consultas">
-                    </ul>
+        <div class="container-func-consulta">
+            <section class="conteudo-func-consulta">
+                <div class="escolha-modo-consulta">
+                    <h2 class="section-title">O que você deseja fazer?</h2>
+                    <div class="btn-group">
+                        <button onclick="agendar_consulta()">Quero Agendar uma consulta</button>
+                        <button>Quero visualizar minhas consultas</button>
+                    </div>
                 </div>
-             
-            </section>
+            
+            </section>  
         </div>
         
         <div>
