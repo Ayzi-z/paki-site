@@ -8,38 +8,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const sliderPerguntas = document.querySelector(".slider-perguntas");
     const btnVoltar = document.querySelector(".container-slider .controles-slider #voltar-slider");
     const btnAvancar = document.querySelector(".container-slider .controles-slider #avancar-slider");
-    const perguntas = document.querySelectorAll(".slider-perguntas .pergunta")
+    const perguntas = document.querySelectorAll(".slider-perguntas .pergunta");
+    const controles_slider = document.querySelector(".container-slider .controles-slider")
 
-    let pergunta_atual = 0;
+    let perguntaAtual = 0;
+
     const qntPerguntas = perguntas.length;
 
-    console.log(`Temos ${qntPerguntas} perguntas`)
+    if (perguntaAtual == 0){
+        btnVoltar.style.display = "none"
+        controles_slider.style.justifyContent = "flex-end"
+    }
    
    function transicaoPergunta(){
-        let movimento = pergunta_atual * -100;
+        let movimento = perguntaAtual * -100;
         sliderPerguntas.style.transform = `translateX(${movimento}%)`;  
-   }
+    }
 
-   btnAvancar.addEventListener("click", () =>{
-        if ((pergunta_atual + 1) < qntPerguntas){
-            pergunta_atual += 1;
+   btnAvancar.addEventListener("click", () =>{ 
+        if ((perguntaAtual + 1) < qntPerguntas){
+            perguntaAtual += 1;
+            btnVoltar.style.display = "block"
+            controles_slider.style.justifyContent = "space-between"
+            transicaoPergunta()
         }
-        transicaoPergunta();
-        console.log(`Pergunta Atual ${pergunta_atual}`)
+
+        if ((perguntaAtual + 1) >= qntPerguntas){
+            btnAvancar.style.display = "none"
+
+        }
+        console.log (`quantidade pergunta ${qntPerguntas}`)
+        console.log(`Proxima ${perguntaAtual + 1}`)
+        console.log(`Pergunta Atual ${perguntaAtual}`)
    })
 
     btnVoltar.addEventListener("click", () =>{
-        if ((pergunta_atual - 1) >= 0){
-            pergunta_atual -= 1;
+        if ((perguntaAtual - 1) >= 0){
+            perguntaAtual -= 1;
+            btnAvancar.style.display = "block"
         }
+        if ((perguntaAtual - 1) < 0 ){
+            btnVoltar.style.display = "none"
+            controles_slider.style.justifyContent = "flex-end"
+        }
+
         transicaoPergunta();
-        console.log(`Pergunta Atual ${pergunta_atual}`)
+        console.log(`Pergunta Atual ${perguntaAtual}`)
    })
-  
 });
-
-
-
 
 
 window.onload = function() {

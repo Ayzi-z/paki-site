@@ -1030,9 +1030,10 @@ blockquote cite {
 /* ============================= */
 
 /*Funcionalidade de Agendamento de Consultas*/
+
 .container-func-consulta{
     width: 100%;
-    padding: 5% 0;
+    padding: 3% 0;
 }
 
 .escolha-modo-consulta .btn-group{
@@ -1042,6 +1043,7 @@ blockquote cite {
     align-items: center;
     gap: 15px;
 }
+
 .escolha-modo-consulta .btn-group button{
     width: 30%;
     padding: 15px;
@@ -1058,12 +1060,93 @@ blockquote cite {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
 }
+
 .conteudo-func-consulta-cliente{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
+
+/*ESTILIZAÇÃO DAS PERGUNTAS DE AGENDAMENTO */
+
+/*Slider geral de perguntas da consulta*/
+.container-slider{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+.controles-slider{
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.controles-slider button {
+    padding: 10px 15px;
+    background-color: #3cc771;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.container-slider .form-perguntas{
+   border: 2px solid #3cc771;
+   padding: 10px;
+   width: 60%;
+   height: 500px;
+   border-radius: 10px;
+   overflow: hidden;
+}
+
+.form-perguntas .slider-perguntas{
+    display: flex; 
+    transition: transform 1s ease-in-out;
+}
+.slider-perguntas .pergunta{
+    min-width: 100%;
+    max-width: 100%;
+    gap: 20px;
+}
+
+.slider-perguntas .pergunta h2{
+    text-align: center;
+    font-family: "Krona One", sans-serif;
+    color: #3cc771;
+    font-size: 25px; 
+}
+/*Pergunta do motivo da consulta*/
+.slider-perguntas #pergunta-motivo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.slider-perguntas #pergunta-motivo textarea{
+    border: 1px solid rgba(47, 1, 1, 0.321);
+    width: 80%;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 17px;
+}
+.slider-perguntas #pergunta-motivo textarea:focus{
+    outline: none;
+    word-break: break-all;
+} 
+
+/*Pergunta de seleção da data*/
+.slider-perguntas #pergunta-data{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/*Pegunta de seleção do Médico*/
 .lista-medicos{
     display: flex;
     flex-wrap: wrap;
@@ -1111,180 +1194,19 @@ blockquote cite {
     font-size: 18px;
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
-
-}
-.funcionalidade-consulta{
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   gap: 30px;
-   width: 100%;
-}
-#formulario_agendarconsulta h1{
-    font-size: 20px;
 }
 
-#formulario_agendarconsulta label{
-    font-size: 15px;
-    padding-top: 10px;
-}
-#formulario_agendarconsulta button{
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    margin-top: 10px;
-}
-
-#formulario_agendarconsulta button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
-}
-
-#lista_consultas{
+/*Pegunta confirmação de consulta*/
+#pergunta-resumo{
     display: flex;
-    gap: 20px;
-    min-height: 80%;
-}
-.consulta_agendada{
-    display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
-    list-style: none;
-    color: black;
-    background: #faf9f9;
-    padding: 30px;
-    border: 1px solid rgba(0, 0, 0, 0.219);
-    border-radius: 15px;
-    width: 280px;
 }
-
-.servico-card {
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s;
+#pergunta-resumo #resumo-consulta{
+    border: 1px solid rgba(47, 1, 1, 0.321);
+    border-radius: 5px;
+    width: 50%;
 }
-
-.consulta_agendada:hover {
-  transform: translateY(-5px);
-}
-#lista_consultas li button{
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    margin-top: 10px;
-}
-
-#lista_consultas li button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
-}
-
-#lista_consultas h1{
-    font-size: 25px;
-    color: rgb(216, 240, 3);
-}
-
-#lista_consultas h2{
-    font-size: 18px;
-    color: rgb(0, 255, 255);
-}
-
-#lista_consultas h3{
-    color: rgb(1, 88, 81);
-}
-
-.botoes_consulta{
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-#formulario_agendarconsulta{
-    background: #f9f9f9;
-    border-radius: 10px;
-    border: 0.5px solid rgba(0, 0, 0, 0.219);
-    padding: 2rem;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#lista_consultas{
-    border: 1px solid rgba(0, 0, 0, 0.397);
-    padding: 20px;
-    width: 80%;
-    justify-content: center;
-    border-radius: 10px;
-    display: flex;
-    flex-wrap: wrap;
-}
-/*Slider de perguntas da consulta*/
-.container-slider{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 10px;
-}
-.controles-slider{
-    width: 60%;
-    display: flex;
-    justify-content: space-between;
-}
-
-.controles-slider button {
-    padding: 10px 15px;
-    background-color: #3cc771;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.container-slider .form-perguntas{
-   border: 2px solid #3cc771;
-   padding: 10px;
-   width: 60%;
-   height: 500px;
-   border-radius: 10px;
-   overflow: hidden;
-}
-
-.form-perguntas .slider-perguntas{
-    display: flex; 
-    flex-wrap: nowrap;
-    width: 100%;
-    transition: transform 1s ease-in-out;
-}
-.slider-perguntas .pergunta{
-    min-width: 100%;
-    max-width: 100%;
-}
-
-.slider-perguntas .pergunta h2{
-    text-align: center;
-    font-family: "Krona One", sans-serif;
-    color: #3cc771;
-    font-size: 25px; 
-}
-
 /*Funcionalidade calculo IMC*/
 #container-func-imc{
     display: flex;
