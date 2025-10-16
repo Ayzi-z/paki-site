@@ -4,15 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-
-  <!-- ✅ Ícones (use só um, removi o Boxicons porque você já usa Font Awesome) -->
+  <!-- ✅ Livrarias de Icones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css">
+  
   <!-- ✅ CSS principal -->
-  <link rel="stylesheet" href="/02-css/style.css">
+  <link rel="stylesheet" href="{{url_for ('static', filename='/02-css/style.css')}}">
 
   <!-- ✅ Fontes movidas para cá -->
   <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{url_for ('static', filename='/imagens/logos/logo_paki_aba.png')}}">  
 </head>
 <body>
     <!-- ================= CONTEÚDO PRINCIPAL ================= -->
@@ -20,7 +21,7 @@
         <div class="container-login">
             <div class="formulario-login">
                 <div class="logo-login">
-                    <img src="/imagens/logos/logo_paki.png" alt="Logo P.A.K.I">
+                    <img src="{{url_for ('static', filename='/imagens/logos/logo_paki_aba.png')}}" alt="Logo P.A.K.I">
                     <h1>P.A.K.I</h1>
                     <p>Seu painel de saúde digital</p>
                 </div>
@@ -52,13 +53,13 @@
                             <label for="lembrar">Lembrar-me</label>
                         </div>
                         
-                        <a href="recuperar_senha.html" class="esqueci-senha">Esqueci minha senha</a>
+                        <a href="{{url_for ('recuperarSenha')}}" class="esqueci-senha">Esqueci minha senha</a>
                     </div>
                     
                     <button type="submit" class="botao-login">Entrar</button>
                     
                     <div class="cadastro-link">
-                        <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se agora</a></p>
+                        <p>Não tem uma conta? <a href="{{url_for ('cadastro')}}">Cadastre-se agora</a></p>
                     </div>
                 </form>
             </div>

@@ -1,22 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P.A.K.I</title>
-    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../02-css/style.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block tituloPagina%}
+    
+    {% endblock %}
+  <!-- ✅ Livrarias de Icones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css">
+  
+  <!-- ✅ CSS principal -->
+  <link rel="stylesheet" href="{{url_for ('static', filename='/02-css/style.css')}}">
+
+  <!-- ✅ Fontes movidas para cá -->
+  <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{url_for ('static', filename='/imagens/logos/logo_paki_aba.png')}}">  
 </head>
 <body>
     <!-- ================= HEADER ================= -->
     <header> 
             <div class="container_header">
               <button id="botao-menu-mobile">☰</button>
-              <img src="/imagens/logos/logo_paki.png" alt="Logo da P.A.K.I" class="logo_paki" loading="lazy">
+              <img src="{{url_for ('static', filename='/imagens/logos/logo_paki.png')}}" alt="Logo da P.A.K.I" class="logo_paki" loading="lazy">
               
               <div class="area-usuario-header">
                 <i class="fa fa-user"></i>
@@ -27,36 +33,20 @@
             
             <nav class="menu_nav">
                 <ul class="menu_nav_lista">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="sobre.html">Quem Somos?</a></li>
-                    <li><a href="loja.html">Produtos</a></li>
-                    <li><a href="funcionalidades.html">Ferramentas</a></li>
-                    <li><a href="contato.html">Redes Sociais</a></li>
-                    <li><a href="login.html">Login</a></li>
+                    <li><a href="{{url_for ('index')}}">Home</a></li>
+                    <li><a href="{{url_for ('sobre')}}">Quem Somos?</a></li>
+                    <li><a href="{{url_for ('loja')}}">Loja</a></li>
+                    <li><a href="{{url_for ('funcionalidades')}}">Funcionalidades</a></li>
+                    <li><a href="{{url_for ('contato')}}">Redes Sociais</a></li>
+                    <li><a href="{{url_for ('login')}}">Login</a></li>
                 </ul>
             </nav>
     </header>
 
-    <!-- ================= CONTEÚDO PRINCIPAL ================= -->
-    <main>           
-        <div class="container-func-consulta">
-            <section class="conteudo-func-consulta">
-                <div class="escolha-modo-consulta">
-                    <h2 class="section-title">O que você deseja fazer?</h2>
-                    <div class="btn-group">
-                        <button onclick="agendar_consulta()">Quero Agendar uma consulta</button>
-                        <button>Quero visualizar minhas consultas</button>
-                    </div>
-                </div>
-            
-            </section>  
-        </div>
-        
-        <div>
-            <button id="botao-tema">🌙</button>
-        </div>
+    {% block conteudoPagina%}
+    
+    {% endblock %}
 
-    </main>
     <!-- ================= FOOTER ================= -->
     <footer>
         <div id="conteudo_footer">
@@ -64,7 +54,7 @@
         <div id="conteudo1_footer">
             <div id="logo_footer">
             <h1>
-                <img src="/imagens/logos/logo_paki.png" alt="Logo da P.A.K.I" width="100" loading="lazy">
+                <img src="{{url_for ('static', filename='/imagens/logos/logo_paki.png')}}" alt="Logo da P.A.K.I" width="100" loading="lazy">
             </h1>
             <p>P.A.K.I seu painel de saúde digital!</p>
             </div>
@@ -106,8 +96,9 @@
         </div>
         </div>
     </footer>
-
-  <!-- ================= JS ================= -->
-  <script src="/03-js/script.js"></script>
+    
+    <!-- ================= JS ================= -->
+    <script src="{{url_for ('static', filename='/03-js/script.js')}}"></script>
+        
 </body>
 </html>

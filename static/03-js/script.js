@@ -167,7 +167,7 @@ function carregarLocalStorage() {
 }
 
 function agendar_consulta(){
-    window.location.href = "agendar-consulta.html";
+    window.location.href = "agendarConsulta";
 }
 
 /*SISTEMA DE CHAMAR E ESCONDER MENU MOBILE E TABLET*/
@@ -203,14 +203,16 @@ function mensagem_popup(texto, tipo){
     let h1 = document.createElement("h1");
     let p = document.createElement ("p");
 
+    if (document.querySelector(".container-mensagem-popup")) return;
+
     if(tipo === 'erro'){
 
     } else if (tipo === 'alerta'){
-        imagem.src = "/imagens/icones animados/alerta.gif"
+        imagem.src = "static/imagens/icones animados/alerta.gif"
         h1.textContent = "Alerta!"
 
     } else if (tipo === 'confirmacao'){
-        imagem.src = "/imagens/icones animados/alerta.gif"
+        imagem.src = "static/imagens/icones animados/alerta.gif"
     }; 
 
     p.textContent = texto
@@ -242,12 +244,12 @@ document.getElementById('botao-tema').addEventListener("click", function(){
     if (tema_salvo === 'escuro'){
         localStorage.setItem('tema-salvo','claro');
         aplicar_tema();
-         mensagem_popup("Tema alterado para Claro!", "alerta");
+         mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
         
     } else if (tema_salvo === 'claro') {
         localStorage.setItem('tema-salvo','escuro');
         aplicar_tema();
-        mensagem_popup("Tema alterado para escuro!", "alerta");
+        mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
     };
 });
 

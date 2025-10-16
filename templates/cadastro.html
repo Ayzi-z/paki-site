@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-
-  <!-- ✅ Ícones (use só um, removi o Boxicons porque você já usa Font Awesome) -->
+  <title>Cadastro</title>
+  <!-- ✅ Livrarias de Icones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css">
+  
   <!-- ✅ CSS principal -->
-  <link rel="stylesheet" href="../02-css/style.css">
+  <link rel="stylesheet" href="{{url_for ('static', filename='/02-css/style.css')}}">
 
   <!-- ✅ Fontes movidas para cá -->
   <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{url_for ('static', filename='/imagens/logos/logo_paki_aba.png')}}">  
 </head>
 <body>
     <!-- ================= CONTEÚDO PRINCIPAL ================= --> 
@@ -20,7 +21,7 @@
         <div class="container-cadastro">
             <div class="formulario-cadastro">
                 <div class="logo-cadastro">
-                    <img src="/imagens/logos/logo_paki.png" alt="Logo P.A.K.I">
+                    <img src="{{url_for ('static', filename='/imagens/logos/logo_paki_aba.png')}}" alt="Logo P.A.K.I">
                     <h1>P.A.K.I</h1>
                     <p>Crie sua conta e comece agora</p>
                 </div>
@@ -81,14 +82,10 @@
                     <button type="submit" class="botao-cadastrar">Criar Conta</button>
                     
                     <div class="login-link">
-                        <p>Já tem uma conta? <a href="login.html">Faça login</a></p>
+                        <p>Já tem uma conta? <a href="{{url_for ('login')}}">Faça login</a></p>
                     </div>
                 </form>
             </div>
-        </div>
-
-        <div>
-            <button id="botao-tema">🌙</button>
         </div>
     </main>
 
