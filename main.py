@@ -1,4 +1,7 @@
 from flask import Flask, render_template
+from livereload import Server
+
+import sqlite3
 
 app = Flask(__name__)
 
@@ -61,4 +64,12 @@ def detalheProduto2():
     return render_template('loja-detalhe-produto2.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.debug = True # Olha Mudanças no proprio arquivo do python
+    server = Server(app.wsgi_app) # Basicamente o live server do flask
+    
+    # Observa mudanças nos templates e arquivos estáticos
+    server.watch('templates/')
+    server.watch('static/')
+    
+    # Sempre roda o igual o app.run(debug=True)
+    server.serve(port=5500, host="127.0.0.1", debug=True)
