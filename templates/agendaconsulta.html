@@ -1,0 +1,23 @@
+<!-- ================= CONTEÚDO PRINCIPAL ================= -->
+    {% extends 'base.html'%}
+    {% block conteudoPagina%}
+    <main>           
+        <div class="container-func-consulta">
+            <section class="conteudo-func-consulta">
+                <div class="escolha-modo-consulta">
+                    <h2 class="section-title">O que você deseja fazer?</h2>
+                    <div class="btn-group">
+                        <button onclick="agendar_consulta()">Quero Agendar uma consulta</button>
+                        <button>Quero visualizar minhas consultas</button>
+                    </div>
+                </div>
+            
+            </section>  
+        </div>
+        
+        <div>
+            <button id="botao-tema">🌙</button>
+        </div>
+
+    </main>
+    {% endblock %}

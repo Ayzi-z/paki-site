@@ -1,0 +1,532 @@
+/* ============================= */
+/* FUNÇÕES E FUNCIONALIDADES DO PACIENTE */
+/* ============================= */
+
+/*Sistema de slider das perguntas de consulta*/
+document.addEventListener('DOMContentLoaded', () => {
+    const containerSlider = document.querySelector(".container-slider");
+    const sliderPerguntas = document.querySelector(".slider-perguntas");
+    const btnVoltar = document.querySelector(".container-slider .controles-slider #voltar-slider");
+    const btnAvancar = document.querySelector(".container-slider .controles-slider #avancar-slider");
+    const perguntas = document.querySelectorAll(".slider-perguntas .pergunta");
+    const controles_slider = document.querySelector(".container-slider .controles-slider")
+
+    let perguntaAtual = 0;
+
+    const qntPerguntas = perguntas.length;
+
+    if (perguntaAtual == 0){
+        btnVoltar.style.display = "none"
+        controles_slider.style.justifyContent = "flex-end"
+    }
+   
+   function transicaoPergunta(){
+        let movimento = perguntaAtual * -100;
+        sliderPerguntas.style.transform = `translateX(${movimento}%)`;  
+    }
+
+   btnAvancar.addEventListener("click", () =>{ 
+        if ((perguntaAtual + 1) < qntPerguntas){
+            perguntaAtual += 1;
+            btnVoltar.style.display = "block"
+            controles_slider.style.justifyContent = "space-between"
+            transicaoPergunta()
+        }
+
+        if ((perguntaAtual + 1) >= qntPerguntas){
+            btnAvancar.style.display = "none"
+
+        }
+        console.log (`quantidade pergunta ${qntPerguntas}`)
+        console.log(`Proxima ${perguntaAtual + 1}`)
+        console.log(`Pergunta Atual ${perguntaAtual}`)
+   })
+
+    btnVoltar.addEventListener("click", () =>{
+        if ((perguntaAtual - 1) >= 0){
+            perguntaAtual -= 1;
+            btnAvancar.style.display = "block"
+        }
+        if ((perguntaAtual - 1) < 0 ){
+            btnVoltar.style.display = "none"
+            controles_slider.style.justifyContent = "flex-end"
+        }
+
+        transicaoPergunta();
+        console.log(`Pergunta Atual ${perguntaAtual}`)
+   })
+});
+
+
+window.onload = function() {
+    listarItens();
+    document.getElementById("formulario_agendarconsulta").addEventListener("submit", adicionarItem);
+}
+
+function adicionarItem(event) {
+    event.preventDefault();
+    let descricao = document.getElementById('descricao_consulta').value;
+    let tipoSelecionado = document.querySelector('input[name="tipo_consulta"]:checked');
+    let urgenciaSelecionada = document.querySelector('input[name="urgencia"]:checked');
+
+    if (!descricao || !tipoSelecionado || !urgenciaSelecionada) {
+        mensagem_popup("Preencha todos os campos antes de adicionar a consulta!", "alerta");
+    } else {
+        let tipo = tipoSelecionado.value;
+        let urgencia = urgenciaSelecionada.value;
+
+        let item = {
+            descricao: descricao,
+            tipo: tipo,
+            urgencia: urgencia
+        };
+
+        let itens = carregarLocalStorage();
+        itens.push(item);
+        salvarLocalStorage(itens);
+
+        document.getElementById('descricao_consulta').value = "";
+        listarItens();
+    }
+}
+function listarItens() {
+    let lista = document.getElementById("lista_consultas");
+    lista.innerHTML = "";
+    let itens = carregarLocalStorage();
+
+    for (let i = 0; i < itens.length; i++) {
+        let item = itens[i];
+
+        let li = document.createElement("li");
+        li.className = "consulta_agendada";
+
+        let h1 = document.createElement("h1");
+        h1.textContent = "Tipo: " + item.tipo;
+
+        let h2 = document.createElement("h2");
+        h2.textContent = "Motivo: " + item.descricao;
+
+        let h3 = document.createElement("h3");
+        h3.textContent = "Urgência: " + item.urgencia;
+
+        let divBotoes = document.createElement("div");
+        divBotoes.className = "botoes_consulta";
+
+        let btnEditar = document.createElement("button");
+        btnEditar.textContent = "Editar";
+        btnEditar.onclick = function() {
+            editarItem(i);
+        };
+
+        let btnExcluir = document.createElement("button");
+        btnExcluir.textContent = "Excluir";
+        btnExcluir.onclick = function() {
+            removerItem(i);
+        };
+
+        divBotoes.appendChild(btnEditar);
+        divBotoes.appendChild(btnExcluir);
+
+        li.appendChild(h1);
+        li.appendChild(h2);
+        li.appendChild(h3);
+        li.appendChild(divBotoes);
+
+        lista.appendChild(li);
+    }
+}
+
+function removerItem(index) {
+    let itens = carregarLocalStorage();
+    itens.splice(index, 1);
+    salvarLocalStorage(itens);
+    listarItens();
+}
+
+function editarItem(index) {
+    let itens = carregarLocalStorage();
+    let novaDescricao = prompt("Edite o motivo da consulta:", itens[index].descricao);
+    if (novaDescricao && novaDescricao.trim() !== "") {
+        itens[index].descricao = novaDescricao.trim();
+        salvarLocalStorage(itens);
+        listarItens();
+    }
+}
+
+function salvarLocalStorage(itens) {
+    localStorage.setItem("consultas", JSON.stringify(itens));
+}
+
+function carregarLocalStorage() {
+    let itens = localStorage.getItem("consultas");
+    if (itens) {
+        return JSON.parse(itens);
+    } else {
+        return [];
+    }
+}
+
+function agendar_consulta(){
+    window.location.href = "agendarConsulta";
+}
+
+/*SISTEMA DE CHAMAR E ESCONDER MENU MOBILE E TABLET*/
+
+/* Função para sempre exibir o menu no pc e ocultar inicialmente no mobile (para evitar bugs entre mudar do mobile para o pc)*/
+function transicao_menu() { 
+   const nav = document.querySelector('.menu_nav')
+
+    if (window.innerWidth > 1151) {
+        nav.style.display = 'block'
+    } else{
+        nav.style.display = 'none'
+    };
+};
+window.addEventListener("resize", transicao_menu);
+
+/*Função para exibir menu mobile*/
+document.getElementById("botao-menu-mobile").addEventListener("click",function(){
+    const nav = document.querySelector('.menu_nav')
+
+    if (nav.style.display == 'none'){
+        nav.style.display = 'block'
+    } else{
+        nav.style.display = 'none'
+    };
+});
+
+/*Função de Mensagem Pop Up*/
+function mensagem_popup(texto, tipo){
+    let container_mensagem = document.createElement("div")
+    let mensagem = document.createElement("div");
+    let imagem = document.createElement("img");
+    let h1 = document.createElement("h1");
+    let p = document.createElement ("p");
+
+    if (document.querySelector(".container-mensagem-popup")) return;
+
+    if(tipo === 'erro'){
+
+    } else if (tipo === 'alerta'){
+        imagem.src = "static/imagens/icones animados/alerta.gif"
+        h1.textContent = "Alerta!"
+
+    } else if (tipo === 'confirmacao'){
+        imagem.src = "static/imagens/icones animados/alerta.gif"
+    }; 
+
+    p.textContent = texto
+
+    mensagem.appendChild(imagem);
+    mensagem.appendChild(h1);
+    mensagem.appendChild(p);
+    mensagem.classList.add("mensagem-popup");
+
+    container_mensagem.appendChild(mensagem)
+    container_mensagem.classList.add("container-mensagem-popup")
+
+    document.body.appendChild(container_mensagem)  
+    
+    setTimeout(() => { 
+        container_mensagem.remove(); }, 2000
+    );
+
+};
+
+/*SISTEMA DE TEMA*/
+
+/*DOM*/
+const botao_tema = document.getElementById("botao-tema");
+
+/*Função para mudar tema*/
+document.getElementById('botao-tema').addEventListener("click", function(){
+    let tema_salvo = localStorage.getItem('tema-salvo') || 'claro';
+    if (tema_salvo === 'escuro'){
+        localStorage.setItem('tema-salvo','claro');
+        aplicar_tema();
+         mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
+        
+    } else if (tema_salvo === 'claro') {
+        localStorage.setItem('tema-salvo','escuro');
+        aplicar_tema();
+        mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
+    };
+});
+
+/*Função para aplicar o tema*/
+function aplicar_tema(){
+    let tema_salvo = localStorage.getItem("tema-salvo");
+
+    if (tema_salvo === "escuro") {
+        document.body.classList.add("escuro");
+        botao_tema.textContent = "☀️";
+        botao_tema.style.background = "#03697eff";
+    } else {
+        document.body.classList.remove("escuro");
+        botao_tema.textContent = "🌙";
+        botao_tema.style.background = "#160000ce";
+    }
+}
+
+aplicar_tema(); /*Chamando a função sempre que o site carregar*/
+
+/*SISTEMAS DA LOJA*/
+
+/*Função de pesquisa de produtos*/
+
+document.querySelector('#searchbar-produtos input').addEventListener("input", pesquisar_produtos);
+function pesquisar_produtos() {
+    let input = document.querySelector('#searchbar-produtos input').value.toLowerCase();
+    let produtos = document.querySelectorAll('.cartao_produto');
+    let listaProdutos = document.querySelector('.conteudo_pagina_loja');
+    let produtoEncontrado = false;
+    let mensagemErro = document.querySelector('.container-msg-sem-produto')
+    const containerLoja = document.querySelector('.container_pagina_loja');
+
+    produtos.forEach(produto => {
+        let nomeProduto = produto.querySelector('.cartao_produto_descricao h1').textContent.toLowerCase();
+        let descricaoProduto = produto.querySelector('.cartao_produto_descricao h2').textContent.toLowerCase();
+        if(nomeProduto.includes(input) || descricaoProduto.includes(input)) {
+            produto.style.display = '';
+            produtoEncontrado = true;
+            
+        } else {
+            produto.style.display = 'none';
+        }
+    });
+
+    if (mensagemErro) {
+            mensagemErro.remove();
+    };
+    if (produtoEncontrado === false) {
+
+        containerMsg = document.createElement('div');
+        msg = document.createElement('div');
+        icone = document.createElement('div');
+        h1 = document.createElement('h1');
+        h2 = document.createElement('h2');
+
+        icone.innerHTML = '<i class="fa-solid fa-face-frown-open" style="color: #63E6BE;"></i>';
+        icone.classList.add('icone');
+        h1.textContent = "Que pena, não encontramos nenhum produto com esse nome ou descrição.";   
+        h2.textContent = "Mas faremos o possível para adicionar esse produto em nosso estoque o mais rápido possível!";
+        
+        
+        containerMsg.classList.add('container-msg-sem-produto');
+        msg.classList.add('msg-sem-produto');
+        msg.appendChild(icone);
+        msg.appendChild(h1);
+        msg.appendChild(h2);
+
+        containerMsg.appendChild(msg);
+        containerLoja.appendChild(containerMsg);
+    };
+};
+
+/* Função de troca menu médico*/
+function trocar_imagem() {
+    let img = document.querySelector(".esboco-medico");
+
+    if (img.src.includes("med1.png")) {
+        img.src = "/imagens/med2.png";
+    } else {
+        img.src = "/imagens/med1.png";
+    }
+}
+
+/*Função De calcular o IMC*/
+function classificarIMC(imc) {
+    if (imc < 18.5) return "Abaixo do peso";
+    if (imc < 24.9) return "Peso normal";
+    if (imc < 29.9) return "Sobrepeso";
+    if (imc < 34.9) return "Obesidade grau I";
+    if (imc < 39.9) return "Obesidade grau II";
+    return "Obesidade grau III";
+}
+
+function resultado_imc(event) {
+    event.preventDefault();
+    const peso = parseFloat(document.getElementById("peso").value);
+    const altura = parseFloat(document.getElementById("altura").value);
+    const resultadoDiv = document.getElementById("listaResultado");
+
+    if (!peso || !altura) {
+        resultadoDiv.innerHTML = "Por favor, insira peso e altura válidos.";
+        resultadoDiv.style.color = "red";
+        return;
+    }
+
+    const alturaMetros = altura / 100;
+    const imc = peso / (alturaMetros * alturaMetros);
+    const imcFormatado = imc.toFixed(2);
+    const classificacao = classificarIMC(imc);
+
+    resultadoDiv.style.color = "black";
+    resultadoDiv.innerHTML = `Seu IMC é <b>${imcFormatado}</b> (${classificacao})`;
+}
+
+/* ============================= */
+/* FUNÇÕES PARA GERENCIAMENTO DE USUÁRIOS */
+/* ============================= */
+
+function mudarAba(abaId) {
+    document.querySelectorAll('.aba').forEach(aba => {
+        aba.classList.remove('ativa');
+    });
+    
+    document.querySelectorAll('.aba-conteudo').forEach(conteudo => {
+        conteudo.classList.remove('ativa');
+    });
+    
+    document.querySelector(`.aba[onclick="mudarAba('${abaId}')"]`).classList.add('ativa');
+    
+    document.getElementById(`aba-${abaId}`).classList.add('ativa');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    inicializarGerenciamentoUsuarios();
+});
+
+function inicializarGerenciamentoUsuarios() {
+    const barraPesquisa = document.querySelector('.barra-pesquisa-usuarios input');
+    const botoesFiltro = document.querySelectorAll('.filtro-botao');
+    
+    if (barraPesquisa) {
+        barraPesquisa.addEventListener('input', filtrarUsuarios);
+    }
+    
+    botoesFiltro.forEach(botao => {
+        botao.addEventListener('click', function() {
+            botoesFiltro.forEach(b => b.classList.remove('ativo'));
+            this.classList.add('ativo');
+            filtrarUsuarios();
+        });
+    });
+}
+
+function filtrarUsuarios() {
+    const termoPesquisa = document.querySelector('.barra-pesquisa-usuarios input').value.toLowerCase();
+    const filtroAtivo = document.querySelector('.filtro-botao.ativo').dataset.filtro;
+    const linhasUsuarios = document.querySelectorAll('.tabela-usuarios tbody tr');
+    
+    linhasUsuarios.forEach(linha => {
+        const nome = linha.querySelector('td:first-child').textContent.toLowerCase();
+        const email = linha.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const tipo = linha.querySelector('.badge-tipo').textContent.toLowerCase();
+        const status = linha.querySelector('td:nth-child(4)').textContent.toLowerCase();
+        
+        const correspondePesquisa = nome.includes(termoPesquisa) || email.includes(termoPesquisa);
+        const correspondeFiltro = filtroAtivo === 'todos' || tipo.includes(filtroAtivo);
+        
+        if (correspondePesquisa && correspondeFiltro) {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+}
+
+function abrirModalUsuario(usuarioId) {
+    const modal = document.getElementById('modalUsuario');
+    if (modal) {
+        modal.style.display = 'flex';
+        carregarDadosUsuario(usuarioId);
+    }
+}
+
+function fecharModalUsuario() {
+    const modal = document.getElementById('modalUsuario');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function carregarDadosUsuario(usuarioId) {
+    console.log(`Carregando dados do usuário ${usuarioId}`);
+}
+
+function editarUsuario(usuarioId) {
+    mensagem_popup(`Editando usuário ${usuarioId}`, 'info');
+}
+
+function excluirUsuario(usuarioId) {
+    if (confirm('Tem certeza que deseja excluir este usuário?')) {
+        mensagem_popup(`Usuário ${usuarioId} excluído com sucesso!`, 'confirmacao');
+    }
+}
+
+function alternarStatusUsuario(usuarioId, elemento) {
+    const statusAtual = elemento.textContent.trim();
+    const novoStatus = statusAtual === 'Ativo' ? 'Inativo' : 'Ativo';
+    
+    elemento.textContent = novoStatus;
+    elemento.className = novoStatus === 'Ativo' ? 'status-ativo' : 'status-inativo';
+    
+    mensagem_popup(`Status do usuário alterado para ${novoStatus}`, 'info');
+}
+
+function iniciarUploadFoto() {
+    const inputFile = document.createElement('input');
+    inputFile.type = 'file';
+    inputFile.accept = 'image/*';
+    inputFile.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            uploadFotoPerfil(file);
+        }
+    };
+    inputFile.click();
+}
+
+function uploadFotoPerfil(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = document.querySelector('.foto-perfil img');
+        img.src = e.target.result;
+        mensagem_popup('Foto de perfil atualizada com sucesso!', 'confirmacao');
+    };
+    reader.readAsDataURL(file);
+}
+
+function validarFormPerfil(form) {
+    const senha = form.querySelector('input[type="password"]');
+    const confirmarSenha = form.querySelectorAll('input[type="password"]')[1];
+    
+    if (senha && confirmarSenha && senha.value !== confirmarSenha.value) {
+        mensagem_popup('As senhas não coincidem!', 'erro');
+        return false;
+    }
+    
+    return true;
+}
+
+function exportarUsuarios() {
+    mensagem_popup('Exportando lista de usuários...', 'info');
+}
+
+function carregarEstatisticasUsuarios() {
+    const estatisticas = {
+        total: 150,
+        medicos: 25,
+        pacientes: 120,
+        admins: 5,
+        ativos: 140,
+        inativos: 10
+    };
+    
+    console.log('Estatísticas carregadas:', estatisticas);
+    return estatisticas;
+}
+
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('modalUsuario');
+    if (modal && e.target === modal) {
+        fecharModalUsuario();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        fecharModalUsuario();
+    }
+});

@@ -1,0 +1,166 @@
+<!-- ================= CONTEÚDO PRINCIPAL ================= -->
+  {% extends 'base.html'%}
+  
+  {% block conteudoPagina%}    
+    <main>           
+        <div class="container-func-consulta">
+            <div class="container-slider">
+                <div class="controles-slider">
+                    <button id="voltar-slider"><i class="fa-solid fa-arrow-left"></i>Voltar</button>
+                    <button id="avancar-slider">Avançar<i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <form class="form-perguntas">
+                    <div class="slider-perguntas">
+                        <section id="pergunta-motivo" class="pergunta">
+                            <h2>Conte-nos o motivo do seu agendamento</h2>
+                            <textarea name="" id=""></textarea>
+                        </section>
+                        
+                        <section id= "pergunta-data" class="pergunta">
+                            <h2>Escolha a data de sua consulta</h2>
+                            <div>
+                                <img src="/imagens/esboços/calendario.png" alt="">
+                                <form action="">
+                                    
+                                </form>
+                                
+                            </div>
+                        </section>
+
+                        <section id= "pergunta-medico" class="pergunta">
+                            <h2>Escolha um nutricionista disponível para (dia e hora escolhidos)</h2>
+                            <ul class="lista-medicos">
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                                <li class="cartao-medico">
+                                    <div class="pfp">
+                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
+                                    </div>
+                                    <div class="descricao-med">
+                                        <h1>Dr Mario</h1>
+                                        <h2>Consultorio 3</h2>
+                                        <p>Disponível</p>
+                                    </div>
+                                    <button>Escolher</button>
+                                    
+                                </li>
+                            </ul>
+                        </section>
+
+                        <section id= "pergunta-resumo" class="pergunta">
+                            <h2>Confirme os dados da consulta</h2>
+                            <div id="resumo-consulta">
+                                <div>Data e hora</div>
+                                <div>Médico responsavel</div>
+                                <div>N consultorio</div>
+                                <div>motivo</div>
+                            </div>
+                        </section>
+
+                        
+
+                    </div>
+                </form>
+            </div>
+        </div>
+       
+        <div>
+            <button id="botao-tema">🌙</button>
+        </div>
+
+    </main>
+  {% endblock %}
