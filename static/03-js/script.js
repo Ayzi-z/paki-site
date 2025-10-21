@@ -1,8 +1,136 @@
 /* ============================= */
-/* FUNÇÕES E FUNCIONALIDADES DO PACIENTE */
+/* FUNÇÕES DO SISTEMA DE LOGIN E CADASTRO DE USUARIOS*/
 /* ============================= */
 
-/*Sistema de slider das perguntas de consulta*/
+/*Sistema validador de dados durante o cadastro*/
+document.addEventListener('DOMContentLoaded', () => {
+    const formCadastro = document.getElementById("formCadastro");
+  
+    if (formCadastro) /* Verificando se o formulario de cadastro existe na página*/ {
+        const inputEmail = formCadastro.querySelector("#email");
+        const inputTipo = formCadastro.querySelector('#tipo-usuario');
+
+        inputTipo.addEventListener("change", () => {
+            let tipoSelecionado = inputTipo.value
+            let grupoTipo = inputTipo.closest(".grupo-formulario");
+            
+            const inputCodigo = document.querySelector("#grupo-codigo-ativacao");
+            
+            const inputEscala = document.querySelector('#grupo-dias-trabalho')
+            
+            if (inputCodigo) inputCodigo.remove();
+
+            if (inputEscala) inputEscala.remove()
+
+            if (tipoSelecionado === "nutricionista") {
+                
+                /* Criando um input pro codigo de ativacao */
+                const divGrupo = document.createElement("div");
+                divGrupo.classList.add("grupo-formulario");
+                divGrupo.id = "grupo-codigo-ativacao"; 
+
+                const labelCodigo = document.createElement("label");
+                labelCodigo.setAttribute("for", "codigo_ativacao");
+                labelCodigo.textContent = "Número do seu código de ativação:";
+
+       
+                const inputCodigo = document.createElement("input");
+                inputCodigo.type = "text";
+                inputCodigo.name = "codigo_ativacao";
+                inputCodigo.id = "codigo_ativacao";
+                inputCodigo.required = true;
+                inputCodigo.placeholder = "Digite o código de ativação";
+
+                /*Colocando a label e o input do codigo dentro da div*/
+                divGrupo.appendChild(labelCodigo);
+                divGrupo.appendChild(inputCodigo);
+
+                /* Colocando a div logo depois do tipo de usuario*/
+                grupoTipo.parentNode.insertBefore(divGrupo, grupoTipo.nextSibling);
+
+
+                /* criando input para inserir a escala de dias do nutricionista*/
+                const grupo_formulario = document.createElement("div");
+                grupo_formulario.classList.add("grupo-formulario");
+                grupo_formulario.id = "grupo-dias-trabalho";
+        
+                const label = document.createElement("label");
+                label.textContent = "Selecione os dias que você trabalha na clinica:";
+                grupo_formulario.appendChild(label);
+
+                const diasSemana = ["segunda","terça","quarta","quinta","sexta"];
+                const container_opcoes = document.createElement("div");
+                diasSemana.forEach(dia => {
+                      const label_dia = document.createElement("label");
+
+                      const checkbox = document.createElement("input");
+                      checkbox.type = "checkbox";
+                      checkbox.name = "dias_trabalho";
+                      checkbox.value = dia;
+
+                      label_dia.appendChild(checkbox);
+
+                      const texto = document.createTextNode(dia.charAt(0).toUpperCase() + dia.slice(1));
+                      
+                      label_dia.appendChild(texto);
+
+                      container_opcoes.appendChild(label_dia);
+                });
+
+        grupo_formulario.appendChild(label);
+        grupo_formulario.appendChild(container_opcoes);
+        grupoTipo.parentNode.insertBefore(grupo_formulario, grupoTipo.nextSibling);
+ 
+            }
+        });
+
+        inputEmail.addEventListener("blur", () => { /*Verificando se o e-mail já existe sempre que sai do campo*/
+            let email = inputEmail.value.trim();
+            console.log("Saiu do campo de email. Valor atual:", email);
+            fetch('/validarcadastro', { /*Vendo se o email existe naquela api do banco de dados*/
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            })
+            .then(res => res.json())
+            .then(dados => {
+
+            console.log(dados)
+            
+            if (dados.email === true) /* Se o email existe faz isso no input e no formulario*/ {
+                window.alert("O email Informado já existe no banco de dados")
+                inputEmail.style.borderColor = "red";
+                let aviso_email = document.getElementById("aviso-email") /*Vendo se já existe alguma mensagem de erro*/;
+                    if (!aviso_email)/* se nao existir uma mensagem de erro no input ele cria uma*/{
+                        aviso = document.createElement("p");
+                        aviso.id = "aviso-email";
+                        aviso.style.color = "red";
+                        aviso.textContent = "Este e-mail já existe!";
+                        inputEmail.parentNode.appendChild(aviso);
+                        
+                        event.preventDefault();
+                    }
+            } else /* Se o e-mail nao existir no banco ele tira os erros do input*/ {
+                inputEmail.style.borderColor = "";
+                const aviso = document.getElementById("aviso-email");
+                if (aviso) aviso.remove();
+            }
+            });
+        });
+    }
+});
+
+
+/* ============================= */
+/* FUNÇÕES DA FUNCIONALIDADE AGENDA DE CONSULTAS*/
+/* ============================= */
+function agendarConsulta(){
+    window.location.href = "agendarConsulta";
+}
+
+/*Sistema do slider das perguntas de consulta paciente*/
 document.addEventListener('DOMContentLoaded', () => {
     const containerSlider = document.querySelector(".container-slider");
     const sliderPerguntas = document.querySelector(".slider-perguntas");
@@ -11,27 +139,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const perguntas = document.querySelectorAll(".slider-perguntas .pergunta");
     const controles_slider = document.querySelector(".container-slider .controles-slider")
 
-    let perguntaAtual = 0;
+    if (containerSlider){
+        let perguntaAtual = 0;
+        const qntPerguntas = perguntas.length;
 
-    const qntPerguntas = perguntas.length;
-
-    if (perguntaAtual == 0){
-        btnVoltar.style.display = "none"
-        controles_slider.style.justifyContent = "flex-end"
-    }
-   
-   function transicaoPergunta(){
-        let movimento = perguntaAtual * -100;
-        sliderPerguntas.style.transform = `translateX(${movimento}%)`;  
-    }
-
-   btnAvancar.addEventListener("click", () =>{ 
-        if ((perguntaAtual + 1) < qntPerguntas){
-            perguntaAtual += 1;
-            btnVoltar.style.display = "block"
-            controles_slider.style.justifyContent = "space-between"
-            transicaoPergunta()
+        if (perguntaAtual == 0){
+            btnVoltar.style.display = "none"
+            controles_slider.style.justifyContent = "flex-end"
         }
+        
+        function transicaoPergunta(){
+                let movimento = perguntaAtual * -100;
+                sliderPerguntas.style.transform = `translateX(${movimento}%)`;  
+            }
+
+        btnAvancar.addEventListener("click", () =>{ 
+                if ((perguntaAtual + 1) < qntPerguntas){
+                    perguntaAtual += 1;
+                    btnVoltar.style.display = "block"
+                    controles_slider.style.justifyContent = "space-between"
+                    transicaoPergunta()
+                }
 
         if ((perguntaAtual + 1) >= qntPerguntas){
             btnAvancar.style.display = "none"
@@ -40,28 +168,27 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log (`quantidade pergunta ${qntPerguntas}`)
         console.log(`Proxima ${perguntaAtual + 1}`)
         console.log(`Pergunta Atual ${perguntaAtual}`)
-   })
+        })
 
-    btnVoltar.addEventListener("click", () =>{
-        if ((perguntaAtual - 1) >= 0){
-            perguntaAtual -= 1;
-            btnAvancar.style.display = "block"
-        }
-        if ((perguntaAtual - 1) < 0 ){
-            btnVoltar.style.display = "none"
-            controles_slider.style.justifyContent = "flex-end"
-        }
+        btnVoltar.addEventListener("click", () =>{
+            if ((perguntaAtual - 1) >= 0){
+                perguntaAtual -= 1;
+                btnAvancar.style.display = "block"
+            }
+            if ((perguntaAtual - 1) < 0 ){
+                btnVoltar.style.display = "none"
+                controles_slider.style.justifyContent = "flex-end"
+            }
 
-        transicaoPergunta();
-        console.log(`Pergunta Atual ${perguntaAtual}`)
-   })
+            transicaoPergunta();
+            console.log(`Pergunta Atual ${perguntaAtual}`)
+        })
+    }
+    
 });
 
 
-window.onload = function() {
-    listarItens();
-    document.getElementById("formulario_agendarconsulta").addEventListener("submit", adicionarItem);
-}
+
 
 function adicionarItem(event) {
     event.preventDefault();
@@ -166,36 +293,48 @@ function carregarLocalStorage() {
     }
 }
 
-function agendar_consulta(){
-    window.location.href = "agendarConsulta";
-}
+/* ============================= */
+/* FUNCÕES DO SITE EM GERAL*/
+/* ============================= */
 
-/*SISTEMA DE CHAMAR E ESCONDER MENU MOBILE E TABLET*/
+/*Sistemas do menu mobile*/
 
 /* Função para sempre exibir o menu no pc e ocultar inicialmente no mobile (para evitar bugs entre mudar do mobile para o pc)*/
 function transicao_menu() { 
    const nav = document.querySelector('.menu_nav')
-
-    if (window.innerWidth > 1151) {
+    if (nav){
+        if (window.innerWidth > 1151) {
         nav.style.display = 'block'
-    } else{
-        nav.style.display = 'none'
+        } else{
+            nav.style.display = 'none'
+        };
     };
-};
+    }
+    
+
+window.addEventListener("load", transicao_menu);
 window.addEventListener("resize", transicao_menu);
 
+
 /*Função para exibir menu mobile*/
-document.getElementById("botao-menu-mobile").addEventListener("click",function(){
+const btn_mobile = document.getElementById("botao-menu-mobile");
+
+if (btn_mobile) {
+    document.getElementById("botao-menu-mobile").addEventListener("click",function(){
     const nav = document.querySelector('.menu_nav')
 
     if (nav.style.display == 'none'){
-        nav.style.display = 'block'
+    nav.style.display = 'block'
     } else{
-        nav.style.display = 'none'
+    nav.style.display = 'none'
     };
-});
+    });
 
-/*Função de Mensagem Pop Up*/
+}
+
+
+
+/*Função de Exibir uma mensagem popup na tela*/
 function mensagem_popup(texto, tipo){
     let container_mensagem = document.createElement("div")
     let mensagem = document.createElement("div");
@@ -208,11 +347,11 @@ function mensagem_popup(texto, tipo){
     if(tipo === 'erro'){
 
     } else if (tipo === 'alerta'){
-        imagem.src = "static/imagens/icones animados/alerta.gif"
+        imagem.src = "/static/imagens/icones animados/alerta.gif"
         h1.textContent = "Alerta!"
 
     } else if (tipo === 'confirmacao'){
-        imagem.src = "static/imagens/icones animados/alerta.gif"
+        imagem.src = "/static/imagens/icones animados/alerta.gif"
     }; 
 
     p.textContent = texto
@@ -233,48 +372,58 @@ function mensagem_popup(texto, tipo){
 
 };
 
-/*SISTEMA DE TEMA*/
-
-/*DOM*/
+/*Sistema de mudar tema*/
 const botao_tema = document.getElementById("botao-tema");
 
-/*Função para mudar tema*/
-document.getElementById('botao-tema').addEventListener("click", function(){
+if (botao_tema) {
+    
+    document.getElementById('botao-tema').addEventListener("click", function(){
     let tema_salvo = localStorage.getItem('tema-salvo') || 'claro';
+    
     if (tema_salvo === 'escuro'){
         localStorage.setItem('tema-salvo','claro');
         aplicar_tema();
-         mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
+
+        botao_tema.textContent = "🌙";
+        botao_tema.style.background = "#160000ce";
+
+        mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
         
     } else if (tema_salvo === 'claro') {
         localStorage.setItem('tema-salvo','escuro');
         aplicar_tema();
+
+        botao_tema.textContent = "☀️";
+        botao_tema.style.background = "#03697eff";
+
         mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
     };
 });
-
+}
 /*Função para aplicar o tema*/
 function aplicar_tema(){
     let tema_salvo = localStorage.getItem("tema-salvo");
 
     if (tema_salvo === "escuro") {
         document.body.classList.add("escuro");
-        botao_tema.textContent = "☀️";
-        botao_tema.style.background = "#03697eff";
+       
     } else {
         document.body.classList.remove("escuro");
-        botao_tema.textContent = "🌙";
-        botao_tema.style.background = "#160000ce";
     }
 }
 
 aplicar_tema(); /*Chamando a função sempre que o site carregar*/
 
-/*SISTEMAS DA LOJA*/
+/*SISTEMAS DA LOJA (que provavelmente vão ser removidos)*/
 
 /*Função de pesquisa de produtos*/
 
-document.querySelector('#searchbar-produtos input').addEventListener("input", pesquisar_produtos);
+const searchbarLoja = document.querySelector('#searchbar-produtos input');
+
+if (searchbarLoja) {
+    searchbarLoja.addEventListener("input", pesquisar_produtos);
+}
+
 function pesquisar_produtos() {
     let input = document.querySelector('#searchbar-produtos input').value.toLowerCase();
     let produtos = document.querySelectorAll('.cartao_produto');
@@ -323,44 +472,13 @@ function pesquisar_produtos() {
     };
 };
 
-/* Função de troca menu médico*/
+/* Função de troca menu médico (isso aq é temporário somente para a apresentação parcial)*/
 function trocar_imagem() {
     let img = document.querySelector(".esboco-medico");
 
     if (img.src.includes("med1.png")) {
-        img.src = "/imagens/med2.png";
+        img.src = "/static/imagens/med2.png";
     } else {
-        img.src = "/imagens/med1.png";
+        img.src = "/static/imagens/med1.png";
     }
-}
-
-/*Função De calcular o IMC*/
-function classificarIMC(imc) {
-    if (imc < 18.5) return "Abaixo do peso";
-    if (imc < 24.9) return "Peso normal";
-    if (imc < 29.9) return "Sobrepeso";
-    if (imc < 34.9) return "Obesidade grau I";
-    if (imc < 39.9) return "Obesidade grau II";
-    return "Obesidade grau III";
-}
-
-function resultado_imc(event) {
-    event.preventDefault();
-    const peso = parseFloat(document.getElementById("peso").value);
-    const altura = parseFloat(document.getElementById("altura").value);
-    const resultadoDiv = document.getElementById("listaResultado");
-
-    if (!peso || !altura) {
-        resultadoDiv.innerHTML = "Por favor, insira peso e altura válidos.";
-        resultadoDiv.style.color = "red";
-        return;
-    }
-
-    const alturaMetros = altura / 100;
-    const imc = peso / (alturaMetros * alturaMetros);
-    const imcFormatado = imc.toFixed(2);
-    const classificacao = classificarIMC(imc);
-
-    resultadoDiv.style.color = "black";
-    resultadoDiv.innerHTML = `Seu IMC é <b>${imcFormatado}</b> (${classificacao})`;
 }

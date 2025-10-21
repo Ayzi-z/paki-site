@@ -25,22 +25,14 @@
                     <h1>P.A.K.I</h1>
                     <p>Seu painel de saúde digital</p>
                 </div>
-                
-                <!-- Alterado: action para redirecionar para index.html -->
+
                 <form id="formLogin" action="/login" method="post">
                     <div class="grupo-formulario">
                         <label for="email">E-mail</label>
                         <input type="email" id="email" name="email" required placeholder="Seu e-mail cadastrado">
                     </div>
                     
-                    <div class="grupo-formulario">
-                        <label for="tipo-usuario">Tipo de usuario</label>
-                        <select id="tipo-usuario" name="user-type">
-                            <option value="paciente">Paciente</option>
-                            <option value="medico">Médico</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
+                   
 
                     <div class="grupo-formulario">
                         <label for="senha">Senha</label>
@@ -67,6 +59,6 @@
     </main>
     
     <!-- ================= JS ================= -->
-    <script src="script.js"></script>
+    <script src="{{url_for ('static', filename='/03-js/script.js')}}"></script>
 </body>
 </html>

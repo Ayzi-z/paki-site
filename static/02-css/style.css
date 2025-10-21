@@ -983,44 +983,17 @@ blockquote cite {
     z-index: 40;
 }
 
-.container-func-consulta-medico{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.container-func-consulta-medico img{
-    width: 100%;
-}
-
-.container-func-consulta-medico button{
-    width: 200px;
-    padding: 15px;
-    background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
 /* ============================= */
-/* 📌 PÁGINA DE FUNCIONALIDADES PACIENTE */
+/* 📌 PÁGINA DE CONSULTA PACIENTE */
 /* ============================= */
 
 /*Funcionalidade de Agendamento de Consultas*/
-
 .container-func-consulta{
     width: 100%;
     padding: 3% 0;
 }
 
-.escolha-modo-consulta .btn-group{
+.escolha-modo-consulta .link-group{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1028,8 +1001,10 @@ blockquote cite {
     gap: 15px;
 }
 
-.escolha-modo-consulta .btn-group button{
-    width: 30%;
+.escolha-modo-consulta .link-group a{
+    width: 250px;
+    text-decoration: none;
+    text-align: center;
     padding: 15px;
     background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
     color: white;
@@ -1040,7 +1015,7 @@ blockquote cite {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.escolha-modo-consulta .btn-group button:hover{
+.escolha-modo-consulta .link-group a:hover{
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
 }
@@ -1055,6 +1030,8 @@ blockquote cite {
 /*ESTILIZAÇÃO DAS PERGUNTAS DE AGENDAMENTO */
 
 /*Slider geral de perguntas da consulta*/
+
+
 .container-slider{
     display: flex;
     justify-content: center;
@@ -1124,10 +1101,129 @@ blockquote cite {
 } 
 
 /*Pergunta de seleção da data*/
+
 .slider-perguntas #pergunta-data{
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.slider-perguntas #pergunta-data .conteudo-pergunta{
+    display: flex;
+    gap: 20px;            /* espaço entre calendário e lista de horários */
+    align-items: flex-start; 
+}
+
+
+.calendario{
+    width: 100%;
+    max-width: 900px;
+    border: 1px solid rgb(75, 73, 73);
+	border-radius: 10px;
+	box-shadow: 0 0 2px 0 rgba(#000, .2), 0 5px 10px 0 rgba(#000, .1);
+	padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.menu-calendario {
+	margin-bottom: 1rem;
+}
+
+.menu-calendario .mes{
+    display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 1rem;
+    align-items: center;
+    gap: 5px;
+}
+
+.menu-calendario .seta {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	background-color:#FFF;
+	border-radius: 12px;
+	width: 2.5rem;
+	height: 2.5rem;
+	box-shadow: 0 0 2px 0 rgba(#000,.25), 0 0 10px 0 rgba(#000, .15);
+    cursor: pointer;
+}
+
+.dias-calendario {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	grid-row-gap: 1rem;
+}
+
+
+.dia {
+	font-size: .875em;
+	font-weight: 500;
+	justify-self: center;
+}
+
+.data {
+	border: 0;
+	padding: 0;
+	width: 2.25rem;
+	height: 2.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	font-weight: 600;
+	border: 2px solid transparent;
+	background-color: transparent;
+	cursor: pointer;	
+}
+
+.data:hover{
+    outline: 0;
+    color:  #066dc2;
+    border: 2px solid  #CBE8FF;	
+}
+
+.data.ocupada{
+    color: #EAEBEC;
+}
+
+.lista-horarios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;           
+    justify-content: flex-start; 
+    width: auto;    
+}
+
+.lista-horarios .horario-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 40px;
+    background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+   
+}
+
+.lista-horarios .horario-label:hover{
+    background:  #07eeee;;
+}
+
+.lista-horarios .horario-label input[type="radio"] {
+    display: none;
+}
+
+.horario-label:has(input[type="radio"]:checked) {
+    background: #07eeee;
+    border-color: #05b5b5;
+    color: #ffffff;
+    font-weight: bold;
 }
 
 /*Pegunta de seleção do Médico*/
@@ -1553,7 +1649,7 @@ blockquote cite {
     align-items: center;
 }
 
-.formulario-cadastro {
+#formulario-cadastro {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
     padding: 40px;
@@ -1646,7 +1742,21 @@ blockquote cite {
     text-decoration: underline;
 }
 
-.botao-cadastrar {
+
+#grupo-dias-trabalho label {
+    display: flex;             
+    align-items: center;       
+    gap: 10px;                  
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#grupo-dias-trabalho input[type="checkbox"] {
+    width: 25px;
+    height: 20px;
+}
+
+#btn-cadastrar {
     width: 100%;
     padding: 15px;
     background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
@@ -1660,7 +1770,7 @@ blockquote cite {
     margin-top: 10px;
 }
 
-.botao-cadastrar:hover {
+#btn-cadastrar:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
 }
@@ -1775,7 +1885,7 @@ blockquote cite {
       font-size: 1.5rem;
     }
 /* ============================= */
-/* 📌 PÁGINA Contato */
+/* 📌 PÁGINA CONTATO*/
 /* ============================= */
 
 .redes-sociais {
@@ -1870,8 +1980,6 @@ body.escuro .mensagem-popup{
     background-color: rgb(48, 47, 47);
 }
 
-/*Classes modo escuro da Loja de Produtos*/
-
 body.escuro #conteudo_pagina_carrinho{
     background-color: rgb(48, 47, 47);
 }
@@ -1923,322 +2031,6 @@ body.escuro .cartao_produto, body.escuro .cartao_produto_descricao{
 body.escuro .msg-sem-produto{
     background-color: transparent
 } 
-
-
-
-/* ============================= */
-/* 📌 Funcionalidade de Monitoramento de Remédios */
-/* ============================= */
-.container-monitoramento-remedios {
-    width: 100%;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.conteudo-monitoramento-remedios {
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.conteudo-monitoramento-remedios h1 {
-    color: #3cc771;
-    text-align: center;
-    font-family: "Krona One", sans-serif;
-    margin-bottom: 0.5rem;
-}
-
-.conteudo-monitoramento-remedios > p {
-    text-align: center;
-    color: #666;
-    margin-bottom: 1rem;
-}
-
-.formulario-adicionar-remedio {
-    background: #f9f9f9;
-    border-radius: 15px;
-    padding: 2rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border: 2px solid #3cc771;
-}
-
-.formulario-adicionar-remedio h2 {
-    color: #3cc771;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    font-family: "Krona One", sans-serif;
-}
-
-.linha-formulario {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.grupo-formulario {
-    flex: 1;
-}
-
-.grupo-formulario label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #333;
-}
-
-.grupo-formulario input, .grupo-formulario select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-.grupo-formulario input:focus, .grupo-formulario select:focus {
-    outline: none;
-    border-color: #3cc771;
-}
-
-.botao-adicionar {
-    background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.3s;
-    margin-top: 1rem;
-    width: 100%;
-}
-
-.botao-adicionar:hover {
-    transform: translateY(-3px);
-}
-
-.lista-remedios {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.cartao-remedio {
-    background: #f9f9f9;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border: 1px solid #ddd;
-    transition: transform 0.3s;
-}
-
-.cartao-remedio:hover {
-    transform: translateY(-5px);
-}
-
-.cartao-remedio h3 {
-    color: #3cc771;
-    margin-bottom: 0.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.cartao-remedio p {
-    margin: 0.5rem 0;
-    color: #555;
-}
-
-.horarios-remedio {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-}
-
-.horarios-remedio h4 {
-    margin-bottom: 0.5rem;
-    color: #3cc771;
-}
-
-.horario-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.acoes-remedio {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-.botao-acao {
-    flex: 1;
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.botao-editar {
-    background: #ffc107;
-    color: #333;
-}
-
-.botao-editar:hover {
-    background: #e0a800;
-}
-
-.botao-excluir {
-    background: #dc3545;
-    color: white;
-}
-
-.botao-excluir:hover {
-    background: #c82333;
-}
-
-.botao-tomar {
-    background: #28a745;
-    color: white;
-}
-
-.botao-tomar:hover {
-    background: #218838;
-}
-
-.botao-desabilitado {
-    background: #6c757d !important;
-    cursor: not-allowed !important;
-    opacity: 0.6;
-}
-
-.botao-desabilitado:hover {
-    transform: none !important;
-    background: #6c757d !important;
-}
-
-.remedio-tomado {
-    opacity: 0.7;
-    background: #e9ecef;
-}
-
-.remedio-tomado h3::after {
-    content: " ✓";
-    color: #28a745;
-}
-
-.status-remedio {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 15px;
-    font-size: 12px;
-    font-weight: bold;
-    margin-left: 10px;
-}
-
-.status-pendente {
-    background: #ffc107;
-    color: #333;
-}
-
-.status-tomado {
-    background: #28a745;
-    color: white;
-}
-
-.status-atrasado {
-    background: #dc3545;
-    color: white;
-}
-
-.filtros-remedios {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.filtro-botao {
-    padding: 8px 15px;
-    border: 1px solid #3cc771;
-    background: white;
-    color: #3cc771;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.filtro-botao.ativo {
-    background: #3cc771;
-    color: white;
-}
-
-.filtro-botao:hover {
-    background: #3cc771;
-    color: white;
-}
-
-.mensagem-sem-remedios {
-    text-align: center;
-    padding: 2rem;
-    color: #777;
-    background: #f9f9f9;
-    border-radius: 15px;
-    grid-column: 1 / -1;
-}
-
-.mensagem-sem-remedios i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: #ddd;
-}
-
-/* Estilos para mensagens flutuantes */
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-.mensagem-flutuante {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-    z-index: 1000;
-    animation: slideIn 0.3s ease-out;
-}
-
-.mensagem-sucesso {
-    background: #28a745;
-}
-
-.mensagem-erro {
-    background: #dc3545;
-}
-
-.mensagem-info {
-    background: #17a2b8;
-}
-
-/* Ocultar grupos de horário inicialmente */
-#grupoHorario2,
-#grupoHorario3,
-#grupoHorario4 {
-    display: none;
-}
 
 /* ============================= */
 /* 📌 RESPONSIVIDADES */
@@ -2334,7 +2126,7 @@ body.escuro .msg-sem-produto{
     
     @media (min-width: 769px) and (max-width: 1024px) {
         
-        .formulario-cadastro {
+        #formulario-cadastro {
             max-width: 85% !important;
             padding: 50px 40px;
         }
@@ -2359,7 +2151,7 @@ body.escuro .msg-sem-produto{
             font-size: 16px;
         }
         
-        .botao-cadastrar, .botao-login, .botao-recuperar {
+        #btn-cadastrar, .botao-login, .botao-recuperar {
             padding: 18px;
             font-size: 20px;
         }
@@ -2399,7 +2191,7 @@ body.escuro .msg-sem-produto{
             align-items: center;
         }
         
-        .formulario-cadastro::after {
+        #formulario-cadastro::after {
             content: "";
             display: block;
             height: 20px;
@@ -2413,7 +2205,7 @@ body.escuro .msg-sem-produto{
             padding: 20px;
         }
         
-        .formulario-cadastro, 
+        #formulario-cadastro, 
         .formulario-login, 
         .formulario-recuperacao {
             max-width: 90% !important;
@@ -2427,7 +2219,7 @@ body.escuro .msg-sem-produto{
     }
 
     @media (max-width: 768px) {
-        .formulario-cadastro, 
+        #formulario-cadastro, 
         .formulario-login, 
         .formulario-recuperacao {
             max-width: 95%;
@@ -2490,7 +2282,7 @@ body.escuro .msg-sem-produto{
         min-height: calc(100vh - 14vh - 150px);
     }
     
-    .formulario-cadastro {
+    #formulario-cadastro {
         padding: 30px 20px;
     }
     
@@ -2682,70 +2474,22 @@ body.escuro .msg-sem-produto{
     } 
 
     /*Responsividade da funcionalidade de consulta*/
-      
-    .funcionalidade-consulta ul{
+    .controles-slider{
         width: 100%;
     }
 
-    #formulario_agendarconsulta h1{
+    .container-slider .form-perguntas{
+        width: 100%;
+    
+    }
+
+    .slider-perguntas{
+        border: none;
+    }
+
+    .slider-perguntas .pergunta h2{
         font-size: 18px;
     }
-
-    #formulario_agendarconsulta label{
-        font-size: 14px;
-    }
-
-    #lista_consultas{
-        padding: 10px 5px;      
-    }
-    
-    .consulta_agendada{
-        padding: 30px;
-        width: 150px;
-        height: 200px;   
-    }
-
-    #lista_consultas li h1{
-        font-size: 15px; 
-    }
-    
-    #lista_consultas li h2{
-        font-size: 14px; 
-    }
-
-    
-    #lista_consultas li h3{
-        font-size: 13px; 
-    }
-
-    #lista_consultas h1{
-        font-size: 20px;
-    }
-    #lista_consultas h2{
-        font-size: 18px;
-        text-align: center;
-    }
-    #lista_consultas h3{
-        font-size: 16px;
-        text-align: center;
-    }
-    #lista_consultas button{
-        width: 80%;
-    }
-
-    .botoes_consulta{
-        gap: 10px;
-
-    } 
-    
-    #lista_consultas .botoes_consulta button{
-        gap: 10px;
-        font-size: 13px;
-        width: 44px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }  
 
     #botao-tema{
         bottom: 15px;
@@ -2762,6 +2506,8 @@ body.escuro .msg-sem-produto{
 
 /* RESPONSIVIDADE PARA CELULARES*/
 @media (max-width: 768px) {
+
+
     /*Responsividade do Monitoramento de Remedio*/
     .linha-formulario {
         flex-direction: column;
