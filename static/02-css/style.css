@@ -72,13 +72,6 @@ header {
 }
 
 
-.area-usuario-header {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-}
 .logo_paki {
     position: relative;
     left: 0;
@@ -113,7 +106,13 @@ header {
 /* ============================= */
 /* 📌 ÁREA USUÁRIO */
 /* ============================= */
+
 .area-usuario-header{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -125,7 +124,6 @@ header {
     font-weight: 600;
     transition: background 0.2s, color 0.2s;
     cursor: pointer;
-    position: absolute;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -1305,6 +1303,203 @@ blockquote cite {
     gap: 10PX;
     display: flex;
     flex-direction: column;
+}
+
+/* ============================= */
+/* 📌 PÁGINA DE GERENCIAR USUARIOS DO ADMIN*/
+/* ============================= */
+
+
+.container-gerenciar-usuarios {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cabecalho-gerenciamento {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.barra-pesquisa-usuarios {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    max-width: 400px;
+}
+
+.barra-pesquisa-usuarios input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.botao-pesquisa {
+    background: #3cc771;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.filtros-usuarios {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filtro-botao {
+    padding: 8px 16px;
+    border: 1px solid #3cc771;
+    background: white;
+    color: #3cc771;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filtro-botao.ativo {
+    background: #3cc771;
+    color: white;
+}
+
+.tabela-usuarios {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.tabela-usuarios table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabela-usuarios th {
+    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.tabela-usuarios td {
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tabela-usuarios tr:hover {
+    background: #f8f9fa;
+}
+
+.usuario-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.usuario-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.badge-tipo {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-medico {
+    background: #007bff;
+    color: white;
+}
+
+.badge-paciente {
+    background: #28a745;
+    color: white;
+}
+
+.badge-admin {
+    background: #dc3545;
+    color: white;
+}
+
+.status-ativo {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.status-inativo {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.acoes-usuario {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.botao-acao {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+}
+
+.botao-editar {
+    background: #ffc107;
+    color: #333;
+}
+
+.botao-excluir {
+    background: #dc3545;
+    color: white;
+}
+
+.botao-visualizar {
+    background: #17a2b8;
+    color: white;
+}
+
+.botao-acao:hover {
+    transform: translateY(-2px);
+}
+
+.modal-usuario {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-conteudo {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 /* ============================= */

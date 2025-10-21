@@ -158,6 +158,13 @@ def sobre():
     return render_template('sobre.html')
 
 
+@app.route("/sobremim")
+@login_required
+def sobremim():
+    return render_template('sobre-usuario.html')
+
+
+
 @app.route("/contato")
 @login_required
 def contato():
@@ -279,7 +286,7 @@ def gerenciarusuarios():
                 "nome": usuario.nome,
                 "sobrenome": usuario.sobrenome
             })
-        return jsonify(usuarios)
+        return render_template('func-gerenciar-usuarios.html')
     else:
         return redirect(url_for('index'))
 
