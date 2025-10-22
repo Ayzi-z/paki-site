@@ -19,29 +19,42 @@
     <!-- ================= CONTEÚDO PRINCIPAL ================= --> 
     <main class="pagina-cadastro">
         <div class="container-cadastro">
-            <div class="formulario-cadastro">
+            <div id="formulario-cadastro">
                 <div class="logo-cadastro">
                     <img src="{{url_for ('static', filename='/imagens/logos/logo_paki_aba.png')}}" alt="Logo P.A.K.I">
                     <h1>P.A.K.I</h1>
-                    <p>Crie sua conta e comece agora</p>
+                    <p>Crie sua conta e comece agora!</p>
                 </div>
                 
-                <form id="formCadastro" action="index.html" method="GET">
+                <form id="formCadastro" action="/cadastro" method="POST">
                     <div class="linha-formulario">
                         <div class="grupo-formulario">
                             <label for="nome">Nome</label>
-                            <input type="text" id="nome" name="nome" required placeholder="Seu nome completo">
+                            <input type="text" id="nome" name="nome" required placeholder="Seu primeiro nome">
+                        </div>
+
+                        <div class="grupo-formulario">
+                            <label for="sobrenome">Sobrenome</label>
+                            <input type="text" id="sobrenome" name="sobrenome" required placeholder="Seu sobrenome">
                         </div>
                         
-                        <div class="grupo-formulario">
-                            <label for="data_nascimento">Data de Nascimento</label>
-                            <input type="date" id="data_nascimento" name="data_nascimento" required>
-                        </div>
+                        
                     </div>
-                    
+                    <div class="grupo-formulario">
+                            <label for="data_nascimento">Data de Nascimento</label>
+                            <input type="date" id="data_nascimento" name="data_nascimento">
+                    </div>
                     <div class="grupo-formulario">
                         <label for="email">E-mail</label>
                         <input type="email" id="email" name="email" required placeholder="Seu melhor e-mail">
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="tipo-usuario">Tipo de usuario</label>
+                        <select id="tipo-usuario" name="tipo-usuario">
+                            <option value="paciente">Paciente</option>
+                            <option value="nutricionista">Nutricionista</option>
+                        </select>
                     </div>
                     
                     <div class="linha-formulario">
@@ -79,7 +92,7 @@
                         <label for="termos">Concordo com os <a href="#">Termos de Uso</a> e <a href="#">Política de Privacidade</a> do P.A.K.I</label>
                     </div>
                     
-                    <button type="submit" class="botao-cadastrar">Criar Conta</button>
+                    <button type="submit" id="btn-cadastrar">Criar Conta</button>
                     
                     <div class="login-link">
                         <p>Já tem uma conta? <a href="{{url_for ('login')}}">Faça login</a></p>
@@ -89,5 +102,6 @@
         </div>
     </main>
 
+    <script src="{{url_for ('static', filename='/03-js/script.js')}}"></script>
 </body>
 </html>

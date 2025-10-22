@@ -2,7 +2,8 @@
   
   {% extends 'base.html'%}
   {% block tituloPagina%}
-    <title>Home</title>
+    <title>Home
+    </title>
   {% endblock %}
   {% block conteudoPagina%}
     <main>
@@ -13,7 +14,7 @@
       <div class="hero-content">
         <h1>Cuidando da sua saúde de forma simples e digital</h1>
         <p>Agende consultas, acompanhe seu bem-estar e tenha tudo em um só lugar.</p>
-        <a href="{{url_for ('agendaconsulta')}}" class="botao-cta">Agende sua consulta</a>
+        <a href="{{url_for ('agendar_consulta')}}" class="botao-cta">Agende sua consulta</a>
       </div>
     </section>
 
