@@ -1466,6 +1466,11 @@ blockquote cite {
     color: white;
 }
 
+.botao-pdf {
+    background: rgba(0, 85, 42, 0.767);
+    color: white;
+}
+
 .botao-acao:hover {
     transform: translateY(-2px);
 }

@@ -124,11 +124,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ============================= */
-/* FUNCOES AGENDA CONSULTA LADO PACIENTE*/
+/* FUNÇÕES DE CONSULTA LADO NUTRICIONISTA*/
 /* ============================= */
-function agendarConsulta(){
-    window.location.href = "agendarConsulta";
+
+/*Funcao de adicionar pdf na consulta*/
+function selecionarPDF(id) {
+    const input = document.getElementById(`pdfInput-${id}`);
+    input.click();
+
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (file) {
+        alert(`PDF "${file.name}" adicionado para o usuário ID ${id}`);
+        }
+    });
 }
+
+
+
 
 /*Sistema do slider das perguntas de consulta paciente*/
 document.addEventListener('DOMContentLoaded', () => {
@@ -188,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 });
 
-/*Funcao para pegar datas e horarios disponiveis do nosso backend e listar no calendario*/
+/*Funcao para pegar datas e horarios disponiveis do nosso backend e listar no calendario e listar medico*/
 document.addEventListener('DOMContentLoaded', async () => {
     const perguntaData = document.querySelector('.slider-perguntas #pergunta-data')
     const diasCalendario = document.querySelectorAll('.dias-calendario .data');
@@ -202,7 +215,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (perguntaData){
         async function carregarHorarios() {
-            const resposta = await fetch('/verhorarios', { 
+            const resposta = await fetch('/api/verhorarios', { 
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -222,10 +235,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 mesAtual = hoje.getMonth() + 1;
                 anoAtual = hoje.getFullYear();
             }
-            configurarCalendario(dadosHorarios); 
+            console.log(dadosHorarios, mesAtual, anoAtual)
+            configurarCalendario(dadosHorarios)
         }
 
-        /* Definindo mês atual e marcando os dias disponíveis */
+        /* Definindo mês atual e marcando os dias disponíveis no calendario*/
         function configurarCalendario(dadosHorarios) {
             const nomeMeses = [
                 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -233,24 +247,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             ];
 
             if (dadosHorarios.length === 0) return;
-
-            const proximoMes = datas.some(d => {
-                const [a, m] = d.split('-').map(Number);
-                return a > anoAtual || (a === anoAtual && m > mesAtual);
-            });
-
-     
-            const mesAnterior = datas.some(d => {
-                const [a, m] = d.split('-').map(Number);
-                return a < anoAtual || (a === anoAtual && m < mesAtual);
-            });
-
-            btnProximoMes.disabled = !haProximoMes;
-            btnMesAnterior.disabled = !haMesAnterior;
-
             nomeMes.textContent = `${nomeMeses[mesAtual - 1]} ${anoAtual}`;
-
-          
+            
+            /*Aplicando funcoes e estilos nos dias do calendario que estao disponiveis*/
             diasCalendario.forEach(botao => {
                 const diaNum = Number(botao.textContent);
                 const dataFormatada = `${anoAtual}-${String(mesAtual).padStart(2, '0')}-${String(diaNum).padStart(2, '0')}`;
@@ -267,8 +266,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             });
         }
-
-
      
         function selecionarDia(botao, data) {
             diasCalendario.forEach(b => b.classList.remove('selecionado'));
@@ -276,9 +273,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             listarHorariosDisponiveis(data);
         }
 
-   
+        /*Funcao para ficar listando os horários disponiveis de acordo com o dia selecionado no front-end*/
         function listarHorariosDisponiveis(data) {
-            listaHorarios.innerHTML = ''; // limpa a lista
+            listaHorarios.innerHTML = '';
             const horarios = dadosHorarios[data] || [];
 
             if (horarios.length === 0) {
@@ -305,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         btnProximoMes.addEventListener('click', (event) => {
-            event.preventDefault(); // evita refresh
+            event.preventDefault(); 
             const datas = Object.keys(dadosHorarios);
             const proxData = datas.find(d => Number(d.split('-')[1]) !== mesAtual);
             if (proxData) {
@@ -330,6 +327,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         await carregarHorarios();
     } 
 });
+
+/*Funcao para agendar consulta em si e enviar para o backend*/
+async function agendarConsulta(dia, hora, id_medico, id_paciente, motivo){
+    window.location.href = "agendarConsulta";
+}
+
 
 
 /* ============================= */

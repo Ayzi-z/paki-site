@@ -58,7 +58,6 @@ class Usuario(UserMixin, banco.Model):
     codigo_ativacao = banco.Column(banco.String(10), nullable=True)
 
     
-
 class Consulta(banco.Model):
     __tablename__ = 'consultas'
     
@@ -282,28 +281,12 @@ def minhas_consultas():
 def agendar_consulta():
     return render_template('func-agendar-consulta.html')
 
-@app.route("/consulta/atender")
-def atenderConsulta():
-    return render_template('func-atender-consulta.html')
-
-
 @app.route("/gerenciarusuarios")
 @login_required
 def gerenciarusuarios():
-    if current_user.tipo == 'admin':
-        tabelaUsuarios = Usuario.query.all()
-        usuarios = []
-        for usuario in tabelaUsuarios:
-            usuarios.append({
-                "id": usuario.id,
-                "email": usuario.email,
-                "tipo": usuario.tipo,
-                "nome": usuario.nome,
-                "sobrenome": usuario.sobrenome
-            })
-        return render_template('func-gerenciar-usuarios.html')
-    else:
-        return redirect(url_for('index'))
+
+    return render_template('func-gerenciar-usuarios.html') 
+
 
 @app.route("/loja")
 def loja():
@@ -339,7 +322,7 @@ def validarcadastro():
         return jsonify({"email": False})
 
 # Mini api que a gente usa para retornar os dias e horarios disponiveis para consulta nos 14 dias, e os nutricionistas disponiveis para um dia e hora específico
-@app.route('/verhorarios', methods=['GET', 'POST'])
+@app.route('/api/verhorarios', methods=['GET', 'POST'])
 def verhorarios(qnt_dias = 14): 
     
     hoje = datetime.now().date()
@@ -376,7 +359,7 @@ def verhorarios(qnt_dias = 14):
     return jsonify(horarios_disponiveis)
 
 # Mini api que a gente usa para ver os dados do usuario que tá logado
-@app.route('/usuarioatual')
+@app.route('/api/usuarioatual')
 @login_required 
 def usuarioatual():
     return jsonify({
@@ -386,6 +369,25 @@ def usuarioatual():
         "sobrenome": current_user.sobrenome,
         "tipo": current_user.tipo
     })
+
+#Api para retornar todos os usuários que existem atualmente no sistema em json
+@app.route("/api/gerenciarusuarios")
+@login_required
+def gerenciarusuariosapi():
+    if current_user.tipo == 'admin':
+        tabelaUsuarios = Usuario.query.all()
+        usuarios = []
+        for usuario in tabelaUsuarios:
+            usuarios.append({
+                "id": usuario.id,
+                "email": usuario.email,
+                "tipo": usuario.tipo,
+                "nome": usuario.nome,
+                "sobrenome": usuario.sobrenome
+            })
+        return jsonify(usuarios)
+    else:
+        return redirect(url_for('index'))
 
 
 # CODIGOS PARA RODAR O SERVIDOR DO FLASK
