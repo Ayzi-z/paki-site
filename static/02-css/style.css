@@ -1067,9 +1067,13 @@ blockquote cite {
     transition: transform 1s ease-in-out;
 }
 .slider-perguntas .pergunta{
-    min-width: 100%;
-    max-width: 100%;
-    gap: 20px;
+    flex: 0 0 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 10px;
+    gap: 30px;
 }
 
 .slider-perguntas .pergunta h2{
@@ -1078,14 +1082,8 @@ blockquote cite {
     color: #3cc771;
     font-size: 25px; 
 }
-/*Pergunta do motivo da consulta*/
-.slider-perguntas #pergunta-motivo{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
 
+/*Pergunta do motivo da consulta*/
 .slider-perguntas #pergunta-motivo textarea{
     border: 1px solid rgba(47, 1, 1, 0.321);
     width: 80%;
@@ -1099,19 +1097,11 @@ blockquote cite {
 } 
 
 /*Pergunta de seleção da data*/
-
-.slider-perguntas #pergunta-data{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 .slider-perguntas #pergunta-data .conteudo-pergunta{
     display: flex;
     gap: 20px;            /* espaço entre calendário e lista de horários */
     align-items: flex-start; 
 }
-
 
 .calendario{
     width: 100%;
@@ -1150,42 +1140,43 @@ blockquote cite {
     cursor: pointer;
 }
 
+.menu-calendario .seta:hover {
+    background: linear-gradient(90deg,rgb(160, 240, 200) 0%,rgb(140, 230, 210) 25%,rgb(120, 220, 220) 50%,rgb(100, 210, 230) 75%, rgb(180, 245, 245) 100%);
+}
+
 .dias-calendario {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
 	grid-row-gap: 1rem;
 }
 
-
-.dia {
-	font-size: .875em;
-	font-weight: 500;
-	justify-self: center;
-}
-
 .data {
-	border: 0;
 	padding: 0;
 	width: 2.25rem;
 	height: 2.25rem;
 	display: flex;
+    color: #EAEBEC;
 	align-items: center;
 	justify-content: center;
 	border-radius: 6px;
 	font-weight: 600;
 	border: 2px solid transparent;
-	background-color: transparent;
-	cursor: pointer;	
+	background-color: transparent;	
 }
 
-.data:hover{
-    outline: 0;
-    color:  #066dc2;
-    border: 2px solid  #CBE8FF;	
+.data.disponivel{
+    color: black;
+    cursor: pointer;
+    border: none;
+
 }
 
-.data.ocupada{
-    color: #EAEBEC;
+.data.disponivel:hover{
+    background: linear-gradient(90deg,rgb(160, 240, 200) 0%,rgb(140, 230, 210) 25%,rgb(120, 220, 220) 50%,rgb(100, 210, 230) 75%, rgb(180, 245, 245) 100%);
+}
+
+.data.disponivel.selecionado{
+    background: linear-gradient(90deg,rgb(160, 240, 200) 0%,rgb(140, 230, 210) 25%,rgb(120, 220, 220) 50%,rgb(100, 210, 230) 75%, rgb(180, 245, 245) 100%);
 }
 
 .lista-horarios {
@@ -1218,7 +1209,7 @@ blockquote cite {
 }
 
 .horario-label:has(input[type="radio"]:checked) {
-    background: #07eeee;
+    background: linear-gradient(90deg,rgb(160, 240, 200) 0%,rgb(140, 230, 210) 25%,rgb(120, 220, 220) 50%,rgb(100, 210, 230) 75%, rgb(180, 245, 245) 100%);
     border-color: #05b5b5;
     color: #ffffff;
     font-weight: bold;
@@ -1472,6 +1463,11 @@ blockquote cite {
 
 .botao-visualizar {
     background: #17a2b8;
+    color: white;
+}
+
+.botao-pdf {
+    background: rgba(0, 85, 42, 0.767);
     color: white;
 }
 

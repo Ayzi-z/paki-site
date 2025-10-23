@@ -26,27 +26,12 @@
               <button id="botao-menu-mobile">☰</button>
               <img src="{{url_for ('static', filename='/imagens/logos/logo_paki.png')}}" alt="Logo da P.A.K.I" class="logo_paki" loading="lazy">
               
-              <div class="area-usuario-header">
-  <!-- Tudo isso leva para a página "sobreUsuario" -->
-  <a href="{{ url_for('sobreUsuario') }}" class="link-usuario">
-    <i class="fa fa-user icone-usuario"></i>
-    <div class="info-usuario">
-      {% if current_user.is_authenticated %}
-        <h1>{{ current_user.nome|title }}</h1>
-        <h2 class="tipo-usuario">{{ current_user.tipo|capitalize }}</h2>
-      {% else %}
-        <h1>Convidado</h1>
-        <h2 class="tipo-usuario">Visitante</h2>
-      {% endif %}
-    </div>
-  </a>
-
-  <!-- Botão de sair separado -->
-  {% if current_user.is_authenticated %}
-    <a href="{{ url_for('logout') }}" class="botao-sair">Sair</a>
-  {% endif %}
-</div>
-
+              <a href="{{url_for ('sobremim')}}" class="area-usuario-header">
+                <i class="fa fa-user"></i>
+                <h1>Ronaldo</h1>
+                <h2 class="tipo-usuario">Paciente</h2>
+                <a href="/logout">Sair</a>
+              </a>
             </div>
             
             <nav class="menu_nav">

@@ -58,7 +58,6 @@ class Usuario(UserMixin, banco.Model):
     codigo_ativacao = banco.Column(banco.String(10), nullable=True)
 
     
-
 class Consulta(banco.Model):
     __tablename__ = 'consultas'
     
@@ -81,41 +80,6 @@ class Escala(banco.Model):
 
     nutricionista_id = banco.Column(banco.Integer, banco.ForeignKey('usuarios.id'))
 
-# Funcao para gerar os horarios disponiveis da clinica para 14 dias
-def gerar_horarios(qnt_dias = 14): 
-    
-    hoje = datetime.now().date()
-    horarios_disponiveis = {}
-    print(f'Hoje é {hoje}')
-
-    nutricionistas = Usuario.query.filter_by(tipo='nutricionista').all()
-
-    for contador in range(qnt_dias):
-        dia = hoje + timedelta(days=contador)
-        nome_dia = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"][dia.weekday()]
-
-        if dia.weekday() < 5: # fazendo escala de segunda a sexta
-            dia_str = dia.strftime('%Y-%m-%d')
-
-            # Colocando a hora que a clinica abre e a hora que ela fecha no dia
-            abre = datetime.combine(dia, time(8, 0))
-            fecha = datetime.combine(dia, time(21, 0))
-
-            while abre + timedelta(hours=1) <= fecha:
-                if abre > datetime.now():
-                    for nutricionista in nutricionistas:
-                        escala_nutri = Escala.query.filter_by(nutricionista_id=nutricionista.id).first()
-                        if escala_nutri and nome_dia in escala_nutri.dias_trabalho:
-                            dia_ocupado = Consulta.query.filter_by(
-                                nutricionista_id = nutricionista.id,
-                                data_hora = abre
-                            ).first()
-                            if not dia_ocupado:
-
-                                horarios_disponiveis.setdefault(dia_str, []).append(abre.strftime("%H:%M"))
-                                break
-                abre += timedelta(hours = 1, minutes = 15)
-    return horarios_disponiveis
 
 # Funcao para criar um usuario admin padrao no site
 def criar_admin():
@@ -138,6 +102,44 @@ def criar_admin():
 
             print(f'Usuario admin criado com sucesso! \n Email: {usuario_admin.email} \n Senha: {usuario_admin.senha}')
 
+# Funcao para criar um usuario nutricionista padrao no site
+
+def criar_nutricionista():
+    with app.app_context():
+        if not Usuario.query.filter_by(email='nutricionista@gmail.com', tipo='nutricionista', senha='nutri123').first():
+            
+            usuario_nutricionista = Usuario(
+                email='nutricionista@gmail.com',
+                senha='nutri123',
+                nome='Nutricionista',
+                sobrenome='Geral',
+                tipo='nutricionista',
+                data_nascimento=date(1, 1, 1),
+                genero=None,
+                codigo_ativacao=None
+            )
+
+            banco.session.add(usuario_nutricionista)
+            banco.session.commit()
+
+  
+            dias_trabalho = ["segunda", "terca", "quarta", "quinta", "sexta"]
+
+            escala_padrao = Escala(
+                nutricionista_id=usuario_nutricionista.id,
+                dias_trabalho=dias_trabalho 
+            )
+
+            banco.session.add(escala_padrao)
+            banco.session.commit()
+
+            print(f'''
+                Usuário nutricionista criado com sucesso!
+                Email: {usuario_nutricionista.email}
+                Senha: {usuario_nutricionista.senha}
+                Escala criada: {dias_trabalho}
+            ''')
+
 # Adicionando uma funcao global para dizer qual o tipo de site que tá sendo carregado lá pro Jinja 
 @app.context_processor
 def tipo_site():
@@ -158,11 +160,10 @@ def sobre():
     return render_template('sobre.html')
 
 
-@app.route("/sobreUsuario")
+@app.route("/sobremim")
 @login_required
-def sobreUsuario():
-    return render_template('sobre-usuario.html', usuario=current_user)
-
+def sobremim():
+    return render_template('sobre-usuario.html')
 
 
 
@@ -195,28 +196,40 @@ def cadastro():
         
         genero = request.form['genero'].lower().strip()
        
-
         # Verificando se o usuário já existe
         if Usuario.query.filter_by(email=email).first():
             return redirect(url_for('cadastro'))
-        else:
-            if tipo == 'nutricionista':
-                dias_trabalho = request.form.getlist('dias_trabalho')
-                codigo_ativacao = request.form['codigo_ativacao'].strip()
+        
+        novo_usuario = Usuario(
+            email=email,
+            senha=senha,
+            nome=nome,
+            sobrenome=sobrenome,
+            tipo=tipo,
+            data_nascimento=data_nascimento,
+            telefone=telefone,
+            genero=genero
+        )
 
-                print (f'O médico ${email} trabalha na {dias_trabalho}')
-                
-                novo_usuario = Usuario(email=email, senha=senha, nome=nome, sobrenome=sobrenome, tipo=tipo,data_nascimento=data_nascimento, telefone=telefone, genero=genero, codigo_ativacao=codigo_ativacao)
+        banco.session.add(novo_usuario)
+        banco.session.commit()
+               
+        if tipo == 'nutricionista': # Se a conta for do tipo nutricionista adiciona o codigo e escala
             
-            elif tipo == 'paciente':
-                novo_usuario = Usuario(email=email, senha=senha, nome=nome, sobrenome=sobrenome, tipo=tipo,data_nascimento=data_nascimento, telefone=telefone, genero=genero)
-            
-            banco.session.add(novo_usuario)
-            banco.session.commit()
-            
-            login_user(novo_usuario)
-            
-            return redirect(url_for('index'))
+            codigo_ativacao = request.form['codigo_ativacao'].strip()
+            novo_usuario.codigo_ativacao = codigo_ativacao
+
+            dias_trabalho = request.form.getlist('dias_trabalho')
+            nova_escala = Escala(
+                nutricionista_id=novo_usuario.id,
+                dias_trabalho=dias_trabalho
+            )
+            banco.session.add(nova_escala)
+            banco.session.commit() 
+
+        login_user(novo_usuario)
+        
+        return redirect(url_for('index'))
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -268,61 +281,11 @@ def minhas_consultas():
 def agendar_consulta():
     return render_template('func-agendar-consulta.html')
 
-@app.route("/consulta/atender")
-def atenderConsulta():
-    return render_template('func-atender-consulta.html')
-
-
 @app.route("/gerenciarusuarios")
 @login_required
 def gerenciarusuarios():
-    if current_user.tipo == 'admin':
-        usuarios = Usuario.query.all()
-        return render_template('func-gerenciar-usuarios.html', usuarios=usuarios)
-    else:
-        return redirect(url_for('index'))
 
-# Adicione estas rotas para as ações
-@app.route("/api/usuarios/<int:usuario_id>", methods=['DELETE'])
-@login_required
-def excluir_usuario(usuario_id):
-    if current_user.tipo != 'admin':
-        return jsonify({"erro": "Acesso negado"}), 403
-    
-    usuario = Usuario.query.get(usuario_id)
-    if not usuario:
-        return jsonify({"erro": "Usuário não encontrado"}), 404
-    
-    # Impedir que o admin exclua a si mesmo
-    if usuario.id == current_user.id:
-        return jsonify({"erro": "Não é possível excluir seu próprio usuário"}), 400
-    
-    banco.session.delete(usuario)
-    banco.session.commit()
-    
-    return jsonify({"sucesso": True, "mensagem": "Usuário excluído com sucesso"})
-
-@app.route("/api/usuarios", methods=['GET'])
-@login_required
-def listar_usuarios():
-    if current_user.tipo != 'admin':
-        return jsonify({"erro": "Acesso negado"}), 403
-    
-    usuarios = Usuario.query.all()
-    usuarios_json = []
-    
-    for usuario in usuarios:
-        usuarios_json.append({
-            "id": usuario.id,
-            "nome": usuario.nome,
-            "sobrenome": usuario.sobrenome,
-            "email": usuario.email,
-            "tipo": usuario.tipo,
-            "data_cadastro": usuario.data_nascimento.strftime('%d/%m/%Y') if usuario.data_nascimento else 'N/A',
-            "telefone": usuario.telefone or 'N/A'
-        })
-    
-    return jsonify(usuarios_json)
+    return render_template('func-gerenciar-usuarios.html') 
 
 
 @app.route("/loja")
@@ -358,8 +321,45 @@ def validarcadastro():
     else:
         return jsonify({"email": False})
 
+# Mini api que a gente usa para retornar os dias e horarios disponiveis para consulta nos 14 dias, e os nutricionistas disponiveis para um dia e hora específico
+@app.route('/api/verhorarios', methods=['GET', 'POST'])
+def verhorarios(qnt_dias = 14): 
+    
+    hoje = datetime.now().date()
+    horarios_disponiveis = {}
+    print(f'Hoje é {hoje}')
+
+    nutricionistas = Usuario.query.filter_by(tipo='nutricionista').all()
+
+    for contador in range(qnt_dias):
+        dia = hoje + timedelta(days=contador)
+        nome_dia = ["segunda", "terca", "quarta", "quinta", "sexta", "sábado", "domingo"][dia.weekday()]
+
+        if dia.weekday() < 5: # fazendo escala de segunda a sexta
+            dia_str = dia.strftime('%Y-%m-%d')
+
+            # Colocando a hora que a clinica abre e a hora que ela fecha no dia
+            abre = datetime.combine(dia, time(7, 0))
+            fecha = datetime.combine(dia, time(21, 0))
+
+            while abre <= fecha - timedelta(hours=1, minutes=15):
+                if abre > datetime.now():
+                    for nutricionista in nutricionistas:
+                        escala_nutri = Escala.query.filter_by(nutricionista_id=nutricionista.id).first()
+                        if escala_nutri and nome_dia in escala_nutri.dias_trabalho:
+                            dia_ocupado = Consulta.query.filter_by(
+                                nutricionista_id = nutricionista.id,
+                                data_hora = abre
+                            ).first()
+                            if not dia_ocupado:
+
+                                horarios_disponiveis.setdefault(dia_str, []).append(abre.strftime("%H:%M"))
+                                break
+                abre += timedelta(hours = 1, minutes = 15)
+    return jsonify(horarios_disponiveis)
+
 # Mini api que a gente usa para ver os dados do usuario que tá logado
-@app.route('/usuarioatual')
+@app.route('/api/usuarioatual')
 @login_required 
 def usuarioatual():
     return jsonify({
@@ -370,14 +370,35 @@ def usuarioatual():
         "tipo": current_user.tipo
     })
 
+#Api para retornar todos os usuários que existem atualmente no sistema em json
+@app.route("/api/gerenciarusuarios")
+@login_required
+def gerenciarusuariosapi():
+    if current_user.tipo == 'admin':
+        tabelaUsuarios = Usuario.query.all()
+        usuarios = []
+        for usuario in tabelaUsuarios:
+            usuarios.append({
+                "id": usuario.id,
+                "email": usuario.email,
+                "tipo": usuario.tipo,
+                "nome": usuario.nome,
+                "sobrenome": usuario.sobrenome
+            })
+        return jsonify(usuarios)
+    else:
+        return redirect(url_for('index'))
+
 
 # CODIGOS PARA RODAR O SERVIDOR DO FLASK
 
 if __name__ == '__main__':
     with app.app_context(): # isso aqui cria o banco de dados
         banco.create_all()
-        gerar_horarios()
+        verhorarios()
         criar_admin() # isso aqui cria o usuario admin sempre que o servidor for iniciado caso ele nao exista
+        criar_nutricionista()
+
         app.debug = True # isso aqui ativa o modo debug do flask
 
     server = Server(app.wsgi_app) # isso aqui atualiza automaticamente o servidor quandoa gente altera algo nele
