@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 label.textContent = "Selecione os dias que você trabalha na clinica:";
                 grupo_formulario.appendChild(label);
 
-                const diasSemana = ["segunda","terça","quarta","quinta","sexta"];
+                const diasSemana = ["segunda","terca","quarta","quinta","sexta"];
                 const container_opcoes = document.createElement("div");
                 diasSemana.forEach(dia => {
                       const label_dia = document.createElement("label");
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         inputEmail.addEventListener("blur", () => { /*Verificando se o e-mail já existe sempre que sai do campo*/
             let email = inputEmail.value.trim();
-            console.log("Saiu do campo de email. Valor atual:", email);
+
             fetch('/validarcadastro', { /*Vendo se o email existe naquela api do banco de dados*/
                 method: 'POST',
                 headers: {
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ============================= */
-/* FUNÇÕES DA FUNCIONALIDADE AGENDA DE CONSULTAS*/
+/* FUNCOES AGENDA CONSULTA LADO PACIENTE*/
 /* ============================= */
 function agendarConsulta(){
     window.location.href = "agendarConsulta";
@@ -148,10 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
             controles_slider.style.justifyContent = "flex-end"
         }
         
-        function transicaoPergunta(){
-                let movimento = perguntaAtual * -100;
-                sliderPerguntas.style.transform = `translateX(${movimento}%)`;  
-            }
+        function transicaoPergunta() {
+
+            let movimento = perguntaAtual * -100;
+            sliderPerguntas.style.transform = `translateX(${movimento}%)`;  
+        }
 
         btnAvancar.addEventListener("click", () =>{ 
                 if ((perguntaAtual + 1) < qntPerguntas){
@@ -187,111 +188,149 @@ document.addEventListener('DOMContentLoaded', () => {
     
 });
 
+/*Funcao para pegar datas e horarios disponiveis do nosso backend e listar no calendario*/
+document.addEventListener('DOMContentLoaded', async () => {
+    const perguntaData = document.querySelector('.slider-perguntas #pergunta-data')
+    const diasCalendario = document.querySelectorAll('.dias-calendario .data');
+    const nomeMes = document.querySelector('.nome-mes');
+    const btnProximoMes = document.querySelectorAll('.mes .seta')[1];
+    const btnMesAnterior = document.querySelectorAll('.mes .seta')[0];
+    const listaHorarios = document.querySelector('.lista-horarios');
+    let dadosHorarios = {};
+    let mesAtual;
+    let anoAtual;
+
+    if (perguntaData){
+        async function carregarHorarios() {
+            const resposta = await fetch('/verhorarios', { 
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const dados = await resposta.json(); 
+            dadosHorarios = dados; 
+
+            const datas = Object.keys(dadosHorarios); 
+            if (datas.length > 0) {
+                const [ano, mes] = datas[0].split('-').map(Number);
+                mesAtual = mes;
+                anoAtual = ano;
+            } else {
+                const hoje = new Date();
+                mesAtual = hoje.getMonth() + 1;
+                anoAtual = hoje.getFullYear();
+            }
+            configurarCalendario(dadosHorarios); 
+        }
+
+        /* Definindo mês atual e marcando os dias disponíveis */
+        function configurarCalendario(dadosHorarios) {
+            const nomeMeses = [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+
+            if (dadosHorarios.length === 0) return;
+
+            const proximoMes = datas.some(d => {
+                const [a, m] = d.split('-').map(Number);
+                return a > anoAtual || (a === anoAtual && m > mesAtual);
+            });
+
+     
+            const mesAnterior = datas.some(d => {
+                const [a, m] = d.split('-').map(Number);
+                return a < anoAtual || (a === anoAtual && m < mesAtual);
+            });
+
+            btnProximoMes.disabled = !haProximoMes;
+            btnMesAnterior.disabled = !haMesAnterior;
+
+            nomeMes.textContent = `${nomeMeses[mesAtual - 1]} ${anoAtual}`;
+
+          
+            diasCalendario.forEach(botao => {
+                const diaNum = Number(botao.textContent);
+                const dataFormatada = `${anoAtual}-${String(mesAtual).padStart(2, '0')}-${String(diaNum).padStart(2, '0')}`;
+
+                if (dados[dataFormatada]) {
+                    botao.classList.add('disponivel');
+                    botao.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        selecionarDia(botao, dataFormatada);
+                    });
+                } else {
+                    botao.classList.remove('disponivel');
+                    botao.removeEventListener('click', () => selecionarDia(botao, dataFormatada));
+                }
+            });
+        }
 
 
+     
+        function selecionarDia(botao, data) {
+            diasCalendario.forEach(b => b.classList.remove('selecionado'));
+            botao.classList.add('selecionado');
+            listarHorariosDisponiveis(data);
+        }
 
-function adicionarItem(event) {
-    event.preventDefault();
-    let descricao = document.getElementById('descricao_consulta').value;
-    let tipoSelecionado = document.querySelector('input[name="tipo_consulta"]:checked');
-    let urgenciaSelecionada = document.querySelector('input[name="urgencia"]:checked');
+   
+        function listarHorariosDisponiveis(data) {
+            listaHorarios.innerHTML = ''; // limpa a lista
+            const horarios = dadosHorarios[data] || [];
 
-    if (!descricao || !tipoSelecionado || !urgenciaSelecionada) {
-        mensagem_popup("Preencha todos os campos antes de adicionar a consulta!", "alerta");
-    } else {
-        let tipo = tipoSelecionado.value;
-        let urgencia = urgenciaSelecionada.value;
+            if (horarios.length === 0) {
+                listaHorarios.textContent = 'Nenhum horário disponível neste dia.';
+                return;
+            }
 
-        let item = {
-            descricao: descricao,
-            tipo: tipo,
-            urgencia: urgencia
-        };
+            horarios.forEach(hora => {
+                const label = document.createElement('label');
+                label.classList.add('horario-label');
 
-        let itens = carregarLocalStorage();
-        itens.push(item);
-        salvarLocalStorage(itens);
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'horario';
+                input.value = hora;
 
-        document.getElementById('descricao_consulta').value = "";
-        listarItens();
-    }
-}
-function listarItens() {
-    let lista = document.getElementById("lista_consultas");
-    lista.innerHTML = "";
-    let itens = carregarLocalStorage();
+                const span = document.createElement('span');
+                span.textContent = hora;
 
-    for (let i = 0; i < itens.length; i++) {
-        let item = itens[i];
+                label.appendChild(input);
+                label.appendChild(span);
+                listaHorarios.appendChild(label);
+            });
+        }
 
-        let li = document.createElement("li");
-        li.className = "consulta_agendada";
+        btnProximoMes.addEventListener('click', (event) => {
+            event.preventDefault(); // evita refresh
+            const datas = Object.keys(dadosHorarios);
+            const proxData = datas.find(d => Number(d.split('-')[1]) !== mesAtual);
+            if (proxData) {
+                const [ano, mes] = proxData.split('-').map(Number);
+                mesAtual = mes;
+                anoAtual = ano;
+                configurarCalendario(dadosHorarios);
+            }
+        });
 
-        let h1 = document.createElement("h1");
-        h1.textContent = "Tipo: " + item.tipo;
+        btnMesAnterior.addEventListener('click', (event) => {
+            event.preventDefault(); // evita refresh
+            const datas = Object.keys(dadosHorarios);
+            const prevData = datas.reverse().find(d => Number(d.split('-')[1]) < mesAtual);
+            if (prevData) {
+                const [ano, mes] = prevData.split('-').map(Number);
+                mesAtual = mes;
+                anoAtual = ano;
+                configurarCalendario(dadosHorarios);
+            }
+        });
+        await carregarHorarios();
+    } 
+});
 
-        let h2 = document.createElement("h2");
-        h2.textContent = "Motivo: " + item.descricao;
-
-        let h3 = document.createElement("h3");
-        h3.textContent = "Urgência: " + item.urgencia;
-
-        let divBotoes = document.createElement("div");
-        divBotoes.className = "botoes_consulta";
-
-        let btnEditar = document.createElement("button");
-        btnEditar.textContent = "Editar";
-        btnEditar.onclick = function() {
-            editarItem(i);
-        };
-
-        let btnExcluir = document.createElement("button");
-        btnExcluir.textContent = "Excluir";
-        btnExcluir.onclick = function() {
-            removerItem(i);
-        };
-
-        divBotoes.appendChild(btnEditar);
-        divBotoes.appendChild(btnExcluir);
-
-        li.appendChild(h1);
-        li.appendChild(h2);
-        li.appendChild(h3);
-        li.appendChild(divBotoes);
-
-        lista.appendChild(li);
-    }
-}
-
-function removerItem(index) {
-    let itens = carregarLocalStorage();
-    itens.splice(index, 1);
-    salvarLocalStorage(itens);
-    listarItens();
-}
-
-function editarItem(index) {
-    let itens = carregarLocalStorage();
-    let novaDescricao = prompt("Edite o motivo da consulta:", itens[index].descricao);
-    if (novaDescricao && novaDescricao.trim() !== "") {
-        itens[index].descricao = novaDescricao.trim();
-        salvarLocalStorage(itens);
-        listarItens();
-    }
-}
-
-function salvarLocalStorage(itens) {
-    localStorage.setItem("consultas", JSON.stringify(itens));
-}
-
-function carregarLocalStorage() {
-    let itens = localStorage.getItem("consultas");
-    if (itens) {
-        return JSON.parse(itens);
-    } else {
-        return [];
-    }
-}
 
 /* ============================= */
 /* FUNCÕES DO SITE EM GERAL*/
