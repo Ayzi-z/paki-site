@@ -524,3 +524,430 @@ function trocar_imagem() {
         img.src = "/static/imagens/med1.png";
     }
 }
+
+/* Função pra pagina sobre-usuario */
+
+document.addEventListener('DOMContentLoaded', function () {
+    
+    if (document.title.includes("Sobre o Usuário")) {
+
+    
+        fetch('/api/usuarioatual')
+            .then(response => response.json())
+            .then(usuario => {
+                const nomeCompleto = `${usuario.nome} ${usuario.sobrenome}`;
+
+                
+                const nomeUsuarioElem = document.getElementById('nome-usuario');
+                const emailUsuarioElem = document.getElementById('email-usuario');
+                const tipoUsuarioElem = document.getElementById('tipo-usuario');
+
+                if (nomeUsuarioElem) nomeUsuarioElem.innerText = nomeCompleto;
+                if (emailUsuarioElem) emailUsuarioElem.innerText = usuario.email;
+                if (tipoUsuarioElem) tipoUsuarioElem.innerText =
+                    usuario.tipo.charAt(0).toUpperCase() + usuario.tipo.slice(1);
+
+                
+                const inputNome = document.getElementById('input-nome');
+                if (inputNome) inputNome.value = nomeCompleto;
+
+                
+                const inputEmail = document.getElementById('input-email');
+                if (inputEmail) {
+                    inputEmail.value = usuario.email;
+                }
+
+                
+                const inputTelefone = document.getElementById('input-telefone');
+                if (inputTelefone) {
+                    inputTelefone.value = usuario.telefone || '';
+                }
+            })
+            .catch(erro => console.error('Erro ao buscar usuário atual:', erro));
+
+        
+        const formDadosPessoais = document.querySelector('#aba-dados form');
+        if (formDadosPessoais) {
+            formDadosPessoais.addEventListener('submit', function (event) {
+                event.preventDefault(); 
+
+                const nomeCompleto = document.getElementById('input-nome').value;
+                const telefone = document.getElementById('input-telefone') ? document.getElementById('input-telefone').value : '';
+
+                fetch('/atualizarusuario', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nome_completo: nomeCompleto,
+                        telefone: telefone
+                    })
+                })
+                .then(response => response.json())
+                .then(resultado => {
+                    alert(resultado.mensagem || resultado.erro);
+                })
+                .catch(erro => {
+                    console.error('Erro ao atualizar:', erro);
+                    alert('Erro ao atualizar os dados!');
+                });
+            });
+        }
+
+    }
+});
+
+
+
+/* FUNÇÃO PARA MUDAR ABA NO PERFIL DO USUÁRIO */
+
+
+function mudarAba(abaId) {
+    const tipoUsuario = obterTipoUsuario(); 
+    
+    
+    const permissoes = {
+        'paciente': ['dados', 'seguranca'],
+        'nutricionista': ['dados', 'profissional', 'seguranca'],
+        'admin': ['dados', 'profissional', 'seguranca', 'admin']
+    };
+
+    if (!permissoes[tipoUsuario] || !permissoes[tipoUsuario].includes(abaId)) {
+        mensagem_popup('Você não tem permissão para acessar esta aba!', 'alerta');
+        return;
+    }
+
+    const todasAbas = document.querySelectorAll('.aba');
+    todasAbas.forEach(aba => {
+        aba.classList.remove('ativa');
+    });
+
+    const todosConteudos = document.querySelectorAll('.aba-conteudo');
+    todosConteudos.forEach(conteudo => {
+        conteudo.classList.remove('ativa');
+    });
+
+    const abaClicada = document.querySelector(`.aba[onclick="mudarAba('${abaId}')"]`);
+    if (abaClicada) {
+        abaClicada.classList.add('ativa');
+    }
+
+    const conteudoAba = document.getElementById(`aba-${abaId}`);
+    if (conteudoAba) {
+        conteudoAba.classList.add('ativa');
+    }
+}
+
+
+/* FUNÇÃO PARA OBTER O TIPO DE USUÁRIO */
+
+function obterTipoUsuario() {
+    if (typeof usuarioTipo !== 'undefined') {
+        return usuarioTipo;
+    }
+    
+    const tipoElement = document.getElementById('tipo-usuario-atual');
+    if (tipoElement) {
+        return tipoElement.value;
+    }
+    
+    const tipoTexto = document.querySelector('.tipo-usuario');
+    if (tipoTexto) {
+        const texto = tipoTexto.textContent.toLowerCase();
+        if (texto.includes('paciente')) return 'paciente';
+        if (texto.includes('nutricionista')) return 'nutricionista';
+        if (texto.includes('admin')) return 'admin';
+    }
+    
+    return 'paciente'; 
+}
+
+
+/* FUNÇÃO PARA CONFIGURAR ABAS DINAMICAMENTE */
+
+function configurarAbasPerfil() {
+    const tipoUsuario = obterTipoUsuario();
+    const abasContainer = document.querySelector('.abas-perfil');
+    
+    if (!abasContainer) return;
+    
+    const abasPermitidas = {
+        'paciente': [
+            { id: 'dados', texto: 'Dados Pessoais' },
+            { id: 'seguranca', texto: 'Segurança' }
+        ],
+        'nutricionista': [
+            { id: 'dados', texto: 'Dados Pessoais' },
+            { id: 'profissional', texto: 'Informações Profissionais' },
+            { id: 'seguranca', texto: 'Segurança' }
+        ],
+        'admin': [
+            { id: 'dados', texto: 'Dados Pessoais' },
+            { id: 'profissional', texto: 'Informações Profissionais' },
+            { id: 'seguranca', texto: 'Segurança' },
+            { id: 'admin', texto: 'Administração' }
+        ]
+    };
+    
+    abasContainer.innerHTML = '';
+    
+    const abasDoUsuario = abasPermitidas[tipoUsuario] || abasPermitidas['paciente'];
+    
+    abasDoUsuario.forEach((aba, index) => {
+        const botaoAba = document.createElement('button');
+        botaoAba.className = `aba ${index === 0 ? 'ativa' : ''}`;
+        botaoAba.setAttribute('onclick', `mudarAba('${aba.id}')`);
+        botaoAba.textContent = aba.texto;
+        abasContainer.appendChild(botaoAba);
+    });
+    
+    const todosConteudos = document.querySelectorAll('.aba-conteudo');
+    todosConteudos.forEach(conteudo => {
+        conteudo.classList.remove('ativa');
+    });
+    
+    const primeiroConteudo = document.getElementById(`aba-${abasDoUsuario[0].id}`);
+    if (primeiroConteudo) {
+        primeiroConteudo.classList.add('ativa');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.querySelector('.container-perfil-usuario')) {
+        configurarAbasPerfil();
+    }
+});
+
+
+/* FUNÇÕES DO GERENCIAR USUÁRIOS */
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.querySelector('.container-gerenciar-usuarios')) {
+        carregarUsuarios();
+        configurarFiltros();
+        configurarPesquisa();
+    }
+});
+
+async function carregarUsuarios() {
+    try {
+        const resposta = await fetch('/api/gerenciarusuarios');
+        const usuarios = await resposta.json();
+        
+        preencherTabela(usuarios);
+    } catch (erro) {
+        console.error('Erro ao carregar usuários:', erro);
+        mensagem_popup('Erro ao carregar lista de usuários!', 'erro');
+    }
+}
+
+/* Função para preencher a tabela e os cards com dados da API */
+function preencherTabela(usuarios) {
+    const tbody = document.querySelector('#corpo-tabela-usuarios');
+    const cardsContainer = document.querySelector('#lista-usuarios-cards');
+    
+    if (usuarios.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 20px;">
+                    Nenhum usuário encontrado.
+                </td>
+            </tr>
+        `;
+        
+        if (cardsContainer) {
+            cardsContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    Nenhum usuário encontrado.
+                </div>
+            `;
+        }
+        return;
+    }
+
+    tbody.innerHTML = '';
+    usuarios.forEach(usuario => {
+        const linha = document.createElement('tr');
+        
+        let badgeClasse = '';
+        let badgeTexto = '';
+        switch(usuario.tipo) {
+            case 'nutricionista':
+                badgeClasse = 'badge-medico';
+                badgeTexto = 'Nutricionista';
+                break;
+            case 'admin':
+                badgeClasse = 'badge-admin';
+                badgeTexto = 'Admin';
+                break;
+            default:
+                badgeClasse = 'badge-paciente';
+                badgeTexto = 'Paciente';
+        }
+
+        const nomeCompleto = `${usuario.nome} ${usuario.sobrenome}`.trim();
+        
+       linha.innerHTML = `
+    <td>
+        <div class="usuario-info">
+            <div>
+                <strong>${nomeCompleto || 'Nome não informado'}</strong>
+                <div>${usuario.tipo === 'nutricionista' ? 'CRN: --' : usuario.tipo.charAt(0).toUpperCase() + usuario.tipo.slice(1)}</div>
+            </div>
+        </div>
+    </td>
+            <td>${usuario.email}</td>
+            <td><span class="badge-tipo ${badgeClasse}">${badgeTexto}</span></td>
+            <td><span class="status-ativo">Ativo</span></td>
+            <td>--/--/----</td>
+            <td>
+                <div class="acoes-usuario">
+                    <a href="/sobremim?id=${usuario.id}" class="botao-acao botao-visualizar">👁️</a>
+                    <button class="botao-acao botao-excluir" onclick="excluirUsuario(${usuario.id}, '${nomeCompleto || 'Usuário'}')">🗑️</button>
+                </div>
+            </td>
+        `;
+        
+        tbody.appendChild(linha);
+    });
+
+    if (cardsContainer) {
+        cardsContainer.innerHTML = '';
+        usuarios.forEach(usuario => {
+            const card = document.createElement('div');
+            card.className = 'card-usuario';
+            
+            let badgeClasse = '';
+            let badgeTexto = '';
+            switch(usuario.tipo) {
+                case 'nutricionista':
+                    badgeClasse = 'badge-medico';
+                    badgeTexto = 'Nutricionista';
+                    break;
+                case 'admin':
+                    badgeClasse = 'badge-admin';
+                    badgeTexto = 'Admin';
+                    break;
+                default:
+                    badgeClasse = 'badge-paciente';
+                    badgeTexto = 'Paciente';
+            }
+
+            const nomeCompleto = `${usuario.nome} ${usuario.sobrenome}`.trim();
+            
+            card.innerHTML = `
+    <div class="card-header">
+        <div class="card-info">
+            <h3>${nomeCompleto || 'Nome não informado'}</h3>
+            <div class="card-tipo">${usuario.tipo === 'nutricionista' ? 'CRN: --' : usuario.tipo.charAt(0).toUpperCase() + usuario.tipo.slice(1)}</div>
+        </div>
+    </div>
+                
+                <div class="card-detalhes">
+                    <div class="card-detalhe">
+                        <span class="card-label">Email</span>
+                        <span class="card-valor">${usuario.email}</span>
+                    </div>
+                    <div class="card-detalhe">
+                        <span class="card-label">Tipo</span>
+                        <span class="card-badge ${badgeClasse}">${badgeTexto}</span>
+                    </div>
+                    <div class="card-detalhe">
+                        <span class="card-label">Status</span>
+                        <span class="card-valor status-ativo">Ativo</span>
+                    </div>
+                    <div class="card-detalhe">
+                        <span class="card-label">Cadastro</span>
+                        <span class="card-valor">--/--/----</span>
+                    </div>
+                </div>
+                
+                <div class="card-acoes">
+                    <a href="/sobremim?id=${usuario.id}" class="card-botao visualizar">👁️ Visualizar</a>
+                    <button class="card-botao excluir" onclick="excluirUsuario(${usuario.id}, '${nomeCompleto || 'Usuário'}')">🗑️ Excluir</button>
+                </div>
+            `;
+            
+            cardsContainer.appendChild(card);
+        });
+    }
+}
+
+function configurarFiltros() {
+    const botoesFiltro = document.querySelectorAll('.filtro-botao');
+    
+    botoesFiltro.forEach(botao => {
+        botao.addEventListener('click', function() {
+            botoesFiltro.forEach(b => b.classList.remove('ativo'));
+            this.classList.add('ativo');
+            
+            const filtro = this.getAttribute('data-filtro');
+            filtrarUsuarios(filtro);
+        });
+    });
+}
+
+function filtrarUsuarios(filtro) {
+    const linhas = document.querySelectorAll('#tabela-usuarios tbody tr');
+    
+    linhas.forEach(linha => {
+        const tipo = linha.querySelector('.badge-tipo').textContent.toLowerCase();
+        
+        if (filtro === 'todos') {
+            linha.style.display = '';
+        } else if (filtro === 'medico' && tipo === 'nutricionista') {
+            linha.style.display = '';
+        } else if (filtro === 'paciente' && tipo === 'paciente') {
+            linha.style.display = '';
+        } else if (filtro === 'admin' && tipo === 'admin') {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+}
+
+function configurarPesquisa() {
+    const inputPesquisa = document.querySelector('.barra-pesquisa-usuarios input');
+    const botaoPesquisa = document.querySelector('.botao-pesquisa');
+    
+    function pesquisar() {
+        const termo = inputPesquisa.value.toLowerCase();
+        const linhas = document.querySelectorAll('#tabela-usuarios tbody tr');
+        
+        linhas.forEach(linha => {
+            const textoLinha = linha.textContent.toLowerCase();
+            linha.style.display = textoLinha.includes(termo) ? '' : 'none';
+        });
+    }
+    
+    inputPesquisa.addEventListener('input', pesquisar);
+    botaoPesquisa.addEventListener('click', pesquisar);
+}
+
+async function excluirUsuario(id, nome) {
+    if (confirm(`Tem certeza que deseja excluir o usuário "${nome}"? Esta ação não pode ser desfeita.`)) {
+        try {
+            const resposta = await fetch(`/api/excluirusuario/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const resultado = await resposta.json();
+            
+            if (resposta.ok) {
+                mensagem_popup(resultado.mensagem, 'confirmacao');
+                carregarUsuarios();
+            } else {
+                mensagem_popup(resultado.erro, 'erro');
+            }
+        } catch (erro) {
+            console.error('Erro ao excluir usuário:', erro);
+            mensagem_popup('Erro ao excluir usuário!', 'erro');
+        }
+    }
+}
+

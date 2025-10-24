@@ -369,6 +369,62 @@ def usuarioatual():
         "sobrenome": current_user.sobrenome,
         "tipo": current_user.tipo
     })
+# Mini api para salvar as alterações do perfil
+@app.route('/atualizarusuario', methods=['POST'])
+@login_required
+def atualizarusuario():
+    dados = request.get_json()
+
+    try:
+        nome_completo = dados.get('nome_completo', '').strip()
+        partes_nome = nome_completo.split(' ', 1)
+        current_user.nome = partes_nome[0]
+        current_user.sobrenome = partes_nome[1] if len(partes_nome) > 1 else ""
+
+        current_user.email = dados.get('email', current_user.email)
+        current_user.telefone = dados.get('telefone', current_user.telefone)
+
+        banco.session.commit()
+
+        return jsonify({"mensagem": "Dados atualizados com sucesso!"})
+    except Exception as e:
+        return jsonify({"erro": f"Ocorreu um erro: {str(e)}"}), 400
+
+# Mini api para excluir usuário
+@app.route('/api/excluirusuario/<int:usuario_id>', methods=['DELETE'])
+@login_required
+def excluirusuario(usuario_id):
+    if current_user.tipo != 'admin':
+        return jsonify({"erro": "Acesso negado!"}), 403
+    
+    try:
+        usuario = Usuario.query.get(usuario_id)
+        
+        if not usuario:
+            return jsonify({"erro": "Usuário não encontrado!"}), 404
+        
+        if usuario.id == current_user.id:
+            return jsonify({"erro": "Você não pode excluir sua própria conta!"}), 400
+        
+        if usuario.email == 'adminsdopaki@admin.com':
+            return jsonify({"erro": "Não é possível excluir o administrador principal!"}), 400
+        
+        if usuario.tipo == 'nutricionista':
+            Escala.query.filter_by(nutricionista_id=usuario.id).delete()
+        
+        Consulta.query.filter(
+            (Consulta.paciente_id == usuario.id) | 
+            (Consulta.nutricionista_id == usuario.id)
+        ).delete()
+        
+        banco.session.delete(usuario)
+        banco.session.commit()
+        
+        return jsonify({"mensagem": "Usuário excluído com sucesso!"})
+        
+    except Exception as e:
+        banco.session.rollback()
+        return jsonify({"erro": f"Erro ao excluir usuário: {str(e)}"}), 500
 
 #Api para retornar todos os usuários que existem atualmente no sistema em json
 @app.route("/api/gerenciarusuarios")
