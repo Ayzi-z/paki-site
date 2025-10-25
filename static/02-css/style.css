@@ -1222,11 +1222,11 @@ blockquote cite {
     justify-content: center;
     gap: 1.3rem;
     overflow-y: scroll;
-    height: 40%;
     padding: 15px;
+    list-style: none;
 }
 
-.lista-medicos li{
+.lista-medicos .cartao-medico{
     border-radius: 15px;
     border: 2px solid #3cc771;
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
@@ -1236,18 +1236,14 @@ blockquote cite {
     align-items: center;
     gap: 10px;
     padding: 10px;
+    cursor: pointer;
 }   
 
-.lista-medicos li .pfp{
-    display: flex;
-    justify-content: center;
-    height: 150px;
-    width: 200px;
+.cartao-medico.selecionado{
+    background-color: rgba(9, 222, 151, 0.219);
 }
-
-.lista-medicos li .pfp img{
-    border-radius: 20px;
-    width: 80%;
+.cartao-medico .icone-medico{
+    font-size: 80px;
 }
 
 .lista-medicos .descricao-med{
@@ -1265,7 +1261,9 @@ blockquote cite {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/*Pegunta confirmação de consulta*/
+
+
+/*Pegunta de resumo da consulta*/
 #pergunta-resumo{
     display: flex;
     align-items: center;
@@ -1296,6 +1294,11 @@ blockquote cite {
     flex-direction: column;
 }
 
+
+
+
+
+
 /* ============================= */
 /* 📌 PÁGINA DE GERENCIAR USUARIOS DO ADMIN*/
 /* ============================= */
@@ -1305,11 +1308,14 @@ blockquote cite {
     max-width: 1200px;
     margin: 2rem auto;
     padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .cabecalho-gerenciamento {
     display: flex;
-    justify-content: between;
+    flex-direction: column;
     align-items: center;
     margin-bottom: 2rem;
     flex-wrap: wrap;

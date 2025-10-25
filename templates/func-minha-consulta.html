@@ -7,13 +7,13 @@
                 <div class="cabecalho-gerenciamento">
                     <h1>Minhas Consultas</h1>
                     <div class="barra-pesquisa-usuarios">
-                        <input type="text" placeholder="Pesquisar usuários...">
+                        <input type="text" placeholder="Pesquisar consultas...">
                         <button class="botao-pesquisa">🔍</button>
                     </div>
                 </div>
 
                 <div class="filtros-usuarios">
-                    <button class="filtro-botao ativo" data-filtro="todos">Todos</button>
+                    <button class="filtro-botao ativo" data-filtro="todos">Todas</button>
                     <button class="filtro-botao" data-filtro="concuida">Concluída</button>
                     <button class="filtro-botao" data-filtro="pendente">Pendente</button>
                 </div>
@@ -79,13 +79,9 @@
             </div>
 
             {% elif tipo_site == 'paciente' %}
-            <div class="container-gerenciar-usuarios">
+            <div class="container-gerenciar-usuarios" id="gerenciar-consultas">
                 <div class="cabecalho-gerenciamento">
                     <h1>Minhas Consultas</h1>
-                    <div class="barra-pesquisa-usuarios">
-                        <input type="text" placeholder="Pesquisar usuários...">
-                        <button class="botao-pesquisa">🔍</button>
-                    </div>
                 </div>
 
                 <div class="filtros-usuarios">

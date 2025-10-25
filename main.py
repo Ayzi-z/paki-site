@@ -63,13 +63,15 @@ class Consulta(banco.Model):
     
     id = banco.Column(banco.Integer, primary_key=True, autoincrement=True, unique=True)
     
-    paciente_id = banco.Column(banco.Integer, banco.ForeignKey('usuarios.id'))
+    id_paciente = banco.Column(banco.Integer, banco.ForeignKey('usuarios.id'))
     
-    nutricionista_id = banco.Column(banco.Integer, banco.ForeignKey('usuarios.id'))
+    id_nutricionista = banco.Column(banco.Integer, banco.ForeignKey('usuarios.id'))
     
     status = banco.Column(banco.String(20), nullable=False, default='pendente')
 
     data_hora = banco.Column(banco.DateTime, nullable=False)
+
+    motivo = banco.Column(banco.String)
 
 class Escala(banco.Model):
     __tablename__ = 'escalas_nutricionistas'
@@ -123,7 +125,7 @@ def criar_nutricionista():
             banco.session.commit()
 
   
-            dias_trabalho = ["segunda", "terca", "quarta", "quinta", "sexta"]
+            dias_trabalho = ["terca", "quarta", "quinta", "sexta"]
 
             escala_padrao = Escala(
                 nutricionista_id=usuario_nutricionista.id,
@@ -164,8 +166,6 @@ def sobre():
 @login_required
 def sobremim():
     return render_template('sobre-usuario.html')
-
-
 
 @app.route("/contato")
 @login_required
@@ -277,9 +277,49 @@ def consulta():
 def minhas_consultas():
     return render_template('func-minha-consulta.html')
 
-@app.route("/consulta/agendar")
+@app.route("/consulta/agendar", methods = ['GET', 'POST'])
 def agendar_consulta():
-    return render_template('func-agendar-consulta.html')
+    if request.method == 'GET':
+        return render_template('func-agendar-consulta.html')
+    elif request.method == 'POST':
+        dados = request.get_json()
+
+        data_hora = dados.get('data_hora')
+        
+        motivo = dados.get('motivo')
+
+        id_nutricionista = int(dados.get('id_nutricionista'))
+        
+        id_paciente = int(dados.get('id_paciente'))
+
+
+        data_hora_dicio = dados.get('data_hora')
+        dia_str, horarios = list(data_hora_dicio.items())[0]
+        horario_str = horarios[0]
+        hora, minuto = map(int, horario_str.split(':'))
+        data_hora = datetime.combine(datetime.strptime(dia_str, "%Y-%m-%d").date(), time(hora, minuto))
+
+
+
+        consulta_existente = Consulta.query.filter_by(
+            id_nutricionista=id_nutricionista,
+            data_hora=data_hora
+        ).first()
+
+        if consulta_existente:
+            return jsonify({"erro": "Horário já ocupado"})
+
+        nova_consulta = Consulta(
+            id_paciente=id_paciente,
+            id_nutricionista=id_nutricionista,
+            data_hora=data_hora,
+            motivo=motivo,
+            status='pendente'
+        )
+        banco.session.add(nova_consulta)
+        banco.session.commit()
+
+        return redirect(url_for('minhas_consultas'))
 
 @app.route("/gerenciarusuarios")
 @login_required
@@ -304,7 +344,7 @@ def detalheProduto():
 def detalheProduto2():
     return render_template('loja-detalhe-produto2.html')
 
-# MINI APIS DO NOSSO SITE PARA FAZER CERTAS VALIDAÇÕES NO SERVIDOR DO FLASK
+# MINI APIS DO NOSSO SITE PARA FAZER BUSCAR DADOS NO SERVIDOR DO FLASK
 
 # Mini api que a gente usa para validar dados de cadastro
 @app.route('/validarcadastro', methods=['POST'])
@@ -323,40 +363,100 @@ def validarcadastro():
 
 # Mini api que a gente usa para retornar os dias e horarios disponiveis para consulta nos 14 dias, e os nutricionistas disponiveis para um dia e hora específico
 @app.route('/api/verhorarios', methods=['GET', 'POST'])
-def verhorarios(qnt_dias = 14): 
-    
-    hoje = datetime.now().date()
-    horarios_disponiveis = {}
-    print(f'Hoje é {hoje}')
+def apihorarios():
+    def verhorarios(qnt_dias = 14):  
+        hoje = datetime.now().date()
+        horarios_disponiveis = {}
+        print(f'Hoje é {hoje}')
 
-    nutricionistas = Usuario.query.filter_by(tipo='nutricionista').all()
+        nutricionistas = Usuario.query.filter_by(tipo='nutricionista').all()
 
-    for contador in range(qnt_dias):
-        dia = hoje + timedelta(days=contador)
+        for contador in range(qnt_dias):
+            dia = hoje + timedelta(days=contador)
+            nome_dia = ["segunda", "terca", "quarta", "quinta", "sexta", "sábado", "domingo"][dia.weekday()]
+
+            if dia.weekday() < 5: # fazendo escala de segunda a sexta
+                dia_str = dia.strftime('%Y-%m-%d')
+
+                # Colocando a hora que a clinica abre e a hora que ela fecha no dia
+                abre = datetime.combine(dia, time(7, 0))
+                fecha = datetime.combine(dia, time(21, 0))
+
+                while abre <= fecha - timedelta(hours=1, minutes=15):
+                    if abre > datetime.now():
+                        for nutricionista in nutricionistas:
+                            escala_nutri = Escala.query.filter_by(nutricionista_id=nutricionista.id).first()
+                            if escala_nutri and nome_dia in escala_nutri.dias_trabalho:
+                                dia_ocupado = Consulta.query.filter_by(
+                                    id_nutricionista = nutricionista.id,
+                                    data_hora = abre
+                                ).first()
+                                if not dia_ocupado:
+
+                                    horarios_disponiveis.setdefault(dia_str, []).append(abre.strftime("%H:%M"))
+                                    break
+                    abre += timedelta(hours = 1, minutes = 15)
+        return horarios_disponiveis
+
+    def vernutricionistas(dados):
+        if not dados or 'data_hora' not in dados:
+            return []
+
+        # pegando a primeira data e horário enviados
+        dia_str, horarios = list(dados['data_hora'].items())[0]
+        horario_str = horarios[0]
+
+        dia = datetime.strptime(dia_str, "%Y-%m-%d").date()
+        hora, minuto = map(int, horario_str.split(':'))
+        dt = datetime.combine(dia, time(hora, minuto))
+
         nome_dia = ["segunda", "terca", "quarta", "quinta", "sexta", "sábado", "domingo"][dia.weekday()]
 
-        if dia.weekday() < 5: # fazendo escala de segunda a sexta
-            dia_str = dia.strftime('%Y-%m-%d')
+        nutricionistas = Usuario.query.filter_by(tipo='nutricionista').all()
+        disponiveis = []
 
-            # Colocando a hora que a clinica abre e a hora que ela fecha no dia
-            abre = datetime.combine(dia, time(7, 0))
-            fecha = datetime.combine(dia, time(21, 0))
+        for nutricionista in nutricionistas:
+            escala = Escala.query.filter_by(nutricionista_id=nutricionista.id).first()
+            if escala and nome_dia in escala.dias_trabalho:
+                consulta_ocupada = Consulta.query.filter_by(
+                    id_nutricionista=nutricionista.id,
+                    data_hora=dt
+                ).first()
+                if not consulta_ocupada:
+                    disponiveis.append({
+                        "id": nutricionista.id,
+                        "nome": nutricionista.nome,
+                        "sobrenome": nutricionista.sobrenome
+                    })
+        return disponiveis
 
-            while abre <= fecha - timedelta(hours=1, minutes=15):
-                if abre > datetime.now():
-                    for nutricionista in nutricionistas:
-                        escala_nutri = Escala.query.filter_by(nutricionista_id=nutricionista.id).first()
-                        if escala_nutri and nome_dia in escala_nutri.dias_trabalho:
-                            dia_ocupado = Consulta.query.filter_by(
-                                nutricionista_id = nutricionista.id,
-                                data_hora = abre
-                            ).first()
-                            if not dia_ocupado:
+    if request.method == 'GET':
+        return jsonify(verhorarios())
+        
+    elif request.method == 'POST':
+        dados = request.get_json()
+        return jsonify(vernutricionistas(dados))
 
-                                horarios_disponiveis.setdefault(dia_str, []).append(abre.strftime("%H:%M"))
-                                break
-                abre += timedelta(hours = 1, minutes = 15)
-    return jsonify(horarios_disponiveis)
+# Mini api para buscar as cosnsultas pelo id do usuário
+@app.route('/api/consulta/minhasconsultas/<int:id_usuario>', methods=['GET'])
+def apiminhasconsultas(id_usuario):
+    consultas = Consulta.query.order_by(Consulta.data_hora.desc()).all()
+
+    listaConsultas = []
+
+    for c in consultas:
+        
+        if c.id_paciente == id_usuario or c.id_nutricionista == id_usuario:
+            listaConsultas.append({
+                "id": c.id,
+                "id_paciente": c.id_paciente,
+                "id_nutricionista": c.id_nutricionista,
+                "status": c.status,
+                "data_hora": c.data_hora.strftime("%Y-%m-%d %H:%M"),
+                "motivo": c.motivo
+            })
+
+    return jsonify(listaConsultas)
 
 # Mini api que a gente usa para ver os dados do usuario que tá logado
 @app.route('/api/usuarioatual')
@@ -370,8 +470,8 @@ def usuarioatual():
         "tipo": current_user.tipo
     })
 
-#Api para retornar todos os usuários que existem atualmente no sistema em json
-@app.route("/api/gerenciarusuarios")
+# Mini api para retornar dados dos usuários do sistema em json
+@app.route("/api/gerenciarusuarios", methods = ['GET'])
 @login_required
 def gerenciarusuariosapi():
     if current_user.tipo == 'admin':
@@ -386,8 +486,28 @@ def gerenciarusuariosapi():
                 "sobrenome": usuario.sobrenome
             })
         return jsonify(usuarios)
-    else:
-        return redirect(url_for('index'))
+
+@app.route("/api/usuario/<int:id_usuario>", methods=['GET'])
+@login_required
+def gerenciarusuariosapi_id(id_usuario):
+
+    usuario = Usuario.query.get(id_usuario)
+    if not usuario:
+        return jsonify({"erro": "Usuário não encontrado"})
+
+    dados_usuario = {
+        "id": usuario.id,
+        "email": usuario.email,
+        "nome": usuario.nome,
+        "sobrenome": usuario.sobrenome,
+        "tipo": usuario.tipo,
+        "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d") if usuario.data_nascimento else None,
+        "telefone": usuario.telefone,
+        "genero": usuario.genero,
+        "codigo_ativacao": usuario.codigo_ativacao,
+    }
+
+    return jsonify(dados_usuario)
 
 
 # CODIGOS PARA RODAR O SERVIDOR DO FLASK
@@ -395,7 +515,6 @@ def gerenciarusuariosapi():
 if __name__ == '__main__':
     with app.app_context(): # isso aqui cria o banco de dados
         banco.create_all()
-        verhorarios()
         criar_admin() # isso aqui cria o usuario admin sempre que o servidor for iniciado caso ele nao exista
         criar_nutricionista()
 
