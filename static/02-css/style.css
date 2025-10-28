@@ -585,130 +585,6 @@ blockquote cite {
 /* ============================= */
 /* 📌 PÁGINA DE DETALHE PRODUTO */
 /* ============================= */
-.conteudo_pagina_detalhe_produto{
-    padding: 50px;
-    display: flex;
-    justify-content: center;
-}
-
-.container-detalhe-produto{
-    width: 90%;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border: 2px solid #3cc771;
-    border-radius: 15px;
-    padding: 10px;
-}
-
-#imagem-detalhe-produto{
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    padding: 30px;
-}
-
-#imagem-detalhe-produto img{
-    width: 80%;
-    border-radius: 4px;
-}
-
-#detalhe-produto{
-    height: 100%;
-    width: 50%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-#imagem-detalhe-produto{
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    padding: 30px;
-}
-
-#imagem-detalhe-produto img{
-    width: 100%;
-    max-width: 420px;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-#detalhe-produto{
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 24px;
-    color: #122022;
-}
-
-.descricao-produto{
-    width: 100%;
-    line-height: 1.6;
-}
-
-.descricao-produto h1{
-    font-family: "Krona One", sans-serif;
-    font-size: 1.9rem;
-    color: #0b6b3b;
-    margin-bottom: 6px;
-    font-weight: 700;
-}
-
-.descricao-produto h2{
-    font-size: 1rem;
-    font-weight: 500;
-    color: #4b4b4b;
-    margin-bottom: 10px;
-}
-
-.descricao-produto p{
-    font-size: 1rem;
-    color: #33403f;
-    margin-bottom: 8px;
-}
-
-.descricao-produto h3{
-    font-size: 2.2rem;
-    color: #009249;
-    font-weight: 800;
-    margin-top: 6px;
-}
-
-.btn-group-detalhe-produto{
-    width: 100%;
-    display: flex;
-    gap: 12px;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.btn-group-detalhe-produto button{
-    padding: 12px 18px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 1rem;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-#btn-comprar-agora{
-    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
-    color: #fff;
-}
-
-#btn-adicionar-carrinho{
-    background: transparent;
-    border: 2px solid rgba(3,103,126,0.12);
-    color: #0b6b3b;
-}
-    
-.btn-group-detalhe-produto button:hover{
-    transform: translateY(-3px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
-}
 
 
 /* ============================= */
@@ -988,15 +864,18 @@ blockquote cite {
 /*Funcionalidade de Agendamento de Consultas*/
 .container-func-consulta{
     width: 100%;
-    padding: 3% 0;
+    
 }
-
+.escolha-modo-consulta{
+    padding: 30px 0;
+}
 .escolha-modo-consulta .link-group{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 15px;
+    
 }
 
 .escolha-modo-consulta .link-group a{
@@ -1018,12 +897,7 @@ blockquote cite {
     box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
 }
 
-.conteudo-func-consulta-cliente{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+
 
 /*ESTILIZAÇÃO DAS PERGUNTAS DE AGENDAMENTO */
 
@@ -1036,6 +910,7 @@ blockquote cite {
     align-items: center;
     flex-direction: column;
     gap: 10px;
+    padding-top: 20px;
 }
 .controles-slider{
     width: 60%;
@@ -1059,7 +934,7 @@ blockquote cite {
    width: 60%;
    height: 500px;
    border-radius: 10px;
-   overflow: hidden;
+   overflow-x: hidden;
 }
 
 .form-perguntas .slider-perguntas{
@@ -1071,9 +946,9 @@ blockquote cite {
     display: flex;
     align-items: center;
     flex-direction: column;
-    overflow: hidden;
     padding: 10px;
     gap: 30px;
+    
 }
 
 .slider-perguntas .pergunta h2{
@@ -1099,9 +974,10 @@ blockquote cite {
 /*Pergunta de seleção da data*/
 .slider-perguntas #pergunta-data .conteudo-pergunta{
     display: flex;
-    gap: 20px;            /* espaço entre calendário e lista de horários */
+    gap: 20px;           
     align-items: flex-start; 
 }
+
 
 .calendario{
     width: 100%;
@@ -1221,7 +1097,7 @@ blockquote cite {
     flex-wrap: wrap;
     justify-content: center;
     gap: 1.3rem;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 15px;
     list-style: none;
 }
@@ -1265,14 +1141,34 @@ blockquote cite {
 
 /*Pegunta de resumo da consulta*/
 #pergunta-resumo{
-    display: flex;
+   
     align-items: center;
     flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+
 }
-#pergunta-resumo #resumo-consulta{
-    border: 1px solid rgba(47, 1, 1, 0.321);
-    border-radius: 5px;
-    width: 50%;
+
+#resumo-consulta{
+    border: none;
+    margin-bottom: 0;
+}
+#pergunta-resumo button{
+    width: 250px;
+    padding: 15px;
+    background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#pergunta-resumo button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
 }
 /*Funcionalidade calculo IMC*/
 #container-func-imc{
@@ -1293,18 +1189,169 @@ blockquote cite {
     display: flex;
     flex-direction: column;
 }
+/* ============================= */
+/* 📌 PÁGINA DE DETALHE CONSULTA PACIENTE E NUTRICIONISTA */
+/* ============================= */
 
+.container-detalhe-consulta{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 100px;
+    width: 100%;
+}
+.conteudo-detalhe-consulta{
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border: 2px solid #3cc771;
+    border-radius: 15px;
+    padding: 20px;
+}
+.conteudo-detalhe-consulta .detalhes{
+    width: 100%;
+}
+.conteudo-detalhe-consulta ul{
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    flex-wrap: wrap;
+    
+}
+.conteudo-detalhe-consulta .grupo-info{
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    background: #f9f9f9;
+}
+.conteudo-detalhe-consulta .grupo-info span{
+    font-weight: 500;
+}
 
+.container-detalhe-consulta .acoes-consulta button{
+    padding: 15px;
+    background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin-top: 10px;
+}
 
+.container-detalhe-consulta .acoes-consulta button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
+}
+#detalhe-produto{
+    height: 100%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+#imagem-detalhe-produto{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
 
+#imagem-detalhe-produto img{
+    width: 100%;
+    max-width: 420px;
+    border-radius: 8px;
+    object-fit: cover;
+}
 
+#detalhe-produto{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 24px;
+    color: #122022;
+}
+
+.descricao-produto{
+    width: 100%;
+    line-height: 1.6;
+}
+
+.descricao-produto h1{
+    font-family: "Krona One", sans-serif;
+    font-size: 1.9rem;
+    color: #0b6b3b;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.descricao-produto h2{
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4b4b4b;
+    margin-bottom: 10px;
+}
+
+.descricao-produto p{
+    font-size: 1rem;
+    color: #33403f;
+    margin-bottom: 8px;
+}
+
+.descricao-produto h3{
+    font-size: 2.2rem;
+    color: #009249;
+    font-weight: 800;
+    margin-top: 6px;
+}
+
+.btn-group-detalhe-produto{
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.btn-group-detalhe-produto button{
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+#btn-comprar-agora{
+    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+    color: #fff;
+}
+
+#btn-adicionar-carrinho{
+    background: transparent;
+    border: 2px solid rgba(3,103,126,0.12);
+    color: #0b6b3b;
+}
+    
+.btn-group-detalhe-produto button:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
 
 /* ============================= */
 /* 📌 PÁGINA DE GERENCIAR USUARIOS DO ADMIN*/
 /* ============================= */
 
-
-.container-gerenciar-usuarios {
+.container-tabela-gerencia {
     max-width: 1200px;
     margin: 2rem auto;
     padding: 2rem;
@@ -1319,7 +1366,6 @@ blockquote cite {
     align-items: center;
     margin-bottom: 2rem;
     flex-wrap: wrap;
-    gap: 1rem;
 }
 
 .barra-pesquisa-usuarios {
@@ -1346,7 +1392,7 @@ blockquote cite {
     cursor: pointer;
 }
 
-.filtros-usuarios {
+.filtros-tabela {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
@@ -1368,34 +1414,26 @@ blockquote cite {
     color: white;
 }
 
-.tabela-usuarios {
-    width: 100%;
-    background: white;
+.container-tabela-gerencia table {
+    border-spacing: 0;  
     border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.tabela-usuarios table {
     width: 100%;
-    border-collapse: collapse;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  
 }
 
-.tabela-usuarios th {
+.container-tabela-gerencia thead tr{
     background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+}
+.container-tabela-gerencia table th {
     color: white;
     padding: 1rem;
     text-align: left;
     font-weight: 600;
 }
 
-.tabela-usuarios td {
+.container-tabela-gerencia table td {
     padding: 1rem;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.tabela-usuarios tr:hover {
-    background: #f8f9fa;
 }
 
 .usuario-info {
@@ -1404,12 +1442,6 @@ blockquote cite {
     gap: 1rem;
 }
 
-.usuario-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
 
 .badge-tipo {
     padding: 4px 8px;
@@ -1418,7 +1450,7 @@ blockquote cite {
     font-weight: 600;
 }
 
-.badge-medico {
+.badge-nutricionista {
     background: #007bff;
     color: white;
 }
@@ -1504,6 +1536,157 @@ blockquote cite {
     overflow-y: auto;
 }
 
+
+/*Cards da tabela de gerencia usuarios e consultas*/
+.cards-tabela{
+    display: none;
+}
+@media (max-width: 1150px) {
+    .slider-perguntas #pergunta-data .conteudo-pergunta{
+        flex-direction: column;  
+        align-items: center; 
+    }
+    .slider-perguntas #pergunta-data{
+        overflow-y: hidden;
+    }
+    .cards-tabela{
+        display: block;
+    }
+    .container-tabela-gerencia {
+        margin-top: 80px;
+        padding: 1rem;
+    }
+
+    .card-tabela {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .card-tabela {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+        display: block;
+    }
+    
+    
+    .card-info h3 {
+        margin: 0 0 4px 0;
+        font-size: 1.1rem;
+        color: #333;
+    }
+    
+    .card-info .card-tipo {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .card-detalhes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .card-detalhe {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .card-label {
+        font-size: 0.75rem;
+        color: #888;
+        font-weight: 500;
+    }
+    
+    .card-valor {
+        font-size: 0.9rem;
+        color: #333;
+        font-weight: 600;
+    }
+    
+    .card-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .card-acoes {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        padding-top: 0.75rem;
+        border-top: 1px solid #f0f0f0;
+    }
+    
+    .card-botao {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+    
+    .card-botao.visualizar {
+        background: #17a2b8;
+        color: white;
+    }
+    
+    .card-botao.excluir {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .card-botao:hover {
+        transform: translateY(-1px);
+        cursor: pointer;
+    }
+}
+
+/* Modo escuro para cards */
+body.escuro .card-tabela {
+    background: #333;
+    border-color: #444;
+    color: white;
+}
+
+body.escuro .card-header {
+    border-bottom-color: #444;
+}
+
+body.escuro .card-info h3 {
+    color: white;
+}
+
+body.escuro .card-info .card-tipo {
+    color: #ccc;
+}
+
+body.escuro .card-label {
+    color: #aaa;
+}
+
+body.escuro .card-valor {
+    color: white;
+}
+
+body.escuro .card-acoes {
+    border-top-color: #444;
+}
+
 /* ============================= */
 /* 📌 PÁGINA DE LOGIN, RECUPERACAO E CADASTRO */
 /* ============================= */
@@ -1528,7 +1711,7 @@ blockquote cite {
 }
 
 .formulario-login {
-    background: rgba(255, 255, 255, 0.95);
+ 
     border-radius: 20px;
     padding: 40px;
     width: 100%;
@@ -2453,51 +2636,6 @@ body.escuro .msg-sem-produto{
 }
 
 /* ============================= */
-/* 📌 MODIFICAÇÃO DO GERENCIAR USUARIOS */
-/* ============================= */
-.botoes-modal {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
-}
-
-.botoes-modal button {
-    padding: 10px 20px;
-}
-
-.modal-conteudo {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    max-width: 500px;
-    width: 90%;
-}
-
-/* Estilos para os badges */
-.badge-medico {
-    background: #007bff;
-    color: white;
-}
-
-.badge-paciente {
-    background: #28a745;
-    color: white;
-}
-
-.badge-admin {
-    background: #dc3545;
-    color: white;
-}
-
-.badge-tipo {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-/* ============================= */
 /* 📌 RESPONSIVIDADES */
 /* ============================= */
 
@@ -2507,7 +2645,7 @@ body.escuro .msg-sem-produto{
     /* MAIN */
       main {
         flex-direction: column;
-        padding-top: 120px;
+        padding-top: 145px;
         min-height: 60%;
       }
     
@@ -2886,30 +3024,7 @@ body.escuro .msg-sem-produto{
         width: 100%;
     }
 
-    /*Responsividade Pagina detalhe Produto*/
-    .container-detalhe-produto{
-        flex-direction: column;
-        padding: 16px;
-        gap: 16px;
-    }
-    .conteudo_pagina_detalhe_produto{
-        padding: 50px 0;
-    }
-    #detalhe-produto p{
-        font-size: 13px;
-    }
-    #imagem-detalhe-produto img{
-        max-width: 320px;
-        width: 100%;
-    }
-    #imagem-detalhe-produto, #detalhe-produto{
-        width: 100%;
-    }
-    .btn-group-detalhe-produto{
-        flex-direction: column;
-        gap: 8px;
-        align-items: stretch;
-    }
+    /*Responsividade Tabela de gerencia Usuarios/ Consultas*/
     
     /*Responsividade Carrinho*/
      #conteudo_pagina_carrinho {
@@ -2927,10 +3042,10 @@ body.escuro .msg-sem-produto{
         width: 100%;
     }
 
-    #tabela-produtos-carrinho thead {
+    .container-tabela-gerencia table{
         display: none;
     }
-    #tabela-produtos-carrinho tbody tr {
+    .container-tabela-gerencia table tbody tr {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -2969,38 +3084,7 @@ body.escuro .msg-sem-produto{
     }
 }
 
-/* RESPONSIVIDADE PARA CELULARES*/
-@media (max-width: 768px) {
 
-
-    /*Responsividade do Monitoramento de Remedio*/
-    .linha-formulario {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .lista-remedios {
-        grid-template-columns: 1fr;
-    }
-    
-    .filtros-remedios {
-        justify-content: center;
-    }
-    
-    .container-monitoramento-remedios {
-        padding: 1rem;
-    }
-    
-    .horario-item {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: flex-start;
-    }
-    
-    .botao-tomar {
-        width: 100%;
-    }
-}
 
 /* ============================= */
 /* 📌 PÁGINA INICIAL */
@@ -3068,4 +3152,837 @@ header {
 }
 .mensagem_direitos {
     font-size: 0.8rem;
+}
+
+/* ============================= */
+/* 📌 SOBRE USUÁRIO E GERENCIAR USUÁRIOS */
+/* ============================= */
+
+
+.grupo-formulario {
+    margin-bottom: 20px;
+}
+
+
+
+.grupo-formulario label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+
+
+.grupo-formulario input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    background: #f9f9f9;
+}
+
+
+
+.grupo-formulario input:focus {
+    border-color: #3cc771;
+    outline: none;
+    background: #fff;
+}
+
+
+
+.grupo-formulario {
+    margin-bottom: 25px;
+}
+
+
+
+.grupo-formulario label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+
+
+.grupo-formulario input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    background: #f9f9f9;
+}
+
+
+
+.grupo-formulario input:focus {
+    border-color: #3cc771;
+    outline: none;
+    background: #fff;
+}
+
+
+
+.linha-formulario {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+
+
+.grupo-formulario {
+    flex: 1;
+    margin-bottom: 15px;
+}
+
+
+
+.grupo-formulario label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+
+
+.grupo-formulario input, .grupo-formulario select {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    background: #f9f9f9;
+}
+
+
+
+.grupo-formulario input:focus, .grupo-formulario select:focus {
+    border-color: #3cc771;
+    outline: none;
+    background: #fff;
+}
+
+ 
+
+/* ============================= */
+/* 📌 ESTILIZAÇÃO PAGINA DO PERFIL */
+/* ============================= */
+
+.container-perfil-usuario {
+    max-width: 1000px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+}
+
+
+
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+
+
+.info-usuario h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+
+
+.tipo-usuario {
+    font-size: 16px;
+    color: #555;
+}
+
+
+
+.email-usuario {
+    font-size: 14px;
+    color: gray;
+}
+
+
+
+/* === ABAS === */
+.abas-perfil {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+
+
+.conteudo-abas .aba-conteudo {
+    display: none;
+}
+
+
+
+.conteudo-abas .aba-conteudo.ativa {
+    display: block;
+}
+
+
+
+/* === FORMULÁRIOS === */
+.formulario-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+
+.linha-formulario {
+    display: flex;
+    gap: 20px;
+}
+
+
+
+.grupo-formulario {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.grupo-formulario label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+
+
+.grupo-formulario input,
+.grupo-formulario textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+
+
+.botao-salvar {
+    align-self: flex-start;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+.info-usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+.info-usuario h1 {
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 2px 0;
+}
+
+
+
+.tipo-usuario {
+  color: #2c2c2c;
+  font-weight: 600;
+  margin: 2px 0;
+}
+
+
+        
+        .linha-formulario {
+            flex-direction: column;
+            gap: 0;
+        }
+
+
+        
+        .grupo-formulario input, 
+        .grupo-formulario select {
+            padding: 18px;
+            font-size: 18px;
+        }
+
+
+        
+        .grupo-formulario label {
+            font-size: 16px;
+        }
+
+
+        
+        .linha-formulario {
+            flex-direction: row;
+            gap: 15px;
+        }
+
+
+        
+        .linha-formulario {
+            flex-direction: column;
+            gap: 0;
+        }
+
+
+    
+    .linha-formulario {
+        flex-direction: column;
+        gap: 0;
+    }
+
+
+
+.perfil-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+
+
+
+.info-usuario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+.info-usuario h1 {
+    font-size: 28px;
+    margin: 0;
+    color: #3cc771;
+}
+
+
+
+.tipo-usuario {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+    font-weight: 500;
+}
+
+
+
+.email-usuario {
+    font-size: 16px;
+    color: #888;
+    margin: 0;
+}
+
+
+
+.perfil-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    margin: 20px 0;
+    border: 1px solid #e0e0e0;
+}
+
+
+
+.info-usuario h1 {
+    font-family: "Krona One", sans-serif;
+    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+
+
+/* Modo escuro */
+body.escuro .perfil-header {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    border-color: #4a5568;
+}
+
+
+
+body.escuro .tipo-usuario {
+    color: #cbd5e0;
+}
+
+
+
+body.escuro .email-usuario {
+    color: #a0aec0;
+}
+
+
+
+
+/* ============================= */
+/* 📌 CORREÇÕES ESPECÍFICAS PARA PÁGINA SOBRE USUÁRIO */
+/* ============================= */
+
+.container-perfil-usuario {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden; /* Impede que conteúdo saia do container */
+}
+
+
+
+.perfil-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+
+.info-usuario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+}
+
+
+
+.info-usuario h1 {
+    font-size: 28px;
+    margin: 0;
+    color: #3cc771;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+
+
+.tipo-usuario {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+    font-weight: 500;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+
+
+.email-usuario {
+    font-size: 16px;
+    color: #888;
+    margin: 0;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+
+
+/* FORMULÁRIOS - CORREÇÕES PARA CABER NA TELA */
+.formulario-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+
+.linha-formulario {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+
+.grupo-formulario {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+
+.grupo-formulario label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    max-width: 100%;
+}
+
+
+
+.grupo-formulario input,
+.grupo-formulario textarea,
+.grupo-formulario select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    font-size: 14px;
+}
+
+
+
+.grupo-formulario textarea {
+    resize: vertical;
+    min-height: 80px;
+    max-width: 100%;
+}
+
+
+
+.botao-salvar {
+    align-self: flex-start;
+    padding: 12px 24px;
+    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    max-width: 100%;
+}
+
+
+    
+    .linha-formulario {
+        gap: 15px;
+    }
+
+
+    
+    .perfil-header {
+        padding: 15px;
+    }
+
+
+    
+    .info-usuario h1 {
+        font-size: 24px;
+    }
+
+
+    
+    .tipo-usuario {
+        font-size: 16px;
+    }
+
+
+    
+    .email-usuario {
+        font-size: 14px;
+    }
+
+
+    
+    .linha-formulario {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+
+    
+    .grupo-formulario {
+        width: 100%;
+    }
+
+
+    
+    .botao-salvar {
+        width: 100%;
+        align-self: stretch;
+        text-align: center;
+    }
+
+
+    
+    .formulario-perfil {
+        gap: 15px;
+    }
+
+
+    
+    .perfil-header {
+        padding: 12px;
+    }
+
+
+    
+    .info-usuario h1 {
+        font-size: 20px;
+    }
+
+
+    
+    .tipo-usuario {
+        font-size: 14px;
+    }
+
+
+    
+    .email-usuario {
+        font-size: 12px;
+    }
+
+
+    
+    .formulario-perfil {
+        gap: 12px;
+    }
+
+
+    
+    .grupo-formulario input,
+    .grupo-formulario textarea,
+    .grupo-formulario select {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+
+    
+    .linha-formulario {
+        gap: 12px;
+    }
+
+
+
+/* Modo escuro */
+body.escuro .container-perfil-usuario {
+    background: #333;
+    color: #f0f0f0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+
+
+body.escuro .info-usuario h1 {
+    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+
+
+body.escuro .tipo-usuario {
+    color: #ccc;
+}
+
+
+
+body.escuro .email-usuario {
+    color: #aaa;
+}
+
+
+
+body.escuro .grupo-formulario input,
+body.escuro .grupo-formulario textarea,
+body.escuro .grupo-formulario select {
+    background: #444;
+    color: #fff;
+    border-color: #555;
+}
+
+
+
+body.escuro .grupo-formulario label {
+    color: #fff;
+}
+
+
+
+body.escuro .botao-salvar {
+    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+    color: white;
+}
+
+
+/* ============================= */
+/* 🩺 PÁGINA - ATENDER CONSULTA */
+/* ============================= */
+
+.container-detalhe-consulta {
+    width: 90%;
+    max-width: 900px;
+    margin: 100px auto 60px;
+    background-color: #fff;
+    border: 2px solid #3cc771;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.container-detalhe-consulta h1 {
+    font-family: "Krona One", sans-serif;
+    font-size: 1.8rem;
+    color: #004e2b;
+    margin-bottom: 10px;
+}
+
+.container-detalhe-consulta a {
+    display: inline-block;
+    color: #3cc771;
+    text-decoration: underline;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.conteudo-detalhe-consulta {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+}
+
+.detalhes {
+    width: 100%;
+    border: 1.5px solid #3cc771;
+    border-radius: 12px;
+    padding: 20px;
+    background-color: #fafafa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.detalhes h1 {
+    font-size: 1.3rem;
+    color: #004e2b;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+
+.grupo-info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 5px;
+    background-color: #fff;
+    font-size: 0.95rem;
+    gap: 5px;
+}
+
+.grupo-info strong {
+    color: #004e2b;
+}
+
+.grupo-info span,
+.grupo-info p {
+    font-weight: 500;
+    color: #222;
+}
+
+/* (botões) */
+.acoes-consulta {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.btn-group button,
+.acoes-consulta button {
+    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btn-group button:hover,
+.acoes-consulta button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================= */
+/* 📱 RESPONSIVIDADE */
+/* ============================= */
+@media (max-width: 768px) {
+    .container-detalhe-consulta {
+        margin-top: 130px; 
+        padding: 20px;
+    }
+
+    .detalhes {
+        padding: 15px;
+    }
+
+    .grupo-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .acoes-consulta button {
+        width: 100%;
+        font-size: 1.1rem;
+    }
 }

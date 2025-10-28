@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -7,6 +7,8 @@ from flask_login import LoginManager, UserMixin, login_user,login_required,logou
 from livereload import Server
 
 from datetime import datetime, date, timedelta, time
+
+import os 
 
 app = Flask(__name__)
 
@@ -57,6 +59,14 @@ class Usuario(UserMixin, banco.Model):
 
     codigo_ativacao = banco.Column(banco.String(10), nullable=True)
 
+    idade = banco.Column(banco.Integer, nullable=True)  
+    
+    peso = banco.Column(banco.Float, nullable=True)          
+    
+    altura = banco.Column(banco.Float, nullable=True)
+    
+    doenca_cronica = banco.Column(banco.String(10), nullable=True) 
+
     
 class Consulta(banco.Model):
     __tablename__ = 'consultas'
@@ -73,6 +83,8 @@ class Consulta(banco.Model):
 
     motivo = banco.Column(banco.String)
 
+    relatorio = banco.Column(banco.String, nullable=True)
+
 class Escala(banco.Model):
     __tablename__ = 'escalas_nutricionistas'
     
@@ -86,7 +98,7 @@ class Escala(banco.Model):
 # Funcao para criar um usuario admin padrao no site
 def criar_admin():
     with app.app_context():
-        if not Usuario.query.filter_by(email='adminsdopaki@admin.com', tipo='admin', senha = 'admin123').first():
+        if not Usuario.query.filter_by(email='adminsdopaki@admin.com').first():
             
             usuario_admin = Usuario(
                 email='adminsdopaki@admin.com',
@@ -160,12 +172,66 @@ def index():
 @login_required
 def sobre():
     return render_template('sobre.html')
-
-
-@app.route("/sobremim")
+      
+@app.route("/sobremim", methods=['GET', 'PUT'])
 @login_required
 def sobremim():
-    return render_template('sobre-usuario.html')
+    if request.method == 'GET':
+        # só renderiza a página normal
+        return render_template('sobre-usuario.html')
+
+    elif request.method == 'PUT':
+        # pega os dados enviados pelo JS
+        dados = request.get_json()
+        if not dados:
+            return jsonify({"erro": "Nenhum dado enviado"}), 400
+
+        # pega o usuário logado automaticamente
+        usuario = Usuario.query.get(current_user.id)
+        if not usuario:
+            return jsonify({"erro": "Usuário não encontrado"}), 404
+
+        novoNome = dados.get('nome')
+        novoSobrenome = dados.get('sobrenome')
+        novoEmail = dados.get('email')
+        novoTelefone = dados.get('telefone')
+        novoGenero = dados.get('genero')
+        novoIdade = dados.get('idade')
+        novoPeso = dados.get('peso')
+        novoAltura = dados.get('altura')
+        novoDoenca = dados.get('doenca_cronica')
+        novaSenha = dados.get('nova_senha')
+        novaDataNascimento = dados.get('data_nascimento')
+
+        if novoNome not in (None, ''):
+            usuario.nome = novoNome
+        if novoSobrenome not in (None, ''):
+            usuario.sobrenome = novoSobrenome
+        if novoEmail not in (None, ''):
+            usuario.email = novoEmail
+        if novoTelefone not in (None, ''):
+            usuario.telefone = novoTelefone
+        if novoGenero not in (None, ''):
+            usuario.genero = novoGenero
+        if novoIdade not in (None, ''):
+            usuario.idade = int(novoIdade)
+        if novoPeso not in (None, ''):
+            usuario.peso = float(novoPeso)
+        if novoAltura not in (None, ''):
+            usuario.altura = float(novoAltura)
+        if novoDoenca not in (None, ''):
+            usuario.doenca_cronica = novoDoenca
+        if novaSenha not in (None, ''):
+            usuario.senha = novaSenha
+        if novaDataNascimento not in (None, ''):
+            try:
+                usuario.data_nascimento = datetime.strptime(novaDataNascimento, "%Y-%m-%d").date()
+            except ValueError:
+                return jsonify({"erro": "Formato de data inválido (use YYYY-MM-DD)"}), 400
+
+        banco.session.commit()
+        
+        return jsonify({"sucesso": "Informações atualizadas com sucesso!"})
 
 @app.route("/contato")
 @login_required
@@ -179,27 +245,29 @@ def cadastro():
         return render_template('cadastro.html')
 
     elif request.method == 'POST':
+        dados = request.get_json()
+        if not dados:
+            return jsonify({"erro": "Nenhum dado de usuário enviado"})
+
+        nome = dados.get('nome').lower().strip()
+        sobrenome = dados.get('sobrenome').lower().strip()
+        email = dados.get('email').lower().strip()
+        senha = dados.get('senha')
+        tipo = dados.get('tipo_usuario').lower().strip()
         
-        nome = request.form['nome'].lower().strip()
-       
-        sobrenome = request.form['sobrenome'].lower().strip()
-        
-        email = request.form['email'].lower().strip()
-        
-        senha = request.form['senha']
-       
-        tipo = request.form['tipo-usuario'].lower().strip()
-        
-        data_nascimento = datetime.strptime(request.form['data_nascimento'], "%Y-%m-%d").date()
-        
-        telefone = request.form['telefone'].strip()
-        
-        genero = request.form['genero'].lower().strip()
-       
-        # Verificando se o usuário já existe
+        data_nascimento_str = dados.get('data_nascimento')
+        telefone = dados.get('telefone').strip()
+        genero = dados.get('genero').lower().strip()
+        idade = dados.get('idade')
+        peso = dados.get('peso')
+        altura = dados.get('altura')
+        doenca_cronica = dados.get('doenca_cronica')
+               
+        data_nascimento = datetime.strptime(data_nascimento_str, "%Y-%m-%d").date()
+
         if Usuario.query.filter_by(email=email).first():
-            return redirect(url_for('cadastro'))
-        
+            return jsonify({"erro": "O usuário já existe!"})
+
         novo_usuario = Usuario(
             email=email,
             senha=senha,
@@ -208,7 +276,11 @@ def cadastro():
             tipo=tipo,
             data_nascimento=data_nascimento,
             telefone=telefone,
-            genero=genero
+            genero=genero,
+            idade=int(idade),
+            peso=float(peso),
+            altura=float(altura),
+            doenca_cronica=doenca_cronica
         )
 
         banco.session.add(novo_usuario)
@@ -216,41 +288,46 @@ def cadastro():
                
         if tipo == 'nutricionista': # Se a conta for do tipo nutricionista adiciona o codigo e escala
             
-            codigo_ativacao = request.form['codigo_ativacao'].strip()
+            codigo_ativacao = dados.get('codigo_ativacao', '').strip()
             novo_usuario.codigo_ativacao = codigo_ativacao
-
-            dias_trabalho = request.form.getlist('dias_trabalho')
-            nova_escala = Escala(
-                nutricionista_id=novo_usuario.id,
-                dias_trabalho=dias_trabalho
-            )
-            banco.session.add(nova_escala)
-            banco.session.commit() 
+            dias_trabalho = dados.get('dias_trabalho', [])
+            
+            if dias_trabalho:
+                nova_escala = Escala(
+                    nutricionista_id=novo_usuario.id,
+                    dias_trabalho=dias_trabalho
+                )
+                banco.session.add(nova_escala)
+                banco.session.commit()
 
         login_user(novo_usuario)
         
-        return redirect(url_for('index'))
+        return jsonify({"sucesso": "Usuário cadastrado com sucesso"})
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         if current_user.is_anonymous: #Vendo se o usuario nao está logado
             return render_template('login.html')
-        else : #Se ele ja estiver logado, redireciona para a pagina inicial
+        else : #Se ele ja estiver logado já redireciona para a pagina inicial
             return redirect(url_for('index'))
     
     elif request.method == 'POST':
-        email = request.form['email']
-        senha = request.form['senha']
+        dados = request.get_json()
+        if not dados:
+            return jsonify({"erro": "Nenhum dado de usuário enviado"})
+
+        email = dados.get('email')
+        senha = dados.get('senha')
 
         usuario = banco.session.query(Usuario).filter_by(email=email, senha=senha).first()
 
         if usuario: #Se o usuario existir faz o login no site
             login_user(usuario)
-            return redirect(url_for('index'))
+            return  jsonify({"sucesso": "Usuário logado com sucesso!"})
 
-        else: #Se nao apenas redireciona para o login de novo
-            return redirect(url_for('login'))
+        else: #Se nao retorna um JSON com erro 
+            return jsonify({"erro": "E-mail ou senha incorretos!"})
 
 @app.route("/logout")
 @login_required
@@ -269,13 +346,82 @@ def recuperarSenha():
 def funcionalidades():
     return render_template('funcionalidades.html')
 
+# ROTAS PARA SALVAR OS RELATORIOS DE CONSULTAS
+UPLOAD_FOLDER = 'static/relatorios'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() == 'pdf'
+
+
+@app.route('/consulta/adicionar_pdf/<int:id_consulta>', methods=['POST'])
+@login_required
+def adicionar_pdf(id_consulta):
+    consulta = Consulta.query.get(id_consulta)
+    if not consulta:
+        return jsonify({"erro": "Consulta não encontrada"})
+
+    if 'pdf' not in request.files:
+        return jsonify({"erro": "Nenhum relatorio enviado"})
+
+    file = request.files['pdf']
+    if file.filename == '':
+        return jsonify({"erro": "Nenhum relatorio enviado"})
+
+    if not allowed_file(file.filename):
+        return jsonify({"erro": "Arquivo inválido, só PDFs são aceitos"})
+
+ 
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+    filename = f"consulta_{id_consulta}.pdf"
+    caminho = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    file.save(caminho)
+
+    # atualiza a consulta com o nome do PDF
+    consulta.relatorio = filename
+    banco.session.commit()
+
+    return jsonify({"sucesso": "PDF enviado com sucesso!"})
+
+@app.route('/consulta/baixar_pdf/<int:id_consulta>')
+@login_required
+def baixar_pdf(id_consulta):
+    consulta = Consulta.query.get(id_consulta)
+    if not consulta or not consulta.relatorio:
+        return jsonify({"erro": "PDF não encontrado"})
+
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], consulta.relatorio))
+
+
 @app.route("/consulta")
 def consulta():
     return render_template('consulta.html')
 
-@app.route("/consulta/minhasconsultas")
+@app.route("/consulta/minhasconsultas", methods = ['GET', 'POST', 'PUT'])
 def minhas_consultas():
-    return render_template('func-minha-consulta.html')
+    if request.method == 'GET':
+        return render_template('func-minha-consulta.html')
+    elif request.method == 'POST':
+        dados = request.get_json()
+        id_consulta = dados.get('id_consulta')
+
+        consultaExiste = Consulta.query.filter_by(
+            id = id_consulta
+        ).first()
+
+        if consultaExiste:
+            consulta = {
+                "id": consultaExiste.id,
+                "id_nutricionista": consultaExiste.id_nutricionista,
+                "id_paciente": consultaExiste.id_paciente,
+                "status": consultaExiste.status,
+                "data_hora": consultaExiste.data_hora.strftime("%Y-%m-%d %H:%M"),
+                "motivo": consultaExiste.motivo
+            }
+            return jsonify(consulta)
+        else:
+            return jsonify({"erro": "Consulta não encontrada"})
 
 @app.route("/consulta/agendar", methods = ['GET', 'POST'])
 def agendar_consulta():
@@ -299,8 +445,6 @@ def agendar_consulta():
         hora, minuto = map(int, horario_str.split(':'))
         data_hora = datetime.combine(datetime.strptime(dia_str, "%Y-%m-%d").date(), time(hora, minuto))
 
-
-
         consulta_existente = Consulta.query.filter_by(
             id_nutricionista=id_nutricionista,
             data_hora=data_hora
@@ -321,13 +465,47 @@ def agendar_consulta():
 
         return redirect(url_for('minhas_consultas'))
 
-@app.route("/gerenciarusuarios")
+@app.route("/consulta/atender/<int:id_consulta>", methods=['GET', 'PUT'])
+@login_required
+def atender_consulta(id_consulta):
+    if request.method == 'GET':
+        return render_template("func-atender-consulta.html")
+
+    elif request.method == 'PUT':
+        dados = request.get_json()
+        novo_status = dados.get('status')
+
+        consulta = Consulta.query.get(id_consulta)
+        if not consulta:
+            return jsonify({"erro": "Consulta não encontrada"})
+
+        consulta.status = novo_status
+        banco.session.commit()
+
+        return jsonify({"sucesso": f"Consulta {id_consulta} atualizada para '{novo_status}'"})
+
+@app.route("/gerenciarusuarios", methods=['GET', 'DELETE'])
 @login_required
 def gerenciarusuarios():
+    if request.method == 'GET':
+        return render_template('func-gerenciar-usuarios.html')
+    
+    elif request.method == 'DELETE':
+        dados = request.get_json()
+        if not dados or 'id' not in dados:
+            return jsonify({"erro": "ID do usuário não fornecido"})
 
-    return render_template('func-gerenciar-usuarios.html') 
+        usuario = Usuario.query.get(dados['id'])
+        if not usuario:
+            return jsonify({"erro": "Usuário não encontrado"})
 
+       
+        if usuario.id == current_user.id:
+            return jsonify({"erro": "Você não pode excluir a si mesmo"})
 
+        banco.session.delete(usuario)
+        banco.session.commit()
+        return jsonify({"sucesso": f"Usuário {usuario.nome} excluído com sucesso!"})
 @app.route("/loja")
 def loja():
     return render_template('loja.html')
@@ -437,7 +615,7 @@ def apihorarios():
         dados = request.get_json()
         return jsonify(vernutricionistas(dados))
 
-# Mini api para buscar as cosnsultas pelo id do usuário
+
 @app.route('/api/consulta/minhasconsultas/<int:id_usuario>', methods=['GET'])
 def apiminhasconsultas(id_usuario):
     consultas = Consulta.query.order_by(Consulta.data_hora.desc()).all()
@@ -467,7 +645,15 @@ def usuarioatual():
         "email": current_user.email,
         "nome": current_user.nome,
         "sobrenome": current_user.sobrenome,
-        "tipo": current_user.tipo
+        "tipo": current_user.tipo,
+        "data_nascimento": current_user.data_nascimento.strftime("%Y-%m-%d") if current_user.data_nascimento else None,
+        "telefone": current_user.telefone,
+        "genero": current_user.genero,
+        "codigo_ativacao": current_user.codigo_ativacao,
+        "idade": current_user.idade,
+        "peso": current_user.peso,
+        "altura": current_user.altura,
+        "doenca_cronica": current_user.doenca_cronica
     })
 
 # Mini api para retornar dados dos usuários do sistema em json
@@ -479,14 +665,23 @@ def gerenciarusuariosapi():
         usuarios = []
         for usuario in tabelaUsuarios:
             usuarios.append({
-                "id": usuario.id,
+               "id": usuario.id,
                 "email": usuario.email,
-                "tipo": usuario.tipo,
                 "nome": usuario.nome,
-                "sobrenome": usuario.sobrenome
+                "sobrenome": usuario.sobrenome,
+                "tipo": usuario.tipo,
+                "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d") if usuario.data_nascimento else None,
+                "telefone": usuario.telefone,
+                "genero": usuario.genero,
+                "codigo_ativacao": usuario.codigo_ativacao,
+                "idade": usuario.idade,
+                "peso": usuario.peso,
+                "altura": usuario.altura,
+                "doenca_cronica": usuario.doenca_cronica
             })
         return jsonify(usuarios)
 
+# Mini api para retornar dados de um usuario em específico em JSON
 @app.route("/api/usuario/<int:id_usuario>", methods=['GET'])
 @login_required
 def gerenciarusuariosapi_id(id_usuario):
@@ -505,13 +700,16 @@ def gerenciarusuariosapi_id(id_usuario):
         "telefone": usuario.telefone,
         "genero": usuario.genero,
         "codigo_ativacao": usuario.codigo_ativacao,
+        "idade": usuario.idade,
+        "peso": usuario.peso,
+        "altura": usuario.altura,
+        "doenca_cronica": usuario.doenca_cronica
     }
 
     return jsonify(dados_usuario)
 
 
 # CODIGOS PARA RODAR O SERVIDOR DO FLASK
-
 if __name__ == '__main__':
     with app.app_context(): # isso aqui cria o banco de dados
         banco.create_all()

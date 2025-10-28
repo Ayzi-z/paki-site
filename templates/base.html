@@ -28,9 +28,9 @@
               
               <a href="{{url_for ('sobremim')}}" class="area-usuario-header">
                 <i class="fa fa-user"></i>
-                <h1>Ronaldo</h1>
-                <h2 class="tipo-usuario">Paciente</h2>
-                <a href="/logout">Sair</a>
+                <h1>{{current_user.nome}}</h1>
+                <h2 class="tipo-usuario">{{current_user.tipo}}</h2>
+                    <div href="/logout">Sair</div>
               </a>
             </div>
             
