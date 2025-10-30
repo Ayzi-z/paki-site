@@ -2,16 +2,14 @@
     {% extends 'base.html'%}
     {% block conteudoPagina%}
         <main>      
-            {% if tipo_site == 'nutricionista' %}     
+               
             <div class="container-tabela-gerencia">
                 <div class="cabecalho-gerenciamento">
                     <h1 class="section-title">Minhas Consultas</h1>
                 </div>
 
                 <div class="filtros-tabela">
-                    <button class="filtro-botao ativo" data-filtro="todos">Todas</button>
-                    <button class="filtro-botao" data-filtro="concuida">Concluídas</button>
-                    <button class="filtro-botao" data-filtro="pendente">Pendentes</button>
+               
                 </div>
 
                 <div class="tabela" id="tabela-consultas">
@@ -29,36 +27,15 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="cards-tabela" id="lista-consultas-cards">
+                </div>  
             </div>
 
-            {% elif tipo_site == 'paciente' %}
-            <div class="container-tabela-gerencia">
-                <div class="cabecalho-gerenciamento">
-                    <h1 class="section-title">Minhas Consultas</h1>
-                </div>
-
-                <div class="filtros-tabela">
-                    <button class="filtro-botao ativo" data-filtro="todos">Todas</button>
-                    <button class="filtro-botao" data-filtro="concuida">Concluídas</button>
-                    <button class="filtro-botao" data-filtro="pendente">Pendentes</button>
-                </div>
-
-                <div class="tabela" id="tabela-consultas">
-                    <table >
-                        <thead>
-                            <tr>
-                                <th>Médico Responsável<th>
-                                <th>Status</th>
-                                <th>Data e Hora</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        
-                        </tbody>
-                    </table>
-                </div>
+            <div>
+                 <button id="botao-tema">🌙</button>
             </div>
-            {% endif %}
+
+           
         </main>
     {% endblock %}

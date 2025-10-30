@@ -25,6 +25,7 @@ header {
     align-items: center;
     flex-direction: column;
     gap: 5px;
+    z-index: 9999
 }
 
 .menu_nav {
@@ -107,7 +108,8 @@ header {
 /* 📌 ÁREA USUÁRIO */
 /* ============================= */
 
-.area-usuario-header{
+
+.area-usuario-header {
     position: absolute;
     right: 10px;
     top: 50%;
@@ -117,30 +119,53 @@ header {
     flex-direction: column;
     align-items: center;
     gap: 5px;
-    background: rgba(0, 194, 97, 0.637);
-    color: #fff;
-    padding: 8px 20px;
+    max-width: 100%;
+    max-height: 90%;
+}
+
+.area-usuario-header #area-sobremim {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 8px;
     border-radius: 10px;
     font-weight: 600;
-    transition: background 0.2s, color 0.2s;
+    color: #fff;
+    text-decoration: none;
     cursor: pointer;
-    top: 50%;
-    transform: translateY(-50%);
+    transition: background 0.2s, color 0.2s;
+    background-color: rgb(60, 199, 113);
+    max-width: 100%;
+    max-height: 20%
 }
 
-.area-usuario-header h1, h2{
-    font-size: 1rem;
+#area-sobremim h1, h2{
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.area-usuario-header i {
+#area-sobremim i {
     font-size: 1.2rem;
 }
 
-.area-usuario-header:hover {
-    background: #02d4d4;
+#area-sobre-mim:hover {
     color: #222;
 }
 
+#area-logout {
+  background-color: #e74c3c;
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+  width: 80%;
+}
+
+#area-logout:hover {
+  background-color: #c0392b;
+}
 /* ============================= */
 /* 📌 FOOTER */
 /* ============================= */
@@ -911,6 +936,7 @@ blockquote cite {
     flex-direction: column;
     gap: 10px;
     padding-top: 20px;
+    margin-bottom: 50px;
 }
 .controles-slider{
     width: 60%;
@@ -1059,7 +1085,7 @@ blockquote cite {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;           
-    justify-content: flex-start; 
+    justify-content: center; 
     width: auto;    
 }
 
@@ -1076,7 +1102,7 @@ blockquote cite {
    
 }
 
-.lista-horarios .horario-label:hover{
+.lista-horarios .horario-label:hover{   
     background:  #07eeee;;
 }
 
@@ -1360,12 +1386,22 @@ blockquote cite {
     align-items: center;
 }
 
+.container-tabela-gerencia .acoes-tabela{
+    display: flex;
+    gap: 10px;
+}
+
 .cabecalho-gerenciamento {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
     margin-bottom: 2rem;
     flex-wrap: wrap;
+}
+
+.cabecalho-gerenciamento h1{
+    margin-bottom: 0;
 }
 
 .barra-pesquisa-usuarios {
@@ -1424,6 +1460,7 @@ blockquote cite {
 
 .container-tabela-gerencia thead tr{
     background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+  
 }
 .container-tabela-gerencia table th {
     color: white;
@@ -1448,6 +1485,7 @@ blockquote cite {
     border-radius: 12px;
     font-size: 12px;
     font-weight: 600;
+    max-width: 100px;
 }
 
 .badge-nutricionista {
@@ -1466,9 +1504,9 @@ blockquote cite {
 }
 
 .status-ativo {
-    color: #28a745;
+    color: #1fc190;
     font-weight: 600;
-}
+}   
 
 .status-inativo {
     color: #dc3545;
@@ -1553,9 +1591,12 @@ blockquote cite {
         display: block;
     }
     .container-tabela-gerencia {
-        margin-top: 80px;
         padding: 1rem;
     }
+    .cabecalho-gerenciamento h1 {
+        font-size: 25px;
+    }
+
 
     .card-tabela {
         display: grid;
@@ -2030,7 +2071,6 @@ body.escuro .card-acoes {
 }
 
 #formulario-cadastro {
-    background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
     padding: 40px;
     width: 100%;
@@ -2122,15 +2162,47 @@ body.escuro .card-acoes {
     text-decoration: underline;
 }
 
+.formulario-seguranca .grupo-dias {
+    display: flex;
+    flex-wrap: wrap;  
+    gap: 10px;
+    justify-content: center;  
+    align-items: center;
+}
 
-#grupo-dias-trabalho label {
-    display: flex;             
+.grupo-dias label{
+    background: red;
+    padding: 4px 8px;
+    width: 80px;
+    border-radius: 5px;
+}
+.grupo-dias label input[type="checkbox"] {
+    display: none;
+}
+.grupo-dias label:has(input:checked) {
+  
+  
+  border-radius: 6px;
+  padding: 4px 8px;
+  width: 80px;
+background: linear-gradient(90deg, rgba(60, 199, 113, 1) 0%, rgba(100, 219, 175, 1) 100%);
+    
+}
+
+.formulario-seguranca .grupo-dias label {
+    display: flex; 
+    flex-direction: column;            
     align-items: center;       
     gap: 10px;                  
     font-size: 14px;
     cursor: pointer;
 }
 
+#grupo-dias-trabalho label{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 #grupo-dias-trabalho input[type="checkbox"] {
     width: 25px;
     height: 20px;
@@ -2424,6 +2496,9 @@ body.escuro .msg-sem-produto{
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     font-family: Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden; 
 }
 
 .perfil-header {
@@ -2479,10 +2554,7 @@ body.escuro .msg-sem-produto{
     margin-top: 8px;
 }
 
-.status {
-    font-size: 14px;
-    display: inline-block;
-}
+
 
 .status.ativo {
     color: green;
@@ -2558,82 +2630,6 @@ body.escuro .msg-sem-produto{
     cursor: pointer;
 }
 
-/* === ABA ADMIN === */
-#aba-admin {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.botao-admin {
-    display: inline-block;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    text-align: center;
-}
-
-.area-usuario-header {
-  background-color: #24c78e;
-  border-radius: 10px;
-  padding: 10px 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  color: #fff;
-  width: fit-content;
-}
-
-.link-usuario {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: inherit;
-}
-
-.icone-usuario {
-  font-size: 28px;
-  margin-bottom: 5px;
-}
-
-.info-usuario {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.info-usuario h1 {
-  font-size: 1rem;
-  font-weight: bold;
-  text-decoration: underline;
-  margin: 2px 0;
-}
-
-.tipo-usuario {
-  color: #2c2c2c;
-  font-weight: 600;
-  margin: 2px 0;
-}
-
-.botao-sair {
-  margin-top: 6px;
-  background-color: #e74c3c;
-  color: #fff;
-  font-size: 0.8rem;
-  padding: 3px 10px;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-
-.botao-sair:hover {
-  background-color: #c0392b;
-}
 
 /* ============================= */
 /* 📌 RESPONSIVIDADES */
@@ -2645,8 +2641,8 @@ body.escuro .msg-sem-produto{
     /* MAIN */
       main {
         flex-direction: column;
-        padding-top: 145px;
-        min-height: 60%;
+        padding-top: 120px;
+        min-height: 65vh;
       }
     
       /* HERO */
@@ -2941,10 +2937,15 @@ body.escuro .msg-sem-produto{
     }
 
     .area-usuario-header {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 2;
+        width: 100px;
+    }
+    
+    #area-sobremim h1{
+        font-size: 14px;
+    }
+
+    #area-sobremim h2{
+        font-size: 14px;
     }
 
     .logo_paki {
@@ -3081,6 +3082,11 @@ body.escuro .msg-sem-produto{
     /*Responsividade Mensagem Pop Up*/
     .mensagem-popup{
         width: 90%;
+    }
+
+    .container-perfil-usuario{
+        margin-top: 0;
+        background-color: red;
     }
 }
 
@@ -3274,19 +3280,7 @@ header {
     background: #fff;
 }
 
- 
 
-/* ============================= */
-/* 📌 ESTILIZAÇÃO PAGINA DO PERFIL */
-/* ============================= */
-
-.container-perfil-usuario {
-    max-width: 1000px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    font-family: Arial, sans-serif;
-}
 
 
 
@@ -3318,11 +3312,9 @@ header {
     color: gray;
 }
 
-
-
-/* === ABAS === */
 .abas-perfil {
     display: flex;
+    justify-content: center;
     gap: 10px;
     margin-bottom: 20px;
 }
@@ -3544,24 +3536,6 @@ body.escuro .email-usuario {
 }
 
 
-
-
-/* ============================= */
-/* 📌 CORREÇÕES ESPECÍFICAS PARA PÁGINA SOBRE USUÁRIO */
-/* ============================= */
-
-.container-perfil-usuario {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    font-family: Arial, sans-serif;
-    width: 100%;
-    box-sizing: border-box;
-    overflow: hidden; /* Impede que conteúdo saia do container */
-}
 
 
 
@@ -3801,9 +3775,6 @@ body.escuro .email-usuario {
         gap: 12px;
     }
 
-
-
-/* Modo escuro */
 body.escuro .container-perfil-usuario {
     background: #333;
     color: #f0f0f0;

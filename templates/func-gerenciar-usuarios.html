@@ -6,7 +6,7 @@
 <main>
     <div class="container-tabela-gerencia">
         <div class="cabecalho-gerenciamento">
-            <h1>Gerenciar Usuários</h1>
+            <h1 class="section-title">Gerenciar Usuários</h1>
             <div class="barra-pesquisa-usuarios">
                 <input type="text" placeholder="Pesquisar usuários..." id="input-pesquisa-usuarios">
                 <button class="botao-pesquisa">🔍</button>
@@ -40,40 +40,12 @@
         </div> 
 
         <div class="cards-tabela" id="lista-usuarios-cards">
-            <div class="card-tabela">
-                <div class="card-header">
-                    <div class="card-info">
-                        <h3>Admin Geral</h3>
-                        <div class="card-tipo">Admin</div>
-                    </div>
-                </div>
-                
-                <div class="card-detalhes">
-                    <div class="card-detalhe">
-                        <span class="card-label">Email</span>
-                        <span class="card-valor">adminsdopaki@admin.com</span>
-                    </div>
-                    <div class="card-detalhe">
-                        <span class="card-label">Tipo</span>
-                        <span class="card-badge badge-admin">Admin</span>
-                    </div>
-                    <div class="card-detalhe">
-                        <span class="card-label">Status</span>
-                        <span class="card-valor status-ativo">Ativo</span>
-                    </div>
-                
-                </div>
-                
-                <div class="card-acoes">
-                    <a href="/sobremim?id=1" class="card-botao visualizar">👁️ Visualizar</a>
-                    <button class="card-botao excluir" onclick="excluirUsuario(1, 'Admin Geral')">🗑️ Excluir</button>
-                </div>
-            </div>
+          
         </div>  
 
 
         <div>
-        <button id="botao-tema">🌙</button>
+            <button id="botao-tema">🌙</button>
         </div>
     </div>   
 </main>

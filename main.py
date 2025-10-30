@@ -227,8 +227,17 @@ def sobremim():
             try:
                 usuario.data_nascimento = datetime.strptime(novaDataNascimento, "%Y-%m-%d").date()
             except ValueError:
-                return jsonify({"erro": "Formato de data inválido (use YYYY-MM-DD)"}), 400
+                return jsonify({"erro": "Formato de data inválido (use YYYY-MM-DD)"})
+        if usuario.tipo == 'nutricionista':
+            dias_trabalho = dados.get('dias_trabalho', [])
+            escala = Escala.query.filter_by(nutricionista_id=usuario.id).first()
+            if escala:
+                escala.dias_trabalho = dias_trabalho
+            else:
+                nova_escala = Escala(nutricionista_id=usuario.id, dias_trabalho=dias_trabalho)
+                banco.session.add(nova_escala)
 
+        
         banco.session.commit()
         
         return jsonify({"sucesso": "Informações atualizadas com sucesso!"})
@@ -640,7 +649,7 @@ def apiminhasconsultas(id_usuario):
 @app.route('/api/usuarioatual')
 @login_required 
 def usuarioatual():
-    return jsonify({
+    dados_usuario = {
         "id": current_user.id,
         "email": current_user.email,
         "nome": current_user.nome,
@@ -654,7 +663,12 @@ def usuarioatual():
         "peso": current_user.peso,
         "altura": current_user.altura,
         "doenca_cronica": current_user.doenca_cronica
-    })
+    }
+    if current_user.tipo == 'nutricionista':
+        escala = Escala.query.filter_by(nutricionista_id=current_user.id).first()
+        dados_usuario["dias_trabalho"] = escala.dias_trabalho if escala else []
+    return jsonify(dados_usuario)
+
 
 # Mini api para retornar dados dos usuários do sistema em json
 @app.route("/api/gerenciarusuarios", methods = ['GET'])

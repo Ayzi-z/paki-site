@@ -279,13 +279,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if ((perguntaAtual + 1) >= qntPerguntas){
             btnAvancar.style.display = "none"
 
-            function resumoConsulta(){
+            async function resumoConsulta(){
                 if (document.querySelector('#pergunta-resumo button')){
                     return
                 }
                 const botaoagendar = document.createElement('button')
                 const resumoConsulta = document.querySelector('#pergunta-resumo')
-                const nome = resumoConsulta.querySelector('#nome')
+                const nomeTexto = resumoConsulta.querySelector('#nome')
+                const idTexto = resumoConsulta.querySelector('#id_medico')
                 const dataTexto = resumoConsulta.querySelector('#data')
                 const horaTexto = resumoConsulta.querySelector('#hora')
                 const motivo = resumoConsulta.querySelector('#motivo')
@@ -294,6 +295,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const hora = novaConsulta.data_hora[data][0];
 
                 motivo.textContent = `${novaConsulta.motivo}`
+
+                const idNutricionista = novaConsulta.id_nutricionista;
+                const resNutri = await fetch(`/api/usuario/${idNutricionista}`);
+                const nutricionista = await resNutri.json();
+                nomeTexto.textContent = `${nutricionista.nome} ${nutricionista.sobrenome}`
+                idTexto.textContent = nutricionista.id
+                
                 dataTexto.textContent = data;
                 horaTexto.textContent = hora;
 
@@ -626,25 +634,41 @@ async function agendarConsulta(event){
 /* ============================= */
 
 /*Funcao para listar consultas do nutricionista e do paciente */
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const tabelaConsultas = document.getElementById('tabela-consultas')
-    
     if (tabelaConsultas){
         const tbody = tabelaConsultas.querySelector('tbody')
+        configurarFiltros(tabela = 'consultas')
+        
+        
         async function listarconsultas(){
+        
+            
+         tbody.innerHTML = ''
+         const listaCards = document.getElementById('lista-consultas-cards');
+         if (listaCards) listaCards.innerHTML = '';
+        
          const dados_usuario = await fetch(`/api/usuarioatual`)
          const usuario = await dados_usuario.json()
          const dados_consultas = await fetch(`/api/consulta/minhasconsultas/${usuario.id}`)
          const consultas = await dados_consultas.json()
          console.log("Consultas encontradas:", consultas)
 
+
         for (const consulta of consultas) {
+            
             const tr = document.createElement('tr');
             const status = document.createElement('td');
             const data = document.createElement('td');
             const acoes = document.createElement('td');
 
+            acoes.classList.add('acoes-tabela')
+
+            /*Criando a tabela*/
             if (usuario.tipo === 'paciente') {
+
                 const idNutricionista = consulta.id_nutricionista;
                 const resNutri = await fetch(`/api/usuario/${idNutricionista}`);
                 const nutricionista = await resNutri.json();
@@ -653,6 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nomeNutricionista.textContent = `${nutricionista.nome} ${nutricionista.sobrenome}`;
 
                 status.textContent = consulta.status.toUpperCase();
+                status.classList.add('status')
                 data.textContent = consulta.data_hora;
 
                 const btnVisulizar = document.createElement('button');
@@ -661,7 +686,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (consulta.status === 'concluida') {
                     status.classList.add('status-ativo');
                     btnVisulizar.textContent = '👁️';
-                    btnVisulizar.classList.add('botao-acao')
+                    btnVisulizar.classList.add('botao-acao', 'botao-visualizar')
+
                     /*Função para baixar o relatorio PDF da consulta*/
                     btnVisulizar.addEventListener('click', async () => {
                         try {
@@ -681,11 +707,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
                     acoes.appendChild(btnVisulizar);
-                    acoes.appendChild(btnVisulizar);
+
                 }
                 if (consulta.status === 'pendente') {
                     status.classList.add('status-inativo');
                     btnCancelar.textContent = '🚫';
+                    btnCancelar.classList.add('botao-acao', 'botao-excluir')
+                   
                     acoes.appendChild(btnCancelar);
                 }
 
@@ -694,6 +722,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.appendChild(data);
                 tr.appendChild(acoes);
                 tbody.appendChild(tr);
+
             } else if (usuario.tipo === 'nutricionista') {
                 const idPaciente = consulta.id_paciente;
                 const resPaciente = await fetch(`/api/usuario/${idPaciente}`);
@@ -703,6 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nomePaciente.textContent = `${paciente.nome} ${paciente.sobrenome}`;
 
                 status.textContent = consulta.status.toUpperCase();
+                status.classList.add('status')
                 data.textContent = consulta.data_hora;
 
                 const btnVisulizar = document.createElement('button');  
@@ -713,6 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     status.classList.add('status-ativo');
                     btnVisulizar.classList.add('botao-acao')
                     btnVisulizar.textContent = '👁️';
+                    btnVisulizar.classList.add('botao-visualizar')
                     acoes.appendChild(btnVisulizar);
 
                     btnVisulizar.addEventListener('click', async () => {
@@ -741,6 +772,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     btnCancelar.textContent = '🚫';
                     btnAtender.textContent = '📝'
 
+                    btnCancelar.classList.add('botao-acao', 'botao-excluir')
+                    btnAtender.classList.add('botao-acao', 'botao-editar')
+
+
                     btnAtender.addEventListener('click', () => {
                         atenderConsulta(consulta.id);
                     });
@@ -754,6 +789,251 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.appendChild(data);
                 tr.appendChild(acoes);
                 tbody.appendChild(tr);
+
+                
+            }
+
+            /*Criando os cards*/
+            if (window.innerWidth < 1150) {
+                console.log('cards')    
+            
+                const card = document.createElement('div');
+                const cardHeader = document.createElement('div');
+                const cardDetalhes = document.createElement('div');
+                const cardAcoes = document.createElement('div');
+            
+                
+                if (usuario.tipo == 'nutricionista') {
+                    const listaCards = document.getElementById('lista-consultas-cards');
+
+                    const idPaciente = consulta.id_paciente;
+                    const resPaciente = await fetch(`/api/usuario/${idPaciente}`);
+                    const paciente = await resPaciente.json();
+
+              
+    
+                    const infosNutricionista = document.createElement('div');
+
+                
+                    const nomePaciente = document.createElement('h3');
+                    const tipoPaciente = document.createElement('div');
+
+                    nomePaciente.textContent = `${paciente.nome} ${paciente.sobrenome}`;
+                    tipoPaciente.textContent = paciente.tipo;
+                  
+                    infosNutricionista.appendChild(tipoPaciente);
+                    infosNutricionista.appendChild(nomePaciente);
+                    
+
+                    
+                    cardHeader.appendChild(infosNutricionista);
+                    
+             
+                    const detalheData = document.createElement('div');
+                    const labelData = document.createElement('span');
+                    const valorData = document.createElement('span');
+
+                    labelData.textContent = 'Data';
+                    valorData.textContent = consulta.data_hora;
+
+                    detalheData.classList.add('card-detalhe');
+                    labelData.classList.add('card-label');
+                    valorData.classList.add('card-valor');
+
+                    detalheData.appendChild(labelData);
+                    detalheData.appendChild(valorData);
+                    cardDetalhes.appendChild(detalheData);
+                    
+                    tipoPaciente.classList.add('card-tipo');
+                
+              
+                    const detalheStatus = document.createElement('div');
+                    const labelStatus = document.createElement('span');
+                    const valorStatus = document.createElement('span');
+
+                    labelStatus.textContent = 'Status';
+                    valorStatus.textContent = consulta.status;
+
+                    detalheStatus.classList.add('card-detalhe');
+                    labelStatus.classList.add('card-label');
+
+                    detalheStatus.appendChild(labelStatus);
+                    detalheStatus.appendChild(valorStatus);
+                    cardDetalhes.appendChild(detalheStatus);
+
+                    if (consulta.status == 'pendente'){
+                        valorStatus.classList.add('status','status-inativo')
+                        const botaoCancelar = document.createElement('button');
+                        botaoCancelar.textContent = '🚫 Cancelar';
+                        botaoCancelar.classList.add('card-botao', 'botao-excluir');
+                        botaoCancelar.setAttribute('onclick', `cancelarConsulta(${consulta.id})`)
+
+                        const botaoAtender = document.createElement('button');
+                        botaoAtender.textContent = '📝 Atender';
+                        botaoAtender.classList.add('card-botao', 'botao-editar');
+                        botaoAtender.setAttribute('onclick', `cancelarConsulta(${consulta.id})`);
+
+                        botaoAtender.addEventListener('click', () => {
+                            atenderConsulta(consulta.id);
+                        });
+                        
+                        cardAcoes.appendChild(botaoCancelar);
+                        cardAcoes.appendChild(botaoAtender)
+                    }  else if (consulta.status == 'concluida'){
+                        valorStatus.classList.add('status','status-ativo')
+                        
+                        const botaoVisualizar = document.createElement('button');
+                        botaoVisualizar.textContent = '👁️ Visualizar Relatório';
+                        botaoVisualizar.classList.add('card-botao', 'botao-visualizar');
+
+
+                        botaoVisualizar.addEventListener('click', async () => {
+                            try {
+                                const res = await fetch(`/consulta/baixar_pdf/${consulta.id}`);
+                                if (!res.ok) return mensagem_popup('Erro ao baixar PDF.', 'erro');
+
+                                const blob = await res.blob();
+                                const url = URL.createObjectURL(blob);
+                                const a = Object.assign(document.createElement('a'), {
+                                    href: url,
+                                    download: `relatorio_consulta_${consulta.id}.pdf`
+                                });
+                                a.click();
+                                URL.revokeObjectURL(url);
+                            } catch {
+                                mensagem_popup('Erro ao baixar PDF.', 'erro');
+                            }
+                        });
+                        
+                        cardAcoes.appendChild(botaoVisualizar)
+                    }
+                   
+
+              
+                    tipoPaciente.classList.add('card-tipo');
+                    card.classList.add('card-tabela');
+                    cardHeader.classList.add('card-header');
+                    cardDetalhes.classList.add('card-detalhes');
+                    infosNutricionista.classList.add('card-info');
+                    cardAcoes.classList.add('card-acoes');
+
+                   
+                    card.appendChild(cardHeader);
+                    card.appendChild(cardDetalhes);
+                    card.appendChild(cardAcoes);
+                    listaCards.appendChild(card);
+                }  if (usuario.tipo == 'paciente') {
+                    const listaCards = document.getElementById('lista-consultas-cards');
+
+                    const idNutricionista = consulta.id_nutricionista;
+                    const resNutricionista = await fetch(`/api/usuario/${idNutricionista}`);
+                    const nutricionista = await resNutricionista.json();
+
+              
+    
+                    const infosNutricionista = document.createElement('div');
+
+                
+                    const nomeNutricionista= document.createElement('h3');
+                    const tipoNutricionista = document.createElement('div');
+
+                    nomeNutricionista.textContent = `${nutricionista.nome} ${nutricionista.sobrenome}`;
+                    tipoNutricionista.textContent = nutricionista.tipo;
+                  
+                    infosNutricionista.appendChild(tipoNutricionista);
+                    infosNutricionista.appendChild(nomeNutricionista);
+                    
+
+                    
+                    cardHeader.appendChild(infosNutricionista);
+                    
+             
+                    const detalheData = document.createElement('div');
+                    const labelData = document.createElement('span');
+                    const valorData = document.createElement('span');
+
+                    labelData.textContent = 'Data';
+                    valorData.textContent = consulta.data_hora;
+
+                    detalheData.classList.add('card-detalhe');
+                    labelData.classList.add('card-label');
+                    valorData.classList.add('card-valor');
+
+                    detalheData.appendChild(labelData);
+                    detalheData.appendChild(valorData);
+                    cardDetalhes.appendChild(detalheData);
+                    
+                    tipoNutricionista.classList.add('card-tipo');
+                
+              
+                    const detalheStatus = document.createElement('div');
+                    const labelStatus = document.createElement('span');
+                    const valorStatus = document.createElement('span');
+
+                    labelStatus.textContent = 'Status';
+                    valorStatus.textContent = consulta.status;
+
+                    detalheStatus.classList.add('card-detalhe');
+                    labelStatus.classList.add('card-label');
+
+                    detalheStatus.appendChild(labelStatus);
+                    detalheStatus.appendChild(valorStatus);
+                    cardDetalhes.appendChild(detalheStatus);
+
+                    if (consulta.status == 'pendente'){
+                        valorStatus.classList.add('status','status-inativo')
+                        const botaoCancelar = document.createElement('button');
+                        botaoCancelar.textContent = '🚫 Cancelar';
+                        botaoCancelar.classList.add('card-botao', 'botao-excluir');
+                        botaoCancelar.setAttribute('onclick', `cancelarConsulta(${consulta.id})`)
+                        
+                        cardAcoes.appendChild(botaoCancelar);
+                      
+                    }  else if (consulta.status == 'concluida'){
+                        valorStatus.classList.add('status','status-ativo')
+                        
+                        const botaoVisualizar = document.createElement('button');
+                        botaoVisualizar.textContent = '👁️ Visualizar Relatório';
+                        botaoVisualizar.classList.add('card-botao', 'botao-visualizar');
+
+
+                        botaoVisualizar.addEventListener('click', async () => {
+                            try {
+                                const res = await fetch(`/consulta/baixar_pdf/${consulta.id}`);
+                                if (!res.ok) return mensagem_popup('Erro ao baixar PDF.', 'erro');
+
+                                const blob = await res.blob();
+                                const url = URL.createObjectURL(blob);
+                                const a = Object.assign(document.createElement('a'), {
+                                    href: url,
+                                    download: `relatorio_consulta_${consulta.id}.pdf`
+                                });
+                                a.click();
+                                URL.revokeObjectURL(url);
+                            } catch {
+                                mensagem_popup('Erro ao baixar PDF.', 'erro');
+                            }
+                        });
+                        
+                        cardAcoes.appendChild(botaoVisualizar)
+                    }
+                   
+
+              
+                    tipoNutricionista.classList.add('card-tipo');
+                    card.classList.add('card-tabela');
+                    cardHeader.classList.add('card-header');
+                    cardDetalhes.classList.add('card-detalhes');
+                    infosNutricionista.classList.add('card-info');
+                    cardAcoes.classList.add('card-acoes');
+
+                   
+                    card.appendChild(cardHeader);
+                    card.appendChild(cardDetalhes);
+                    card.appendChild(cardAcoes);
+                    listaCards.appendChild(card);
+                }
+
             }
         }
 
@@ -763,6 +1043,15 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = window.location.href = `/consulta/atender/${id}`
         }
 
+        window.addEventListener('resize', () => {
+     
+            clearTimeout(window.resizeTimeout);
+
+    
+            window.resizeTimeout = setTimeout(() => {
+                listarconsultas();
+            }, 200)
+        })
         listarconsultas()    
     }
 
@@ -887,7 +1176,7 @@ async function concluirConsulta(id) {
         if (statusData.erro) {
             mensagem_popup(statusData.erro, 'erro');
         } else {
-            mensagem_popup('Consulta concluída com sucesso!', 'sucesso');
+            window.location.href = '/consulta/minhasconsultas'
         }
 
     } catch (error) {
@@ -934,6 +1223,53 @@ function carregardadosUsuario(){
             const inputGenero = document.getElementById('genero')
 
             const inputEmail = document.getElementById('email')
+
+            const formulario = document.querySelector('.formulario-seguranca')
+            
+            if (usuario.tipo == 'nutricionista'){
+                if (!formulario.querySelector('.grupo-dias')) {
+                    const diasSemana = ['segunda', 'terça', 'quarta', 'quinta', 'sexta']
+                   
+                    
+                    const grupo = document.createElement('div')
+                    grupo.classList.add('grupo-formulario')
+            
+                    
+                    const labelTitulo = document.createElement('label')
+                    labelTitulo.textContent = 'Altere sua escala de trabalho:'
+                    
+                    const grupoDias = document.createElement('div')
+                    grupoDias.classList.add('grupo-dias')
+
+                    grupo.appendChild(labelTitulo)
+        
+                    diasSemana.forEach(dia => {
+                        const input = document.createElement('input');
+                    
+                        input.type = 'checkbox';
+                        input.name = 'dias';
+                        input.value = dia;
+                        input.id = `dia-${dia}`;
+                        
+                        if (usuario.dias_trabalho && usuario.dias_trabalho.includes(dia)) {
+                            input.checked = true;
+                        }
+                        const label = document.createElement('label');
+                        label.setAttribute('for', input.id);
+                        label.textContent = dia.charAt(0).toUpperCase() + dia.slice(1)
+
+                        label.appendChild(input)
+                        grupoDias.appendChild(label)
+            
+                    
+                    });
+                    
+                    const botao = formulario.querySelector('button'); 
+                    formulario.insertBefore(grupo, botao); 
+                    grupo.appendChild(grupoDias)
+                   
+                }
+            }
             
             inputNome.value = usuario.nome
             inputSobrenome.value = usuario.sobrenome
@@ -961,6 +1297,7 @@ function carregardadosUsuario(){
             const dadosForm= new FormData(formDadosPessoais);
             const dados = Object.fromEntries(dadosForm.entries());
 
+
             console.log("Dados enviados:", dados);
             
             fetch('/sobremim', {
@@ -984,10 +1321,14 @@ function carregardadosUsuario(){
     const formSeguranca = document.querySelector('.formulario-seguranca')
     if(formSeguranca){
         formSeguranca.addEventListener('submit', function (event) {
-            event.preventDefault(); 
-            const dadosForm= new FormData(formSeguranca);
-            const dados = Object.fromEntries(dadosForm.entries());
+            event.preventDefault()
+            const dadosForm= new FormData(formSeguranca)
+            const dados = Object.fromEntries(dadosForm.entries())
 
+            const diasCheckbox = formSeguranca.querySelectorAll('input[name="dias"]:checked')
+            const dias_trabalho = Array.from(diasCheckbox).map(cb => cb.value)
+            
+            dados.dias_trabalho = dias_trabalho
             console.log("Dados enviados:", dados);
             
             fetch('/sobremim', {
@@ -1048,14 +1389,11 @@ function configurarAbasPerfil() {
         ],
         'nutricionista': [
             { id: 'dados', texto: 'Dados Pessoais' },
-            { id: 'profissional', texto: 'Informações Profissionais' },
             { id: 'seguranca', texto: 'Segurança' }
         ],
         'admin': [
             { id: 'dados', texto: 'Dados Pessoais' },
-            { id: 'profissional', texto: 'Informações Profissionais' },
-            { id: 'seguranca', texto: 'Segurança' },
-            { id: 'admin', texto: 'Administração' }
+            { id: 'seguranca', texto: 'Segurança' }
         ]
     };
     
@@ -1083,8 +1421,8 @@ function configurarAbasPerfil() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (document.querySelector('.container-perfil-usuario')) {
-        configurarAbasPerfil();
+    if (document.querySelector('.container-perfil-usuario') ) {
+        configurarAbasPerfil()
     }
 });
 
@@ -1115,7 +1453,6 @@ function obterTipoUsuario() {
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('tabela-usuarios')) {
         carregarUsuarios();
-        configurarFiltros();
         configurarPesquisa();
     }
 });
@@ -1136,9 +1473,10 @@ async function carregarUsuarios() {
 function preenchertabelaUsuarios(usuarios) {
     configurarFiltros(tabela = 'usuarios')
 
-    const tbody = document.querySelector('#corpo-tabela-usuarios');
-    const cardsContainer = document.querySelector('#lista-usuarios-cards');
-
+    const tbody = document.querySelector('#corpo-tabela-usuarios')
+    const listaCards = document.getElementById('lista-usuarios-cards')
+    
+    listaCards.innerHTML = ''
     tbody.innerHTML = ''
     usuarios.forEach(usuario => {
         const linha = document.createElement('tr');
@@ -1204,10 +1542,9 @@ function preenchertabelaUsuarios(usuarios) {
 
         
         /*Criando cards para mobile*/
+   
         if (window.innerWidth < 1150) {
-            const listaCards = document.getElementById('lista-usuarios-cards');
 
-           
             const card = document.createElement('div');
             const cardHeader = document.createElement('div');
             const cardDetalhes = document.createElement('div');
@@ -1317,6 +1654,13 @@ function preenchertabelaUsuarios(usuarios) {
 
 }
 
+
+window.addEventListener('resize', () => {
+    if (document.getElementById('tabela-usuarios')){
+        carregarUsuarios(); 
+    }
+})
+
 function configurarFiltros(tabela) {
 
     if (tabela== 'usuarios'){
@@ -1333,7 +1677,8 @@ function configurarFiltros(tabela) {
         const nutricionistas = document.createElement('button')
         const administradores = document.createElement('button')
 
-        todos.classList.add('filtro-botao');
+        todos.classList.add('filtro-botao')
+        todos.classList.add('ativo')
         pacientes.classList.add('filtro-botao');
         nutricionistas.classList.add('filtro-botao');
         administradores.classList.add('filtro-botao');
@@ -1365,8 +1710,46 @@ function configurarFiltros(tabela) {
                 
             });
         });
+    } else if (tabela == 'consultas'){
+        const containerFiltros = document.querySelector('.filtros-tabela')
+
+        const filtrosExistentes = document.querySelectorAll('.filtro-botao')
+
+        if (filtrosExistentes.length > 0){
+            return
+        }
+        
+        const todas = document.createElement('button')
+        const concluidas = document.createElement('button')
+        const pendentes = document.createElement('button')
+
+        todas.classList.add('filtro-botao')
+        todas.classList.add('ativo')
+        concluidas.classList.add('filtro-botao')
+        pendentes.classList.add('filtro-botao')
+  
+        todas.textContent = 'Todas'
+        todas.addEventListener('click', () => filtrarTabela('todas', 'consultas'))
+
+        pendentes.textContent = 'Pendentes'
+        pendentes.addEventListener('click', () => filtrarTabela('pendentes', 'consultas'))
+
+        concluidas.textContent = 'Conluídas'
+        concluidas.addEventListener('click', () => filtrarTabela('concluidas', 'consultas'))
+
+        containerFiltros.appendChild(todas)
+        containerFiltros.appendChild(pendentes)
+        containerFiltros.appendChild(concluidas)
+        botoesFiltro = document.querySelectorAll('.filtro-botao')
+        
+        botoesFiltro.forEach(botao => {
+            botao.addEventListener('click', function() {
+                botoesFiltro.forEach(b => b.classList.remove('ativo'))
+                this.classList.add('ativo')
+                
+            });
+        });
     }
-    
 }
 
 function filtrarTabela(filtro, tabela) {
@@ -1375,6 +1758,7 @@ function filtrarTabela(filtro, tabela) {
 
         linhas.forEach(linha => {
             tipo = linha.querySelector(".badge-tipo").textContent.toLocaleLowerCase()
+            const cards = document.querySelectorAll('.cards-tabela .card-tabela')
             
             if (filtro === 'todos') {
                 linha.style.display = '';
@@ -1387,24 +1771,60 @@ function filtrarTabela(filtro, tabela) {
             } else {
                 linha.style.display = 'none';
             }
-        });
 
+            if (cards){
+            cards.forEach( card => {
+                tipo = card.querySelector('.card-tabela .card-tipo').textContent.toLowerCase()
+                console.log(filtro)
+                if(filtro == 'todos'){
+                    card.style.display = 'block'
+                } else if (filtro == 'administrador' && tipo === 'admin'){
+                    card.style.display = 'block'
+                } else if (filtro == 'paciente' && tipo === 'paciente'){
+                    card.style.display = 'block'
+                } else if (filtro == 'nutricionista' && tipo === 'nutricionista'){
+                    card.style.display = 'block'
+                } else {
+                    card.style.display = 'none'
+                }
+                
+            })
+        }
+        })
+
+       
+    } else if (tabela == 'consultas'){
+        const consultas = document.querySelectorAll('#tabela-consultas tbody tr')
         const cards = document.querySelectorAll('.cards-tabela .card-tabela')
 
+        consultas.forEach(consulta => {
+            const status = consulta.querySelector('.status').textContent.toLowerCase()
+
+            if(filtro == 'todas'){
+                consulta.style.display = ''
+            } else if (filtro == 'concluidas' && status === 'concluida'){
+                consulta.style.display = ''
+            } else if (filtro == 'pendentes' && status === 'pendente'){
+                consulta.style.display = ''
+            } else {
+                consulta.style.display = 'none'
+            }
+        })
+    
         if (cards){
             cards.forEach( card => {
-                tipo = card.querySelector(".card-tipo").textContent.toLocaleLowerCase()
-                if (filtro === 'todos') {
-                card.style.display = '';
-                } else if (filtro === 'nutricionista' && tipo === 'nutricionista') {
-                    card.style.display = '';
-                } else if (filtro === 'paciente' && tipo === 'paciente') {
-                    card.style.display = '';
-                } else if (filtro === 'administrador' && tipo === 'admin') {
-                    card.style.display = '';
+                statusCard = card.querySelector('.card-tabela .status').textContent.toLowerCase()
+
+                if(filtro == 'todas'){
+                    card.style.display = 'block'
+                } else if (filtro == 'concluidas' && statusCard === 'concluida'){
+                    card.style.display = 'block'
+                } else if (filtro == 'pendentes' && statusCard === 'pendente'){
+                    card.style.display = 'block'
                 } else {
-                    card.style.display = 'none';
+                    card.style.display = 'none'
                 }
+                
             })
         }
     }
@@ -1419,10 +1839,16 @@ function configurarPesquisa() {
         const termo = inputPesquisa.value.toLowerCase();
         const linhas = document.querySelectorAll('#tabela-usuarios tbody tr');
         
+        const cards = document.querySelectorAll('.card-tabela')
         linhas.forEach(linha => {
             const textoLinha = linha.textContent.toLowerCase();
             linha.style.display = textoLinha.includes(termo) ? '' : 'none';
         });
+
+        cards.forEach(card => {
+            const textoCard = card.textContent.toLowerCase()
+            card.style.display = textoCard.includes(termo) ? '' : 'none';
+        })
     }
     
     inputPesquisa.addEventListener('input', pesquisar);
@@ -1471,7 +1897,7 @@ const nav = document.querySelector('.menu_nav')
             nav.style.display = 'none'
         };
     };
-    }
+}
     
 
 window.addEventListener("load", transicao_menu);
@@ -1493,8 +1919,6 @@ if (btn_mobile) {
     });
 
 }
-
-
 
 /*Função de Exibir uma mensagem popup na tela*/
 function mensagem_popup(texto, tipo){
