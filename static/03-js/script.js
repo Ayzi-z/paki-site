@@ -278,10 +278,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if ((perguntaAtual + 1) >= qntPerguntas){
             btnAvancar.style.display = "none"
+      
 
             async function resumoConsulta(){
                 if (document.querySelector('#pergunta-resumo button')){
-                    return
+                    document.querySelector('#pergunta-resumo button').remove()
                 }
                 const botaoagendar = document.createElement('button')
                 const resumoConsulta = document.querySelector('#pergunta-resumo')
@@ -629,23 +630,47 @@ async function agendarConsulta(event){
     window.location.href = '/consulta/minhasconsultas'
 }
 
+/*Funcao para cancelar uma consulta*/
+
+async function cancelarConsulta(event, id_consulta) {
+    event.preventDefault()
+
+    const dados = await fetch('/consulta/minhasconsultas', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id_consulta: id_consulta })
+    })
+
+    const resposta = await dados.json()
+    console.log(resposta)
+
+    if (resposta.sucesso) {
+        mensagem_popup('Consulta cancelada com sucesso', 'alerta')
+        setTimeout(() => {
+            location.reload();
+        }, 2000);
+    
+    } else {
+        mensagem_popup('Erro ao cancelar a consulta!', 'erro')
+    }
+}
+
 /* ============================= */
 /* FUNÇÕES DE MINHAS CONSULTAS PARA PACIENTE E NUTRICIONISTA*/
 /* ============================= */
 
 /*Funcao para listar consultas do nutricionista e do paciente */
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const tabelaConsultas = document.getElementById('tabela-consultas')
     if (tabelaConsultas){
         const tbody = tabelaConsultas.querySelector('tbody')
         configurarFiltros(tabela = 'consultas')
-        
-        
+    
         async function listarconsultas(){
         
-            
          tbody.innerHTML = ''
          const listaCards = document.getElementById('lista-consultas-cards');
          if (listaCards) listaCards.innerHTML = '';
@@ -654,6 +679,11 @@ document.addEventListener('DOMContentLoaded', () => {
          const usuario = await dados_usuario.json()
          const dados_consultas = await fetch(`/api/consulta/minhasconsultas/${usuario.id}`)
          const consultas = await dados_consultas.json()
+
+         if (consultas.length <= 0){
+            tabelaConsultas.style.display = 'none'
+            mensagem_sem(false, 'Você não tem consultas agendadas ou pendentes ainda!', document.querySelector('.container-tabela-gerencia'))
+         }
          console.log("Consultas encontradas:", consultas)
 
 
@@ -713,7 +743,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     status.classList.add('status-inativo');
                     btnCancelar.textContent = '🚫';
                     btnCancelar.classList.add('botao-acao', 'botao-excluir')
-                   
+                    btnCancelar.addEventListener('click', (event) => cancelarConsulta(event, consulta.id))
+
                     acoes.appendChild(btnCancelar);
                 }
 
@@ -775,6 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     btnCancelar.classList.add('botao-acao', 'botao-excluir')
                     btnAtender.classList.add('botao-acao', 'botao-editar')
 
+                    btnCancelar.addEventListener('click', (event) => cancelarConsulta(event, consulta.id))
 
                     btnAtender.addEventListener('click', () => {
                         atenderConsulta(consulta.id);
@@ -866,12 +898,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         const botaoCancelar = document.createElement('button');
                         botaoCancelar.textContent = '🚫 Cancelar';
                         botaoCancelar.classList.add('card-botao', 'botao-excluir');
-                        botaoCancelar.setAttribute('onclick', `cancelarConsulta(${consulta.id})`)
+                        botaoCancelar.addEventListener('click', (event) => cancelarConsulta(event, consulta.id))
 
                         const botaoAtender = document.createElement('button');
                         botaoAtender.textContent = '📝 Atender';
                         botaoAtender.classList.add('card-botao', 'botao-editar');
-                        botaoAtender.setAttribute('onclick', `cancelarConsulta(${consulta.id})`);
+                        botaoAtender.addEventListener('click', () => cancelarConsulta(consulta.id));
+
 
                         botaoAtender.addEventListener('click', () => {
                             atenderConsulta(consulta.id);
@@ -1081,7 +1114,7 @@ async function carregarDetalhes() {
     const dadosPaciente = await fetch(`/api/usuario/${consulta.id_paciente}`)
     const paciente = await dadosPaciente.json()
     
-    const motivo = document.querySelector('#motivo')
+    const motivo = document.getElementById('motivo')
     const data_hora = document.querySelector ('#data-hora')
 
     const nome = document.querySelector('#nome')
@@ -1228,7 +1261,7 @@ function carregardadosUsuario(){
             
             if (usuario.tipo == 'nutricionista'){
                 if (!formulario.querySelector('.grupo-dias')) {
-                    const diasSemana = ['segunda', 'terça', 'quarta', 'quinta', 'sexta']
+                    const diasSemana = ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
                    
                     
                     const grupo = document.createElement('div')
@@ -1283,8 +1316,10 @@ function carregardadosUsuario(){
 
             inputEmail.value = usuario.email
 
-            nomeHeader.textContent = `${usuario.nome} ${usuario.sobrenome}`
-            tipoHeader.textContent = usuario.tipo
+            nomeHeader.textContent = `${usuario.nome.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} ${usuario.sobrenome.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}`
+
+            tipoHeader.textContent = usuario.tipo.charAt(0).toUpperCase() + usuario.tipo.slice(1).toLowerCase()
+
             emailHeader.textContent = usuario.email
         })
         .catch(erro => mensagem_popup('Erro ao buscar as informações', 'erro'));
@@ -1958,7 +1993,44 @@ function mensagem_popup(texto, tipo){
         container_mensagem.remove(); }, 2000
     );
 
-};
+}
+
+/*Função para exibir uma mensagem de na encontrado*/
+
+
+function mensagem_sem(encontrado, mensagem, container) {
+
+    const mensagemErro = document.querySelector('.container-msg-sem-produto')
+
+    if (mensagemErro) {
+        mensagemErro.remove()
+    }
+
+    if (encontrado === false){
+        let containerErro = document.createElement('div')
+        let msg = document.createElement('div')
+        let icone = document.createElement('div')
+        let h1 = document.createElement('h1')
+
+        icone.innerHTML = '<i class="fa-solid fa-face-frown-open" style="color: #63E6BE;"></i>'
+        icone.classList.add('icone')
+        h1.textContent = mensagem
+    
+
+        containerErro.classList.add('container-msg-sem-produto')
+        msg.classList.add('msg-sem-produto')
+        msg.appendChild(icone)
+        msg.appendChild(h1)
+
+        containerErro.appendChild(msg)
+        container.appendChild(containerErro)
+
+    } else if (encontrado == true) {
+        const containerErro = document.querySelector('.container-msg-sem-produto')
+        if (containerErro) mensagemErro.remove()
+
+    }
+}
 
 /*Sistema de mudar tema*/
 const botao_tema = document.getElementById("botao-tema");

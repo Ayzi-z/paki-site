@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask_login import LoginManager, UserMixin, login_user,login_required,logout_user, current_user
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from livereload import Server
 
 from datetime import datetime, date, timedelta, time
@@ -102,7 +104,7 @@ def criar_admin():
             
             usuario_admin = Usuario(
                 email='adminsdopaki@admin.com',
-                senha='admin123',
+                senha= generate_password_hash('admin123'),
                 nome='Admin',
                 sobrenome='Geral',
                 tipo='admin',
@@ -120,11 +122,11 @@ def criar_admin():
 
 def criar_nutricionista():
     with app.app_context():
-        if not Usuario.query.filter_by(email='nutricionista@gmail.com', tipo='nutricionista', senha='nutri123').first():
+        if not Usuario.query.filter_by(email='nutricionista@gmail.com', tipo='nutricionista').first():
             
             usuario_nutricionista = Usuario(
                 email='nutricionista@gmail.com',
-                senha='nutri123',
+                senha=generate_password_hash('nutri123'),
                 nome='Nutricionista',
                 sobrenome='Geral',
                 tipo='nutricionista',
@@ -222,7 +224,7 @@ def sobremim():
         if novoDoenca not in (None, ''):
             usuario.doenca_cronica = novoDoenca
         if novaSenha not in (None, ''):
-            usuario.senha = novaSenha
+            usuario.senha = generate_password_hash(novaSenha)
         if novaDataNascimento not in (None, ''):
             try:
                 usuario.data_nascimento = datetime.strptime(novaDataNascimento, "%Y-%m-%d").date()
@@ -279,7 +281,7 @@ def cadastro():
 
         novo_usuario = Usuario(
             email=email,
-            senha=senha,
+            senha=generate_password_hash(senha),
             nome=nome,
             sobrenome=sobrenome,
             tipo=tipo,
@@ -329,9 +331,9 @@ def login():
         email = dados.get('email')
         senha = dados.get('senha')
 
-        usuario = banco.session.query(Usuario).filter_by(email=email, senha=senha).first()
+        usuario = Usuario.query.filter_by(email=email).first()
 
-        if usuario: #Se o usuario existir faz o login no site
+        if usuario and check_password_hash(usuario.senha, senha): #Se o usuario existir e o hash dele tiver certo faz o login no site
             login_user(usuario)
             return  jsonify({"sucesso": "Usuário logado com sucesso!"})
 
@@ -407,7 +409,7 @@ def baixar_pdf(id_consulta):
 def consulta():
     return render_template('consulta.html')
 
-@app.route("/consulta/minhasconsultas", methods = ['GET', 'POST', 'PUT'])
+@app.route("/consulta/minhasconsultas", methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def minhas_consultas():
     if request.method == 'GET':
         return render_template('func-minha-consulta.html')
@@ -431,6 +433,19 @@ def minhas_consultas():
             return jsonify(consulta)
         else:
             return jsonify({"erro": "Consulta não encontrada"})
+
+    elif request.method == 'DELETE':
+        dados = request.get_json()
+        id_consulta = dados.get('id_consulta')
+        consulta = Consulta.query.get(id_consulta)
+        
+        if not consulta:
+            return jsonify({"erro": "Consulta não encontrada"})
+        if current_user.id != consulta.id_paciente and current_user.id != consulta.id_nutricionista:
+            return jsonify({"erro": "Você não tem permissão para deletar esta consulta"})
+        banco.session.delete(consulta)
+        banco.session.commit()
+        return jsonify({"sucesso": f"Consulta {id_consulta} deletada com sucesso!"})
 
 @app.route("/consulta/agendar", methods = ['GET', 'POST'])
 def agendar_consulta():
@@ -549,47 +564,64 @@ def validarcadastro():
         return jsonify({"email": False})
 
 # Mini api que a gente usa para retornar os dias e horarios disponiveis para consulta nos 14 dias, e os nutricionistas disponiveis para um dia e hora específico
+
 @app.route('/api/verhorarios', methods=['GET', 'POST'])
 def apihorarios():
-    def verhorarios(qnt_dias = 14):  
+    def verhorarios(qnt_dias = 24):  
         hoje = datetime.now().date()
         horarios_disponiveis = {}
-        print(f'Hoje é {hoje}')
+        
+        print(f'Hoje é {hoje}') 
 
         nutricionistas = Usuario.query.filter_by(tipo='nutricionista').all()
 
-        for contador in range(qnt_dias):
-            dia = hoje + timedelta(days=contador)
+        dias_uteis_processados = 0
+        dias_a_frente = 0
+
+        while dias_uteis_processados < qnt_dias:
+            dia = hoje + timedelta(days=dias_a_frente)
+            dias_a_frente += 1
+
+            if dia.weekday() >= 5:
+                continue 
+
             nome_dia = ["segunda", "terca", "quarta", "quinta", "sexta", "sábado", "domingo"][dia.weekday()]
+            dia_str = dia.strftime('%Y-%m-%d')
 
-            if dia.weekday() < 5: # fazendo escala de segunda a sexta
-                dia_str = dia.strftime('%Y-%m-%d')
+            # Colocando a hora que a clinica abre e a hora que ela fecha no dia
+            abre = datetime.combine(dia, time(7, 0))
+            fecha = datetime.combine(dia, time(21, 0))
 
-                # Colocando a hora que a clinica abre e a hora que ela fecha no dia
-                abre = datetime.combine(dia, time(7, 0))
-                fecha = datetime.combine(dia, time(21, 0))
-
-                while abre <= fecha - timedelta(hours=1, minutes=15):
-                    if abre > datetime.now():
-                        for nutricionista in nutricionistas:
-                            escala_nutri = Escala.query.filter_by(nutricionista_id=nutricionista.id).first()
-                            if escala_nutri and nome_dia in escala_nutri.dias_trabalho:
-                                dia_ocupado = Consulta.query.filter_by(
-                                    id_nutricionista = nutricionista.id,
-                                    data_hora = abre
-                                ).first()
-                                if not dia_ocupado:
-
-                                    horarios_disponiveis.setdefault(dia_str, []).append(abre.strftime("%H:%M"))
-                                    break
-                    abre += timedelta(hours = 1, minutes = 15)
+            while abre <= fecha - timedelta(hours=1, minutes=15):
+                # Esse if serve pra tirar os horários que já passaram
+                if abre > datetime.now():
+                    for nutricionista in nutricionistas:
+                        escala_nutri = Escala.query.filter_by(nutricionista_id=nutricionista.id).first()
+                        
+                        # Verificando se o nutricionista tem escala e se o dia está na sua escala
+                        if escala_nutri and nome_dia in escala_nutri.dias_trabalho:
+                            dia_ocupado = Consulta.query.filter_by(
+                                id_nutricionista = nutricionista.id,
+                                data_hora = abre
+                            ).first()
+                            
+                            # Se o horário nao tiver marcado ele entra para a lista
+                            if not dia_ocupado:
+                                
+                                horarios_disponiveis.setdefault(dia_str, []).append(abre.strftime("%H:%M"))
+                                break 
+            
+                abre += timedelta(hours = 1, minutes = 15)
+            
+            dias_uteis_processados += 1
+            
         return horarios_disponiveis
 
     def vernutricionistas(dados):
         if not dados or 'data_hora' not in dados:
             return []
 
-        # pegando a primeira data e horário enviados
+    
         dia_str, horarios = list(dados['data_hora'].items())[0]
         horario_str = horarios[0]
 
@@ -623,7 +655,6 @@ def apihorarios():
     elif request.method == 'POST':
         dados = request.get_json()
         return jsonify(vernutricionistas(dados))
-
 
 @app.route('/api/consulta/minhasconsultas/<int:id_usuario>', methods=['GET'])
 def apiminhasconsultas(id_usuario):

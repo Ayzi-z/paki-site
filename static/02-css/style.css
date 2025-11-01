@@ -91,7 +91,7 @@ header {
     align-items: center;
     justify-content: center;
     transition: max-height 0.3s ease;
-    padding: 10px 100px;
+    padding: 20px;
 }
 
 .logo_paki {
@@ -136,8 +136,9 @@ header {
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
     background-color: rgb(60, 199, 113);
-    max-width: 100%;
+    width: 130px;
     max-height: 20%
+
 }
 
 #area-sobremim h1, h2{
@@ -794,16 +795,20 @@ blockquote cite {
 }
 
 .cartao_funcionalidade_descricao{
+    display: flex;
+    flex-direction: column;
     text-align: center;
+    gap: 10px;
 }
 .cartao_funcionalidade {
     display: flex;
     justify-content: center;
+    gap: 10px;
     align-items: center;
     flex-direction: column;
     font-family: "Oswald", sans-serif;
     transition: transform 0.4s;
-    padding-top: 30px;
+    padding: 30px 0;
     border-radius: 20px;
     width: 440px;
     height: 300px;
@@ -987,7 +992,9 @@ blockquote cite {
 /*Pergunta do motivo da consulta*/
 .slider-perguntas #pergunta-motivo textarea{
     border: 1px solid rgba(47, 1, 1, 0.321);
-    width: 80%;
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
     border-radius: 10px;
     padding: 10px;
     font-size: 17px;
@@ -1034,7 +1041,7 @@ blockquote cite {
 	align-items: center;
 	justify-content: center;
 	border: 0;
-	background-color:#FFF;
+    background: linear-gradient(90deg,rgb(160, 240, 200) 0%,rgb(140, 230, 210) 25%,rgb(120, 220, 220) 50%,rgb(100, 210, 230) 75%, rgb(180, 245, 245) 100%);
 	border-radius: 12px;
 	width: 2.5rem;
 	height: 2.5rem;
@@ -1086,7 +1093,7 @@ blockquote cite {
     flex-wrap: wrap;
     gap: 10px;           
     justify-content: center; 
-    width: auto;    
+    max-width: 85%;
 }
 
 .lista-horarios .horario-label {
@@ -1151,6 +1158,11 @@ blockquote cite {
 .lista-medicos .descricao-med{
   text-align: center;
 }
+
+.cartao-medico input[type="radio"] {
+    display: none; 
+}
+
 .lista-medicos button{
     width: 50%;
     padding: 5px;
@@ -1219,14 +1231,7 @@ blockquote cite {
 /* 📌 PÁGINA DE DETALHE CONSULTA PACIENTE E NUTRICIONISTA */
 /* ============================= */
 
-.container-detalhe-consulta{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 100px;
-    width: 100%;
-}
+
 .conteudo-detalhe-consulta{
     max-width: 1000px;
     display: flex;
@@ -1247,14 +1252,7 @@ blockquote cite {
     flex-wrap: wrap;
     
 }
-.conteudo-detalhe-consulta .grupo-info{
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-    background: #f9f9f9;
-}
+
 .conteudo-detalhe-consulta .grupo-info span{
     font-weight: 500;
 }
@@ -1271,7 +1269,7 @@ blockquote cite {
     transition: transform 0.3s, box-shadow 0.3s;
     margin-top: 10px;
 }
-
+    
 .container-detalhe-consulta .acoes-consulta button:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(60, 199, 113, 0.4);
@@ -1438,11 +1436,11 @@ blockquote cite {
 .filtro-botao {
     padding: 8px 16px;
     border: 1px solid #3cc771;
-    background: white;
     color: #3cc771;
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s;
+    background: transparent;
 }
 
 .filtro-botao.ativo {
@@ -2394,9 +2392,11 @@ body.escuro h3 {
     color:#25d366
 }
 
-body.escuro header, body.escuro section.hero, body.escuro #conteudo1_footer, body.escuro .cartao_funcionalidade {
+body.escuro header, body.escuro section.hero, body.escuro #conteudo1_footer, body.escuro #conteudo2_footer,body.escuro .cartao_funcionalidade {
     background: linear-gradient(135deg, #1a2e28 0%, #0d1f1a 50%, #133a2f 100%);
 }
+
+
 
 body.escuro .cartao_funcionalidade_descricao {
     color: #f0f0f0;
@@ -2484,6 +2484,49 @@ body.escuro .msg-sem-produto{
     background-color: transparent
 } 
 
+body.escuro .dias-calendario .data{
+    color: black;
+} 
+
+body.escuro .dias-calendario .data.disponivel{
+    color: white;
+}
+
+body.escuro .conteudo-detalhe-consulta .detalhes{
+    background-color: #333;
+    
+}
+
+body.escuro .conteudo-detalhe-consulta .detalhes h1{
+    color: #3cc771;
+}
+
+body.escuro  .grupo-info{
+    background-color: #333;
+    border: 1.5px solid #3cc771;
+}
+
+body.escuro  .grupo-info strong{
+    color:  #0cd1b4;
+}
+
+body.escuro .grupo-info span{
+    color: white;
+}
+
+body.escuro .grupo-info #motivo{
+    color: white;
+}
+
+body.escuro #pergunta-motivo textarea{
+    background-color: #333;
+    color: white;
+    border: 1.5px solid #3cc771;
+}
+
+
+
+
 /* ============================= */
 /* 📌 ESTILIZAÇÃO PAGINA DO PERFIL */
 /* ============================= */
@@ -2501,12 +2544,6 @@ body.escuro .msg-sem-produto{
     overflow: hidden; 
 }
 
-.perfil-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 30px;
-}
 
 .foto-perfil {
     position: relative;
@@ -2535,10 +2572,7 @@ body.escuro .msg-sem-produto{
     font-size: 16px;
 }
 
-.info-usuario h1 {
-    font-size: 24px;
-    margin: 0;
-}
+
 
 .tipo-usuario {
     font-size: 16px;
@@ -2719,6 +2753,20 @@ body.escuro .msg-sem-produto{
         flex-direction: column;
         align-items: center;
         gap: 1.5rem;
+    }
+
+    .cartao_funcionalidade img{
+        object-fit: contain;
+        height: 100px;
+        
+    }
+
+    .cartao_funcionalidade_descricao h1{
+        font-size: 16px;
+    }
+
+    .cartao_funcionalidade_descricao h2{
+        font-size: 13px;
     }
         
     /* Responsividade Paginas de Login, Cadastro e Recuperacao */
@@ -2939,7 +2987,9 @@ body.escuro .msg-sem-produto{
     .area-usuario-header {
         width: 100px;
     }
-    
+    .area-usuario-header #area-sobremim{
+        width: 90px;
+    }
     #area-sobremim h1{
         font-size: 14px;
     }
@@ -3059,6 +3109,10 @@ body.escuro .msg-sem-produto{
         width: 100%;
     }
 
+    .container-slider{
+        padding-top: 30px;
+    }
+
     .container-slider .form-perguntas{
         width: 100%;
     
@@ -3086,7 +3140,6 @@ body.escuro .msg-sem-produto{
 
     .container-perfil-usuario{
         margin-top: 0;
-        background-color: red;
     }
 }
 
@@ -3284,20 +3337,6 @@ header {
 
 
 
-.perfil-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-
-
-.info-usuario h1 {
-    font-size: 24px;
-    margin: 0;
-}
-
 
 
 .tipo-usuario {
@@ -3384,25 +3423,6 @@ header {
     cursor: pointer;
 }
 
-
-
-.info-usuario {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
-
-.info-usuario h1 {
-  font-size: 1rem;
-  font-weight: bold;
-  text-decoration: underline;
-  margin: 2px 0;
-}
-
-
-
 .tipo-usuario {
   color: #2c2c2c;
   font-weight: 600;
@@ -3410,39 +3430,32 @@ header {
 }
 
 
-        
-        .linha-formulario {
-            flex-direction: column;
-            gap: 0;
-        }
+    
+    .linha-formulario {
+        flex-direction: column;
+        gap: 0;
+    }
 
 
-        
-        .grupo-formulario input, 
-        .grupo-formulario select {
-            padding: 18px;
-            font-size: 18px;
-        }
+    
+    .grupo-formulario input, 
+    .grupo-formulario select {
+        padding: 18px;
+        font-size: 18px;
+    }
 
 
-        
-        .grupo-formulario label {
-            font-size: 16px;
-        }
+    
+    .grupo-formulario label {
+        font-size: 16px;
+    }
 
 
-        
-        .linha-formulario {
-            flex-direction: row;
-            gap: 15px;
-        }
-
-
-        
-        .linha-formulario {
-            flex-direction: column;
-            gap: 0;
-        }
+    
+    .linha-formulario {
+        flex-direction: row;
+        gap: 15px;
+    }
 
 
     
@@ -3453,31 +3466,12 @@ header {
 
 
 
-.perfil-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px 0;
-}
-
-
-
-.info-usuario {
-    display: flex;
+.linha-formulario {
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    gap: 0;
 }
 
 
-
-.info-usuario h1 {
-    font-size: 28px;
-    margin: 0;
-    color: #3cc771;
-}
 
 
 
@@ -3503,19 +3497,14 @@ header {
     border-radius: 15px;
     margin: 20px 0;
     border: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    width: 100%;
 }
-
-
-
-.info-usuario h1 {
-    font-family: "Krona One", sans-serif;
-    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-
 
 /* Modo escuro */
 body.escuro .perfil-header {
@@ -3534,23 +3523,6 @@ body.escuro .tipo-usuario {
 body.escuro .email-usuario {
     color: #a0aec0;
 }
-
-
-
-
-
-.perfil-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-
 
 .info-usuario {
     display: flex;
@@ -3597,7 +3569,7 @@ body.escuro .email-usuario {
 
 
 
-/* FORMULÁRIOS - CORREÇÕES PARA CABER NA TELA */
+
 .formulario-perfil {
     display: flex;
     flex-direction: column;
@@ -3674,106 +3646,82 @@ body.escuro .email-usuario {
 }
 
 
-    
-    .linha-formulario {
-        gap: 15px;
-    }
+
+.linha-formulario {
+    gap: 15px;
+}
+
+.tipo-usuario {
+    font-size: 16px;
+}
 
 
-    
-    .perfil-header {
-        padding: 15px;
-    }
+
+.email-usuario {
+    font-size: 14px;
+}
 
 
-    
-    .info-usuario h1 {
-        font-size: 24px;
-    }
+
+.linha-formulario {
+    flex-direction: column;
+    gap: 15px;
+}
 
 
-    
-    .tipo-usuario {
-        font-size: 16px;
-    }
+
+.grupo-formulario {
+    width: 100%;
+}
 
 
-    
-    .email-usuario {
-        font-size: 14px;
-    }
+
+.botao-salvar {
+    width: 100%;
+    align-self: stretch;
+    text-align: center;
+}
 
 
-    
-    .linha-formulario {
-        flex-direction: column;
-        gap: 15px;
-    }
+
+.formulario-perfil {
+    gap: 15px;
+}
 
 
-    
-    .grupo-formulario {
-        width: 100%;
-    }
 
 
-    
-    .botao-salvar {
-        width: 100%;
-        align-self: stretch;
-        text-align: center;
-    }
+
+.tipo-usuario {
+    font-size: 14px;
+}
 
 
-    
-    .formulario-perfil {
-        gap: 15px;
-    }
+
+.email-usuario {
+    font-size: 12px;
+}
 
 
-    
-    .perfil-header {
-        padding: 12px;
-    }
+
+.formulario-perfil {
+    gap: 12px;
+}
 
 
-    
-    .info-usuario h1 {
-        font-size: 20px;
-    }
+
+.grupo-formulario input,
+.grupo-formulario textarea,
+.grupo-formulario select {
+    padding: 12px;
+    font-size: 16px;
+}
 
 
-    
-    .tipo-usuario {
-        font-size: 14px;
-    }
 
-
-    
-    .email-usuario {
-        font-size: 12px;
-    }
-
-
-    
-    .formulario-perfil {
-        gap: 12px;
-    }
-
-
-    
-    .grupo-formulario input,
-    .grupo-formulario textarea,
-    .grupo-formulario select {
-        padding: 12px;
-        font-size: 16px;
-    }
-
-
-    
-    .linha-formulario {
-        gap: 12px;
-    }
+.linha-formulario {
+    gap: 12px;
+}
 
 body.escuro .container-perfil-usuario {
     background: #333;
@@ -3834,7 +3782,6 @@ body.escuro .botao-salvar {
     width: 90%;
     max-width: 900px;
     margin: 100px auto 60px;
-    background-color: #fff;
     border: 2px solid #3cc771;
     border-radius: 15px;
     padding: 30px;
@@ -3848,14 +3795,15 @@ body.escuro .botao-salvar {
 .container-detalhe-consulta h1 {
     font-family: "Krona One", sans-serif;
     font-size: 1.8rem;
-    color: #004e2b;
     margin-bottom: 10px;
 }
 
 .container-detalhe-consulta a {
-    display: inline-block;
-    color: #3cc771;
-    text-decoration: underline;
+    color: white;
+    background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: 600;
     margin-bottom: 20px;
 }
@@ -3886,15 +3834,16 @@ body.escuro .botao-salvar {
 
 
 .grupo-info {
-    display: inline-flex;
-    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    transition: border-color 0.3s;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
     justify-content: flex-start;
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 8px 12px;
-    margin: 5px;
-    background-color: #fff;
-    font-size: 0.95rem;
     gap: 5px;
 }
 
@@ -3904,9 +3853,14 @@ body.escuro .botao-salvar {
 
 .grupo-info span,
 .grupo-info p {
+    display: inline-block; 
+    max-width: 100%;
     font-weight: 500;
     color: #222;
+    overflow-wrap: break-word;
+    word-break: break-word; 
 }
+
 
 /* (botões) */
 .acoes-consulta {
@@ -3934,9 +3888,7 @@ body.escuro .botao-salvar {
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
 }
 
-/* ============================= */
-/* 📱 RESPONSIVIDADE */
-/* ============================= */
+
 @media (max-width: 768px) {
     .container-detalhe-consulta {
         margin-top: 130px; 
