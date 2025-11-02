@@ -1,5 +1,8 @@
 <!-- ================= CONTEÚDO PRINCIPAL ================= -->
     {% extends 'base.html'%}
+    {% block tituloPagina%}
+        <title>Agendar Consulta</title>
+    {% endblock %}
     {% block conteudoPagina%}
         <main>           
             <div class="container-func-consulta">
@@ -16,24 +19,24 @@
                         
                         <form class="form-perguntas">
                             <div class="slider-perguntas">
-                               
+                                
                                 <section id="pergunta-data" class="pergunta">
                                     <h2>Escolha a data e hora de sua consulta</h2>
                                     <div class="conteudo-pergunta">
                                         <div class="calendario">
                                             <div class="menu-calendario">
                                                 <div class="mes">
-                                                    <button class="seta">
+                                                    <button class="seta" id="voltar">
                                                         <i class="fa-solid fa-arrow-left"></i>
                                                     </button>
                                                     <span class="nome-mes">Carregando...</span>
-                                                    <button class="seta">
+                                                    <button class="seta" id="avancar">
                                                         <i class="fa-solid fa-arrow-right"></i>
                                                     </button>
                                                 </div>
                                             </div>
                                             <div class="dias-calendario">
-                                               
+                                                
                                                 <button class="data">1</button>
                                                 <button class="data">2</button>
                                                 <button class="data">3</button>
@@ -69,132 +72,76 @@
                                         </div>
 
                                         <div class="lista-horarios">
-                                           
+                                            
                                         </div>
 
-                                      
-                                  
+                                        
+                                    
                                     </div>
                                 </section>
 
                                 <section id="pergunta-medico" class="pergunta">
-                                    <h2>Escolha um nutricionista disponível para (dia e hora escolhidos)</h2>
+                                    <h2>Escolha um nutricionista disponível:</h2>
                                     <ul class="lista-medicos">
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
-                                    <li class="cartao-medico">
-                                        <div class="pfp">
-                                        <img src="/imagens/foto_perfil/perfil_medico.jpg" alt="">
-                                        </div>
-                                        <div class="descricao-med">
-                                        <h1>Dr Mario</h1>
-                                        <h2>Consultorio 3</h2>
-                                        <p>Disponível</p>
-                                        </div>
-                                        <button>Escolher</button>
-                                    </li>
+                                        <li>
+                                            <label class="cartao-medico">
+                                                <div class="icone-medico">
+                                                <i class="fa-solid fa-user-doctor" style="color: #63E6BE;"></i>
+                                                    </div>
+                                                <div class="descricao-med">
+                                                    <h1>Dr Astolfinho</h1>
+                                                
+                                                </div>
+                                                <input type="radio">
+                                                <button>Escolher</button>
+                                            </label>
+                                        </li>   
                                     </ul>
                                 </section>
                                 
                                 <section id="pergunta-motivo" class="pergunta">
-                                    <h2>Conte-nos o motivo do seu agendamento</h2>
-                                    <textarea name="" id=""></textarea>
+                                    <h2>Conte-nos brevemente o motivo do seu agendamento:</h2>
+                                    <textarea maxlength="400"></textarea>
                                 </section>
                                 
                                 <section id="pergunta-resumo" class="pergunta">
-                                    <h2>Confirme os dados da consulta</h2>
-                                    <div id="resumo-consulta">
-                                    <div>Data e hora</div>
-                                    <div>Médico responsavel</div>
-                                    <div>N consultorio</div>
-                                    <div>motivo</div>
+                                    <h2>Confirme os dados da consulta:</h2>
+                                    <div class="conteudo-detalhe-consulta" id="resumo-consulta">
+                                        <div class="detalhes">
+                                            <h1>Médico Responsável:</h1>
+                                            <ul>
+                                                <li class="grupo-info">
+                                                    <strong>Nome:</strong>
+                                                    <span id="nome"></span>
+                                                </li>
+
+                                                <li class="grupo-info">
+                                                    <strong>ID:</strong>
+                                                    <span id="id_medico"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                            <div class="detalhes" id="detalhes-consulta">
+                                            <h1>Detalhes da Consulta:</h1>
+                                            <ul>
+                                            <li class="grupo-info">
+                                                    <strong>Data:</strong>
+                                                    <span id="data"></span>
+                                            </li>
+                                            <li class="grupo-info">
+                                                    <strong>Hora:</strong>
+                                                    <span id="hora"></span>
+                                            </li>
+                                            <li class="grupo-info">
+                                                <strong>Motivo:</strong>
+                                                <span id="motivo">Motivo</span>
+                                            </li>
+                                            
+                                            </ul>
+                                        </div>
                                     </div>
+                                    
                                 </section>
                                 
 
@@ -209,3 +156,4 @@
             </div>
         </main>
     {% endblock %}
+        
