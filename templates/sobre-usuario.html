@@ -1,6 +1,6 @@
 {% extends 'base.html'%}
 {% block tituloPagina %}
-    <title>Sobre o Usuário - P.A.K.I</title>
+    <title>Sobre o Usuário</title>
 {% endblock %}
 {% block conteudoPagina %}
 <main>
@@ -96,19 +96,14 @@
                     <input type="email" id="email" name="email" required>
                 </div>
                 
-                <div class="grupo-formulario">
-                    <label>Senha Atual</label>
-                    <input type="password" name="senha_atual"  placeholder="Digite sua senha atual">
-                </div>
-
                 <div class="linha-formulario">
                     <div class="grupo-formulario">
                         <label>Nova Senha</label>
-                        <input type="password" name="confere_senha"  placeholder="Digite a nova senha">
+                        <input type="password" name="confere_senha"  placeholder="Digite a nova senha" id="nova_senha">
                     </div>
                     <div class="grupo-formulario">
                         <label>Confirmar Nova Senha</label>
-                        <input type="password" placeholder="Confirme a nova senha" id="nova_senha" name="nova_senha">
+                        <input type="password" placeholder="Confirme a nova senha" id="confirmar_senha" name="nova_senha">
                     </div>
                 </div>
 

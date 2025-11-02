@@ -1,5 +1,8 @@
 <!-- ================= CONTEÚDO PRINCIPAL ================= -->
     {% extends 'base.html'%}
+    {% block tituloPagina%}
+        <title>Agendar Consulta</title>
+    {% endblock %}
     {% block conteudoPagina%}
         <main>           
             <div class="container-func-consulta">
@@ -16,7 +19,7 @@
                         
                         <form class="form-perguntas">
                             <div class="slider-perguntas">
-                               
+                                
                                 <section id="pergunta-data" class="pergunta">
                                     <h2>Escolha a data e hora de sua consulta</h2>
                                     <div class="conteudo-pergunta">
@@ -33,7 +36,7 @@
                                                 </div>
                                             </div>
                                             <div class="dias-calendario">
-                                               
+                                                
                                                 <button class="data">1</button>
                                                 <button class="data">2</button>
                                                 <button class="data">3</button>
@@ -69,22 +72,22 @@
                                         </div>
 
                                         <div class="lista-horarios">
-                                           
+                                            
                                         </div>
 
-                                      
-                                  
+                                        
+                                    
                                     </div>
                                 </section>
 
                                 <section id="pergunta-medico" class="pergunta">
-                                    <h2>Escolha um nutricionista disponível para (dia e hora escolhidos)</h2>
+                                    <h2>Escolha um nutricionista disponível:</h2>
                                     <ul class="lista-medicos">
                                         <li>
                                             <label class="cartao-medico">
                                                 <div class="icone-medico">
                                                 <i class="fa-solid fa-user-doctor" style="color: #63E6BE;"></i>
-                                                 </div>
+                                                    </div>
                                                 <div class="descricao-med">
                                                     <h1>Dr Astolfinho</h1>
                                                 
@@ -97,8 +100,8 @@
                                 </section>
                                 
                                 <section id="pergunta-motivo" class="pergunta">
-                                    <h2>Conte-nos o motivo do seu agendamento</h2>
-                                    <textarea name="" id=""></textarea>
+                                    <h2>Conte-nos brevemente o motivo do seu agendamento:</h2>
+                                    <textarea maxlength="400"></textarea>
                                 </section>
                                 
                                 <section id="pergunta-resumo" class="pergunta">
@@ -119,7 +122,7 @@
                                             </ul>
                                         </div>
 
-                                          <div class="detalhes" id="detalhes-consulta">
+                                            <div class="detalhes" id="detalhes-consulta">
                                             <h1>Detalhes da Consulta:</h1>
                                             <ul>
                                             <li class="grupo-info">
@@ -153,3 +156,4 @@
             </div>
         </main>
     {% endblock %}
+        

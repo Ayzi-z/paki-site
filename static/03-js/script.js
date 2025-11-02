@@ -3,13 +3,69 @@
 /* ============================= */
 
 /*Sistema validador de dados durante o cadastro*/
+function senhasBatem(senha1, senha2) {
+  return senha1 === senha2;
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const formCadastro = document.getElementById("formCadastro");
 
     if (formCadastro) /* Verificando se o formulario de cadastro existe na página*/ {
         const inputEmail = formCadastro.querySelector("#email");
         const inputTipo = formCadastro.querySelector('#tipo-usuario');
+        const inputSenha = formCadastro.querySelector('#senha')
+        const inputConfirmar = formCadastro.querySelector('#confirmar_senha')
+        const btnCadastrar = formCadastro.querySelector('#btn-cadastrar');
 
+        inputSenha.addEventListener("input", () => {
+            const inputConfirmar = formCadastro.querySelector('#confirmar_senha')
+            let bate = senhasBatem(inputSenha.value,inputConfirmar.value)
+            
+            
+            if (bate === false) { 
+                inputConfirmar.style.borderColor = "red";
+                let aviso_senha = document.getElementById("aviso-senha");
+                if (!aviso_senha) {
+                    const aviso = document.createElement("p");
+                    aviso.id = "aviso-senha";
+                    aviso.style.color = "red";
+                    aviso.textContent = "As senhas não conferem";
+                    inputConfirmar.parentNode.appendChild(aviso);
+
+                    btnCadastrar.disabled = true;
+                    btnCadastrar.style.opacity = "0.6";
+                }
+            } else {
+                inputConfirmar.style.borderColor = "";
+                const aviso = document.getElementById("aviso-senha");
+                if (aviso) aviso.remove();
+                
+                btnCadastrar.disabled = false;
+                btnCadastrar.style.opacity = "1";
+            }
+        })
+        
+        inputConfirmar.addEventListener("input", () => {
+            let bate = senhasBatem(inputSenha.value, inputConfirmar.value)
+            
+            if (bate === false) { 
+                inputConfirmar.style.borderColor = "red";
+                let aviso_senha = document.getElementById("aviso-senha");
+                if (!aviso_senha) {
+                    const aviso = document.createElement("p");
+                    aviso.id = "aviso-senha";
+                    aviso.style.color = "red";
+                    aviso.textContent = "As senhas não conferem";
+                    inputConfirmar.parentNode.appendChild(aviso);
+                }
+            } else {
+                inputConfirmar.style.borderColor = "";
+                const aviso = document.getElementById("aviso-senha");
+                if (aviso) aviso.remove();
+            }
+        })
+        
         inputTipo.addEventListener("change", () => {
             let tipoSelecionado = inputTipo.value
             let grupoTipo = inputTipo.closest(".grupo-formulario");
@@ -40,10 +96,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputCodigo.id = "codigo_ativacao";
                 inputCodigo.required = true;
                 inputCodigo.placeholder = "Digite o código de ativação";
+                inputCodigo.maxLength = 8
 
                 /*Colocando a label e o input do codigo dentro da div*/
                 divGrupo.appendChild(labelCodigo);
-                divGrupo.appendChild(inputCodigo);
+                divGrupo.appendChild(inputCodigo)
+
+                inputCodigo.addEventListener("input", () => {
+                    let codigo_ativacao = inputCodigo.value.trim().toUpperCase();
+
+                    fetch('/api/validarcadastro', { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ codigo_ativacao })
+                    })
+                    .then(res => res.json())
+                    .then(dados => {
+                        console.log(dados);
+
+                        if (dados.codigo_ativacao === false) { 
+                            inputCodigo.style.borderColor = "red";
+                            let aviso_codigo = document.getElementById("aviso-codigo");
+                            if (!aviso_codigo) {
+                                const aviso = document.createElement("p");
+                                aviso.id = "aviso-codigo";
+                                aviso.style.color = "red";
+                                aviso.textContent = "Código inválido ou já utilizado!";
+                                inputCodigo.parentNode.appendChild(aviso);
+                            }
+                        } else {
+                            inputCodigo.style.borderColor = "";
+                            const aviso = document.getElementById("aviso-codigo");
+                            if (aviso) aviso.remove();
+                        }
+                    })
+                });
+
 
                 /* Colocando a div logo depois do tipo de usuario*/
                 grupoTipo.parentNode.insertBefore(divGrupo, grupoTipo.nextSibling);
@@ -84,10 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        inputEmail.addEventListener("blur", () => { /*Verificando se o e-mail já existe sempre que sai do campo*/
+        inputEmail.addEventListener("input", () => { /*Verificando se o e-mail já existe sempre que sai do campo*/
             let email = inputEmail.value.trim();
 
-            fetch('/validarcadastro', { /*Vendo se o email existe naquela api do banco de dados*/
+            fetch('/api/validarcadastro', { /*Vendo se o email existe naquela api do banco de dados*/
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -100,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(dados)
             
             if (dados.email === true) /* Se o email existe faz isso no input e no formulario*/ {
-                window.alert("O email Informado já existe no banco de dados")
                 inputEmail.style.borderColor = "red";
                 let aviso_email = document.getElementById("aviso-email") /*Vendo se já existe alguma mensagem de erro*/;
                     if (!aviso_email)/* se nao existir uma mensagem de erro no input ele cria uma*/{
@@ -159,11 +248,13 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(dados)
            
             if (dados.tipo_usuario === 'nutricionista') {
-                const codigo = document.getElementById('codigo_ativacao');
-                if (codigo) dados.codigo_ativacao = codigo.value;
+                const codigo_ativacao = document.getElementById('codigo_ativacao');
+                if (codigo_ativacao) dados.codigo_ativacao = codigo_ativacao.value.trim().toUpperCase();
 
                 const checkboxes = document.querySelectorAll('#grupo-dias-trabalho input[type="checkbox"]:checked');
-                dados.dias_trabalho = Array.from(checkboxes).map(cb => cb.value);
+                dados.dias_trabalho = Array.from(checkboxes).map(dia => dia.value);
+
+                console.log(codigo_ativacao)
             }
 
             try {
@@ -237,8 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let novaConsulta = {
     data_hora: {},
     motivo: "",
-    id_nutricionista: "",
-    id_paciente: ""
+    id_nutricionista: ""
 }
 
 /*Sistema do slider das perguntas de consulta paciente*/
@@ -616,19 +706,33 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /*Funcao para enviar a consulta em si  para o backend*/
-async function agendarConsulta(event){
-    event.preventDefault()
+async function agendarConsulta(event) {
+    event.preventDefault();
     
-    await fetch('/consulta/agendar', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(novaConsulta)
-    });
+    try {
+        const resposta = await fetch('/consulta/agendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(novaConsulta)
+        });
 
-    window.location.href = '/consulta/minhasconsultas'
+        const dados = await resposta.json(); 
+
+        if (dados.sucesso) {
+          
+            window.location.href = '/consulta/minhasconsultas';
+        } else if (dados.erro) {
+           
+            mensagem_popup(`${dados.erro}`, 'erro'); 
+        }
+
+    } catch (erro) {
+        mensagem_popup('Erro ao agendar a consulta', 'erro')
+    }
 }
+
 
 /*Funcao para cancelar uma consulta*/
 
@@ -666,11 +770,14 @@ async function cancelarConsulta(event, id_consulta) {
 document.addEventListener('DOMContentLoaded', () => {
     const tabelaConsultas = document.getElementById('tabela-consultas')
     if (tabelaConsultas){
+        const mensagemSem = document. querySelector('.container-msg-sem')
+        if (mensagemSem) mensagemSem.remove()
+
         const tbody = tabelaConsultas.querySelector('tbody')
         configurarFiltros(tabela = 'consultas')
     
         async function listarconsultas(){
-        
+        configurarPesquisa('consultas')
          tbody.innerHTML = ''
          const listaCards = document.getElementById('lista-consultas-cards');
          if (listaCards) listaCards.innerHTML = '';
@@ -679,7 +786,10 @@ document.addEventListener('DOMContentLoaded', () => {
          const usuario = await dados_usuario.json()
          const dados_consultas = await fetch(`/api/consulta/minhasconsultas/${usuario.id}`)
          const consultas = await dados_consultas.json()
-
+         
+         const mensagemSem = document. querySelector('.container-msg-sem')
+         if (mensagemSem) mensagemSem.remove()
+         
          if (consultas.length <= 0){
             tabelaConsultas.style.display = 'none'
             mensagem_sem(false, 'Você não tem consultas agendadas ou pendentes ainda!', document.querySelector('.container-tabela-gerencia'))
@@ -1050,8 +1160,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         cardAcoes.appendChild(botaoVisualizar)
                     }
-                   
-
               
                     tipoNutricionista.classList.add('card-tipo');
                     card.classList.add('card-tabela');
@@ -1059,7 +1167,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     cardDetalhes.classList.add('card-detalhes');
                     infosNutricionista.classList.add('card-info');
                     cardAcoes.classList.add('card-acoes');
-
                    
                     card.appendChild(cardHeader);
                     card.appendChild(cardDetalhes);
@@ -1079,7 +1186,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('resize', () => {
      
             clearTimeout(window.resizeTimeout);
-
     
             window.resizeTimeout = setTimeout(() => {
                 listarconsultas();
@@ -1230,12 +1336,12 @@ function carregardadosUsuario(){
     fetch('/api/usuarioatual')
         .then(response => response.json())
         .then(usuario => {
-            console.log(usuario)
             
             const nomeHeader = document.getElementById('nome-usuario')
             const tipoHeader = document.getElementById('tipo-usuario')
             const emailHeader = document.getElementById('email-usuario')
 
+           
 
             const inputNome = document.getElementById('nome');
 
@@ -1257,16 +1363,20 @@ function carregardadosUsuario(){
 
             const inputEmail = document.getElementById('email')
 
+            const inputSenha = document.getElementById('nova_senha')
+
+            const inputConfirmar = document.getElementById('confirmar_senha')
+
             const formulario = document.querySelector('.formulario-seguranca')
-            
+
+            const botaoEnviar = formulario.querySelector('.botao-salvar') 
+
             if (usuario.tipo == 'nutricionista'){
                 if (!formulario.querySelector('.grupo-dias')) {
                     const diasSemana = ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
-                   
                     
                     const grupo = document.createElement('div')
                     grupo.classList.add('grupo-formulario')
-            
                     
                     const labelTitulo = document.createElement('label')
                     labelTitulo.textContent = 'Altere sua escala de trabalho:'
@@ -1292,9 +1402,7 @@ function carregardadosUsuario(){
                         label.textContent = dia.charAt(0).toUpperCase() + dia.slice(1)
 
                         label.appendChild(input)
-                        grupoDias.appendChild(label)
-            
-                    
+                        grupoDias.appendChild(label)                   
                     });
                     
                     const botao = formulario.querySelector('button'); 
@@ -1304,6 +1412,53 @@ function carregardadosUsuario(){
                 }
             }
             
+            inputSenha.addEventListener("input", () => {
+            const inputConfirmar = formSeguranca.querySelector('#confirmar_senha')
+            let bate = senhasBatem(inputSenha.value,inputConfirmar.value)
+            
+            
+            if (bate === false) { 
+                inputConfirmar.style.borderColor = "red";
+                let aviso_senha = document.getElementById("aviso-senha");
+                if (!aviso_senha) {
+                    const aviso = document.createElement("p");
+                    aviso.id = "aviso-senha";
+                    aviso.style.color = "red";
+                    aviso.textContent = "As senhas não conferem";
+                    inputConfirmar.parentNode.appendChild(aviso);
+
+                    botaoEnviar.disabled = true;
+                    botaoEnviar.style.opacity = "0.6";
+                }
+            } else {
+                inputConfirmar.style.borderColor = "";
+                const aviso = document.getElementById("aviso-senha");
+                if (aviso) aviso.remove();
+                
+                botaoEnviar.disabled = false;
+                botaoEnviar.style.opacity = "1";
+            }
+            })
+            
+            inputConfirmar.addEventListener("input", () => {
+                let bate = senhasBatem(inputSenha.value, inputConfirmar.value)
+                
+                if (bate === false) { 
+                    inputConfirmar.style.borderColor = "red";
+                    let aviso_senha = document.getElementById("aviso-senha");
+                    if (!aviso_senha) {
+                        const aviso = document.createElement("p");
+                        aviso.id = "aviso-senha";
+                        aviso.style.color = "red";
+                        aviso.textContent = "As senhas não conferem";
+                        inputConfirmar.parentNode.appendChild(aviso);
+                    }
+                } else {
+                    inputConfirmar.style.borderColor = "";
+                    const aviso = document.getElementById("aviso-senha");
+                    if (aviso) aviso.remove();
+                }
+            })
             inputNome.value = usuario.nome
             inputSobrenome.value = usuario.sobrenome
             inputNascimento.value = usuario.data_nascimento
@@ -1488,7 +1643,7 @@ function obterTipoUsuario() {
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('tabela-usuarios')) {
         carregarUsuarios();
-        configurarPesquisa();
+        configurarPesquisa('usuarios');
     }
 });
 
@@ -1507,7 +1662,9 @@ async function carregarUsuarios() {
 /* Função para preencher a tabela com usuarios*/
 function preenchertabelaUsuarios(usuarios) {
     configurarFiltros(tabela = 'usuarios')
-
+    const mensagemSem = document. querySelector('.container-msg-sem')
+    if (mensagemSem) mensagemSem.remove()
+    
     const tbody = document.querySelector('#corpo-tabela-usuarios')
     const listaCards = document.getElementById('lista-usuarios-cards')
     
@@ -1788,21 +1945,32 @@ function configurarFiltros(tabela) {
 }
 
 function filtrarTabela(filtro, tabela) {
+    const mensagemSem = document. querySelector('.container-msg-sem')
+
+    if (mensagemSem) mensagemSem.remove()
+
     if (tabela == 'usuarios'){
         const linhas = document.querySelectorAll('#tabela-usuarios tbody tr');
-
+        let encontrado = false
+        
         linhas.forEach(linha => {
             tipo = linha.querySelector(".badge-tipo").textContent.toLocaleLowerCase()
             const cards = document.querySelectorAll('.cards-tabela .card-tabela')
             
             if (filtro === 'todos') {
                 linha.style.display = '';
+                if (linhas.length > 0) {
+                    encontrado = 'true'
+                }
             } else if (filtro === 'nutricionista' && tipo === 'nutricionista') {
                 linha.style.display = '';
+                encontrado = true
             } else if (filtro === 'paciente' && tipo === 'paciente') {
                 linha.style.display = '';
+                encontrado = true
             } else if (filtro === 'administrador' && tipo === 'administrador') {
                 linha.style.display = '';
+                encontrado = true
             } else {
                 linha.style.display = 'none';
             }
@@ -1813,12 +1981,18 @@ function filtrarTabela(filtro, tabela) {
                 console.log(filtro)
                 if(filtro == 'todos'){
                     card.style.display = 'block'
+                    if (cards.length > 0) {
+                        encontrado = 'true'
+                    }   
                 } else if (filtro == 'administrador' && tipo === 'admin'){
                     card.style.display = 'block'
+                    encontrado = true
                 } else if (filtro == 'paciente' && tipo === 'paciente'){
                     card.style.display = 'block'
+                    encontrado = true
                 } else if (filtro == 'nutricionista' && tipo === 'nutricionista'){
                     card.style.display = 'block'
+                    encontrado = true
                 } else {
                     card.style.display = 'none'
                 }
@@ -1827,20 +2001,39 @@ function filtrarTabela(filtro, tabela) {
         }
         })
 
+        if (encontrado === false){
+            let containerTabela = document.getElementById('tabela-usuarios')
+            
+            containerTabela.style.display = 'none'
+            
+            mensagem_sem(encontrado, 'Nenhum usuário encontrado!', document.querySelector('.container-tabela-gerencia'))
+        } else {
+            let containerTabela = document.getElementById('tabela-usuarios')
+            
+            containerTabela.style.display = ''
+        }
+
        
     } else if (tabela == 'consultas'){
         const consultas = document.querySelectorAll('#tabela-consultas tbody tr')
         const cards = document.querySelectorAll('.cards-tabela .card-tabela')
+
+        let encontrado = false
 
         consultas.forEach(consulta => {
             const status = consulta.querySelector('.status').textContent.toLowerCase()
 
             if(filtro == 'todas'){
                 consulta.style.display = ''
+                if (consultas.length > 0) {
+                    encontrado = true
+                }
             } else if (filtro == 'concluidas' && status === 'concluida'){
                 consulta.style.display = ''
+                encontrado = true
             } else if (filtro == 'pendentes' && status === 'pendente'){
                 consulta.style.display = ''
+                encontrado = true
             } else {
                 consulta.style.display = 'none'
             }
@@ -1852,38 +2045,117 @@ function filtrarTabela(filtro, tabela) {
 
                 if(filtro == 'todas'){
                     card.style.display = 'block'
+                    if (card.length > 0) {
+                        encontrado = true
+                    }
+
                 } else if (filtro == 'concluidas' && statusCard === 'concluida'){
                     card.style.display = 'block'
+                    encontrado = true
                 } else if (filtro == 'pendentes' && statusCard === 'pendente'){
                     card.style.display = 'block'
+                    encontrado = true
                 } else {
                     card.style.display = 'none'
                 }
                 
             })
         }
+        if (encontrado === false){
+            let containerTabela = document.getElementById('tabela-consultas')
+    
+            containerTabela.style.display = 'none'
+            
+            mensagem_sem(encontrado, 'Nenhuma consulta encontrada!', document.querySelector('.container-tabela-gerencia'))
+        } else {
+            let containerTabela = document.getElementById('tabela-consultas')
+            
+            containerTabela.style.display = ''
+        }
     }
         
 }
 
-function configurarPesquisa() {
-    const inputPesquisa = document.querySelector('.barra-pesquisa-usuarios input');
+function configurarPesquisa(tabela) {
+    const inputPesquisa = document.querySelector('.barra-pesquisa input');
     const botaoPesquisa = document.querySelector('.botao-pesquisa');
     
     function pesquisar() {
-        const termo = inputPesquisa.value.toLowerCase();
-        const linhas = document.querySelectorAll('#tabela-usuarios tbody tr');
-        
+        const termo = inputPesquisa.value.toLowerCase()
         const cards = document.querySelectorAll('.card-tabela')
+        const mensagemErro = document.querySelector('.container-msg-sem')
+        const filtros = document.querySelector('.filtros-tabela')
+        
+        let containerTabela
+
+        
+        filtros.style.display = ''
+
+        if (mensagemErro) {
+            mensagemErro.remove()
+        }
+        
+        let linhas
+        let encontrado = false
+
+        if (tabela == 'usuarios'){
+            linhas = document.querySelectorAll('#tabela-usuarios tbody tr')
+            containerTabela = document.getElementById('tabela-usuarios')
+            containerTabela.style.display = ''
+
+        } else if (tabela == 'consultas'){
+            linhas = document.querySelectorAll('#tabela-consultas tbody tr')
+            containerTabela = document.getElementById('tabela-consultas')
+            containerTabela.style.display = ''
+        }
+
+       
         linhas.forEach(linha => {
             const textoLinha = linha.textContent.toLowerCase();
-            linha.style.display = textoLinha.includes(termo) ? '' : 'none';
+
+            if(textoLinha.includes(termo)) {
+                linha.style.display = ''
+                encontrado = true
+                
+            } else {
+                linha.style.display = 'none'
+                
+            }
         });
 
         cards.forEach(card => {
             const textoCard = card.textContent.toLowerCase()
-            card.style.display = textoCard.includes(termo) ? '' : 'none';
+            
+            if(textoCard.includes(termo)) {
+                card.style.display = ''
+                encontrado = true
+                
+            } else {
+                card.style.display = 'none'
+                
+            }
         })
+
+        if (encontrado == false  && tabela == 'usuarios'){
+            mensagem_sem(encontrado, 'Nenhum usuário encontrado!', document.querySelector('.container-tabela-gerencia'))
+
+            containerTabela.style.display = 'none'
+            filtros.style.display = 'none'
+
+
+        } else if (encontrado == true && tabela == 'usuarios'){
+            const mensagemErro = document.querySelector('.container-msg-sem')
+            if (mensagemErro) mensagemErro.remove()   
+        }     
+
+        if (encontrado == false && tabela == 'consultas'){
+            mensagem_sem(encontrado, 'Nenhuma consulta encontrada!', document.querySelector('.container-tabela-gerencia'))
+
+            filtros.style.display = 'none'
+            containerTabela.style.display = 'none'
+        }
+
+       
     }
     
     inputPesquisa.addEventListener('input', pesquisar);
@@ -1891,7 +2163,7 @@ function configurarPesquisa() {
 }
 
 async function excluirUsuario(id, nome) {
-    if (confirm(`Tem certeza que deseja excluir o usuário "${nome}"? Esta ação não pode ser desfeita.`)) {
+    if (confirm(`Tem certeza que deseja banir o usuário "${nome}"? Esta ação não pode ser desfeita.`)) {
         try {
             const resposta = await fetch(`/gerenciarusuarios`, {
                 method: 'DELETE',
@@ -1903,14 +2175,14 @@ async function excluirUsuario(id, nome) {
 
             const resultado = await resposta.json();
             
-            if (resposta.sucesso) {
-                mensagem_popup('Usuário Excluído com sucesso!', 'confirmacao');
+            if (resultado.sucesso) {
+                mensagem_popup(`Usuário ${nome} banido com sucesso!`, 'confirmacao');
                 carregarUsuarios();
             } else {
                 mensagem_popup(resultado.erro, 'erro');
             }
         } catch (erro) {
-            console.error('Erro ao excluir usuário:', erro);
+            console.error('Erro ao excluir usuário:', 'erro');
             mensagem_popup('Erro ao excluir usuário!', 'erro');
         }
     }
@@ -2000,7 +2272,7 @@ function mensagem_popup(texto, tipo){
 
 function mensagem_sem(encontrado, mensagem, container) {
 
-    const mensagemErro = document.querySelector('.container-msg-sem-produto')
+    const mensagemErro = document.querySelector('.container-msg-sem')
 
     if (mensagemErro) {
         mensagemErro.remove()
@@ -2017,8 +2289,8 @@ function mensagem_sem(encontrado, mensagem, container) {
         h1.textContent = mensagem
     
 
-        containerErro.classList.add('container-msg-sem-produto')
-        msg.classList.add('msg-sem-produto')
+        containerErro.classList.add('container-msg-sem')
+        msg.classList.add('msg-sem')
         msg.appendChild(icone)
         msg.appendChild(h1)
 
