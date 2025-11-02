@@ -58,11 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     aviso.style.color = "red";
                     aviso.textContent = "As senhas não conferem";
                     inputConfirmar.parentNode.appendChild(aviso);
+                    btnCadastrar.disabled = true;
+                    btnCadastrar.style.opacity = "0.6";
                 }
             } else {
                 inputConfirmar.style.borderColor = "";
                 const aviso = document.getElementById("aviso-senha");
                 if (aviso) aviso.remove();
+                btnCadastrar.disabled = false;
+                btnCadastrar.style.opacity = "1";
             }
         })
         
@@ -660,7 +664,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     iconenutri.innerHTML = '<i class="fa-solid fa-user-doctor" style="color: #63E6BE;"></i>';
 
                     descricao.classList.add('descricao-med');
-                    nome.textContent = `${medico.nome} ${medico.sobrenome}`;
+                    
+                    nome.textContent = `${medico.nome.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')} ${medico.sobrenome.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}`;
+
                     descricao.appendChild(nome);
 
                     input.type = 'radio';
@@ -737,8 +743,8 @@ async function agendarConsulta(event) {
 /*Funcao para cancelar uma consulta*/
 
 async function cancelarConsulta(event, id_consulta) {
-    event.preventDefault()
-
+    event.preventDefault
+   
     const dados = await fetch('/consulta/minhasconsultas', {
         method: 'DELETE',
         headers: {
@@ -748,7 +754,7 @@ async function cancelarConsulta(event, id_consulta) {
     })
 
     const resposta = await dados.json()
-    console.log(resposta)
+  
 
     if (resposta.sucesso) {
         mensagem_popup('Consulta cancelada com sucesso', 'alerta')
@@ -814,7 +820,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const nutricionista = await resNutri.json();
 
                 const nomeNutricionista = document.createElement('td');
-                nomeNutricionista.textContent = `${nutricionista.nome} ${nutricionista.sobrenome}`;
+                nomeNutricionista.textContent = `${nutricionista.nome.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')} ${nutricionista.sobrenome.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}`;
 
                 status.textContent = consulta.status.toUpperCase();
                 status.classList.add('status')
@@ -870,7 +876,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const paciente = await resPaciente.json();
 
                 const nomePaciente = document.createElement('td');
-                nomePaciente.textContent = `${paciente.nome} ${paciente.sobrenome}`;
+                nomePaciente.textContent =`${paciente.nome.charAt(0).toUpperCase() + paciente.nome.slice(1).toLowerCase()} ` + `${paciente.sobrenome.charAt(0).toUpperCase() + paciente.sobrenome.slice(1).toLowerCase()}`;
+
 
                 status.textContent = consulta.status.toUpperCase();
                 status.classList.add('status')
@@ -951,17 +958,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const idPaciente = consulta.id_paciente;
                     const resPaciente = await fetch(`/api/usuario/${idPaciente}`);
                     const paciente = await resPaciente.json();
-
-              
-    
                     const infosNutricionista = document.createElement('div');
-
                 
                     const nomePaciente = document.createElement('h3');
                     const tipoPaciente = document.createElement('div');
 
-                    nomePaciente.textContent = `${paciente.nome} ${paciente.sobrenome}`;
-                    tipoPaciente.textContent = paciente.tipo;
+                    nomePaciente.textContent = `${paciente.nome.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ')} ` + `${paciente.sobrenome.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ')}`
+
+                    tipoPaciente.textContent = paciente.tipo.charAt(0).toUpperCase() + paciente.tipo.slice(1).toLowerCase();
                   
                     infosNutricionista.appendChild(tipoPaciente);
                     infosNutricionista.appendChild(nomePaciente);
@@ -994,7 +998,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const valorStatus = document.createElement('span');
 
                     labelStatus.textContent = 'Status';
-                    valorStatus.textContent = consulta.status;
+                    valorStatus.textContent = consulta.status.toUpperCase();
 
                     detalheStatus.classList.add('card-detalhe');
                     labelStatus.classList.add('card-label');
@@ -1013,7 +1017,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const botaoAtender = document.createElement('button');
                         botaoAtender.textContent = '📝 Atender';
                         botaoAtender.classList.add('card-botao', 'botao-editar');
-                        botaoAtender.addEventListener('click', () => cancelarConsulta(consulta.id));
+                        botaoAtender.addEventListener('click', () => atenderConsulta(consulta.id));
 
 
                         botaoAtender.addEventListener('click', () => {
@@ -1080,8 +1084,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const nomeNutricionista= document.createElement('h3');
                     const tipoNutricionista = document.createElement('div');
 
-                    nomeNutricionista.textContent = `${nutricionista.nome} ${nutricionista.sobrenome}`;
-                    tipoNutricionista.textContent = nutricionista.tipo;
+                    nomeNutricionista.textContent = `${nutricionista.nome.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')} ${nutricionista.sobrenome.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}`;
+                    
+                    tipoNutricionista.textContent = nutricionista.tipo.charAt(0).toUpperCase() + nutricionista.tipo.slice(1).toLowerCase();
                   
                     infosNutricionista.appendChild(tipoNutricionista);
                     infosNutricionista.appendChild(nomeNutricionista);
@@ -1114,7 +1119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const valorStatus = document.createElement('span');
 
                     labelStatus.textContent = 'Status';
-                    valorStatus.textContent = consulta.status;
+                    valorStatus.textContent = consulta.status.toUpperCase();
 
                     detalheStatus.classList.add('card-detalhe');
                     labelStatus.classList.add('card-label');
@@ -1128,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const botaoCancelar = document.createElement('button');
                         botaoCancelar.textContent = '🚫 Cancelar';
                         botaoCancelar.classList.add('card-botao', 'botao-excluir');
-                        botaoCancelar.setAttribute('onclick', `cancelarConsulta(${consulta.id})`)
+                        botaoCancelar.addEventListener('click', (event) => cancelarConsulta(event, consulta.id));
                         
                         cardAcoes.appendChild(botaoCancelar);
                       
@@ -1303,36 +1308,34 @@ async function concluirConsulta(id) {
             return;
         }
 
-        const statusResponse = await fetch(`/consulta/atender/${id}`, {
+        const resposta = await fetch(`/consulta/atender/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ status: 'concluida' })
         });
-        const statusData = await statusResponse.json();
-
-        if (statusData.erro) {
-            mensagem_popup(statusData.erro, 'erro');
-        } else {
+        
+        if (resposta.sucesso){
             window.location.href = '/consulta/minhasconsultas'
         }
+        
+        
 
     } catch (error) {
-        console.error(error);
         mensagem_popup('Erro ao concluir consulta', 'erro');
     }
 }
 
 /* Função para carregar informações na página sobre-usuario e alterar dados*/
 document.addEventListener('DOMContentLoaded', function () {
-    if (document.title.includes("Sobre o Usuário")) {
+    if (document.querySelector('.container-perfil-usuario')) {
         carregardadosUsuario()
     }
 });
 
+
 function carregardadosUsuario(){
-    
     fetch('/api/usuarioatual')
         .then(response => response.json())
         .then(usuario => {
@@ -1369,7 +1372,7 @@ function carregardadosUsuario(){
 
             const formulario = document.querySelector('.formulario-seguranca')
 
-            const botaoEnviar = formulario.querySelector('.botao-salvar') 
+            const botaoEnviar = formulario.querySelector('.botao-salvar-conta') 
 
             if (usuario.tipo == 'nutricionista'){
                 if (!formulario.querySelector('.grupo-dias')) {
@@ -1416,7 +1419,6 @@ function carregardadosUsuario(){
             const inputConfirmar = formSeguranca.querySelector('#confirmar_senha')
             let bate = senhasBatem(inputSenha.value,inputConfirmar.value)
             
-            
             if (bate === false) { 
                 inputConfirmar.style.borderColor = "red";
                 let aviso_senha = document.getElementById("aviso-senha");
@@ -1452,11 +1454,17 @@ function carregardadosUsuario(){
                         aviso.style.color = "red";
                         aviso.textContent = "As senhas não conferem";
                         inputConfirmar.parentNode.appendChild(aviso);
+
+                        botaoEnviar.disabled = true;
+                        botaoEnviar.style.opacity = "0.6";
                     }
                 } else {
                     inputConfirmar.style.borderColor = "";
                     const aviso = document.getElementById("aviso-senha");
                     if (aviso) aviso.remove();
+
+                    botaoEnviar.disabled = false;
+                    botaoEnviar.style.opacity = "1";
                 }
             })
             inputNome.value = usuario.nome
@@ -1575,11 +1583,13 @@ function configurarAbasPerfil() {
     const abasPermitidas = {
         'paciente': [
             { id: 'dados', texto: 'Dados Pessoais' },
-            { id: 'seguranca', texto: 'Segurança' }
+            { id: 'seguranca', texto: 'Segurança' },
+            { id: 'excluir', texto: 'Excluir Minha Conta' }
         ],
         'nutricionista': [
             { id: 'dados', texto: 'Dados Pessoais' },
-            { id: 'seguranca', texto: 'Segurança' }
+            { id: 'seguranca', texto: 'Segurança' },
+            { id: 'excluir', texto: 'Excluir Minha Conta' }
         ],
         'admin': [
             { id: 'dados', texto: 'Dados Pessoais' },
@@ -1609,6 +1619,29 @@ function configurarAbasPerfil() {
         primeiroConteudo.classList.add('ativa');
     }
 }
+
+/* Função para excluir a conta */
+document.addEventListener('DOMContentLoaded', function() {
+    const botaoExcluir = document.querySelector('.botao-excluir-conta');
+
+    if (botaoExcluir) {
+        botaoExcluir.addEventListener('click', () => {
+            if (confirm("Tem certeza que quer excluir sua conta? Esta ação não pode ser desfeita!")) {
+                fetch('/sobremim', {
+                    method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(dados => {
+                    if (dados.sucesso) {
+                        window.location.href = '/login';
+                    } else {
+                        mensagem_popup('Erro ao excluir a conta!', 'erro');
+                    }
+                });
+            }
+        });
+    }
+});
 
 document.addEventListener('DOMContentLoaded', function() {
     if (document.querySelector('.container-perfil-usuario') ) {
@@ -2311,7 +2344,6 @@ if (botao_tema) {
     
     document.getElementById('botao-tema').addEventListener("click", function(){
     let tema_salvo = localStorage.getItem('tema-salvo') || 'claro';
-    
     if (tema_salvo === 'escuro'){
         localStorage.setItem('tema-salvo','claro');
         aplicar_tema();
@@ -2319,17 +2351,18 @@ if (botao_tema) {
         botao_tema.textContent = "🌙";
         botao_tema.style.background = "#160000ce";
 
-        mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
+        mensagem_popup(`Tema alterado para claro!`, "alerta");
         
-    } else if (tema_salvo === 'claro') {
+    } else {
         localStorage.setItem('tema-salvo','escuro');
         aplicar_tema();
 
         botao_tema.textContent = "☀️";
         botao_tema.style.background = "#03697eff";
 
-        mensagem_popup(`Tema alterado para ${tema_salvo}!`, "alerta");
-    };
+        mensagem_popup(`Tema alterado para escuro!`, "alerta");
+    } 
+
 });
 }
 /*Função para aplicar o tema*/

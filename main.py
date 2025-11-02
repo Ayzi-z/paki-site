@@ -202,9 +202,9 @@ def sobre():
     else:
         return redirect(url_for('index'))
     
-@app.route("/sobremim", methods=['GET', 'PUT'])
+@app.route("/sobremim", methods=['GET', 'PUT', 'DELETE'])
 @login_required
-def sobremim():
+def sobremim(): 
     if request.method == 'GET':
         return render_template('sobre-usuario.html')
 
@@ -269,6 +269,30 @@ def sobremim():
         banco.session.commit()
         
         return jsonify({"sucesso": "Informações atualizadas com sucesso!"})
+
+    elif request.method == 'DELETE':
+        usuario = Usuario.query.get(current_user.id)
+        if not usuario:
+            return jsonify({"erro": "Usuário não encontrado"})
+        
+        if usuario.tipo == 'nutricionista':
+            escala = Escala.query.filter_by(nutricionista_id=usuario.id).first()
+            if escala:
+                banco.session.delete(escala)
+        
+        consultas = Consulta.query.filter(
+            (Consulta.id_paciente == usuario.id) | 
+            (Consulta.id_nutricionista == usuario.id)
+        ).all()
+        for consulta in consultas:
+            banco.session.delete(consulta)
+        
+        banco.session.delete(usuario)
+        banco.session.commit()
+        
+        logout_user()
+        
+        return jsonify({"sucesso": "Conta excluída com sucesso!"})
 
 @app.route("/contato")
 @login_required
@@ -346,6 +370,7 @@ def cadastro():
         )
 
         banco.session.add(novo_usuario)
+        banco.session.commit()
       
         # colocando a escala de trabalho do nutricionista       
         if tipo == 'nutricionista': 
@@ -357,7 +382,7 @@ def cadastro():
                     dias_trabalho=dias_trabalho
                 )
                 banco.session.add(nova_escala)
-        banco.session.commit()
+                banco.session.commit()
 
         login_user(novo_usuario)
         
@@ -495,9 +520,13 @@ def agendar_consulta():
 def atender_consulta(id_consulta):
     if current_user.tipo == 'nutricionista':
         consulta = Consulta.query.get(id_consulta)
+
         if not consulta:
             return jsonify({"erro": "Consulta não encontrada"})
         
+        if consulta.status == 'concluida' and request.method == 'GET':
+            return redirect(url_for('minhas_consultas'))
+            
         if consulta.id_nutricionista != current_user.id:
             return redirect(url_for('index'))
         
@@ -538,6 +567,12 @@ def gerenciarusuarios():
             if usuario.id == current_user.id:
                 return jsonify({"erro": "Você não pode excluir a si mesmo"})
 
+            if usuario.tipo == 'nutricionista':
+                escala = Escala.query.filter_by(nutricionista_id=usuario.id).first()
+                if escala:
+                    banco.session.delete(escala)    
+                    banco.session.commit()
+            
             banco.session.delete(usuario)
             banco.session.commit()
             return jsonify({"sucesso": f"Usuário {usuario.nome} excluído com sucesso!"})
@@ -769,7 +804,8 @@ def gerenciarusuario(id_usuario):
         "id": usuario.id,
         "nome": usuario.nome,
         "sobrenome": usuario.sobrenome,
-        "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d") if usuario.data_nascimento else None,
+        "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d"),
+        "tipo": usuario.tipo,
         "telefone": usuario.telefone,
         "genero": usuario.genero,
         "idade": usuario.idade,
@@ -832,7 +868,7 @@ if __name__ == '__main__':
     with app.app_context(): # isso aqui cria o banco de dados
         banco.create_all()
         criar_admin() # isso aqui cria o usuario admin sempre que o servidor for iniciado caso ele nao exista
-        criar_nutricionista() # isso aqui cria um nutricionista padrao
+        #criar_nutricionista() # isso aqui cria um nutricionista padrao
         gerar_codigos() # isso aqui cria codigo de ativação no servidor
 
         app.debug = True # isso aqui ativa o modo debug do flask

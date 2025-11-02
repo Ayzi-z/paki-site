@@ -25,7 +25,7 @@ header {
     align-items: center;
     flex-direction: column;
     gap: 5px;
-    z-index: 9999
+    z-index: 9999;
 }
 
 .menu_nav {
@@ -141,7 +141,7 @@ header {
 
 }
 
-#area-sobremim h1, h2{
+#area-sobremim h1{
     font-size: 18px;
     font-weight: bold;
 }
@@ -1676,14 +1676,12 @@ body.escuro .card-acoes {
     align-items: center; 
 }
 
-.formulario-recuperacao {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    padding: 40px;
+.formulario-excluir{
+   
     width: 100%;
-    max-width: 500px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border: 2px solid #3cc771;
+    display: flex;
+    justify-content: center;
+
 }
 
 .logo-recuperacao {
@@ -2347,12 +2345,6 @@ body.escuro #pergunta-motivo textarea{
     display: block;
 }
 
-/* === FORMULÁRIOS === */
-.formulario-perfil {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
 
 .linha-formulario {
     display: flex;
@@ -2377,17 +2369,6 @@ body.escuro #pergunta-motivo textarea{
     border: 1px solid #ddd;
     border-radius: 5px;
 }
-
-.botao-salvar {
-    align-self: flex-start;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 
 /* ============================= */
 /* 📌 RESPONSIVIDADES */
@@ -2497,6 +2478,23 @@ body.escuro #pergunta-motivo textarea{
         width: 100%;
         height: 35%;
     }
+
+    #area-sobremim .tipo-usuario{
+        font-size: 12px;
+    }
+
+    .redes-sociais{
+        padding: 30px 10px;
+        text-align: center;
+  
+
+    }
+    .redes-sociais h2 {
+        
+        margin-bottom: 0;
+        width: 100%;
+        text-align: center;
+    }
         
     /* Responsividade Paginas de Login, Cadastro e Recuperacao */
     
@@ -2589,11 +2587,7 @@ body.escuro #pergunta-motivo textarea{
             max-width: 90% !important;
             padding: 30px;
         }
-        
-        .linha-formulario {
-            flex-direction: row;
-            gap: 15px;
-        }
+      
     }
 
     @media (max-width: 768px) {
@@ -3064,18 +3058,10 @@ header {
     background: #fff;
 }
 
-
-
-
-
-
-
 .tipo-usuario {
     font-size: 16px;
     color: #555;
 }
-
-
 
 .email-usuario {
     font-size: 14px;
@@ -3100,17 +3086,6 @@ header {
 .conteudo-abas .aba-conteudo.ativa {
     display: block;
 }
-
-
-
-/* === FORMULÁRIOS === */
-.formulario-perfil {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-
 
 .linha-formulario {
     display: flex;
@@ -3142,8 +3117,6 @@ header {
     border-radius: 5px;
 }
 
-
-
 .botao-salvar {
     align-self: flex-start;
     padding: 10px 20px;
@@ -3161,39 +3134,39 @@ header {
 }
 
 
-    
-    .linha-formulario {
-        flex-direction: column;
-        gap: 0;
-    }
+
+.linha-formulario {
+    flex-direction: column;
+    gap: 0;
+}
 
 
-    
-    .grupo-formulario input, 
-    .grupo-formulario select {
-        padding: 18px;
-        font-size: 18px;
-    }
+
+.grupo-formulario input, 
+.grupo-formulario select {
+    padding: 18px;
+    font-size: 18px;
+}
 
 
-    
-    .grupo-formulario label {
-        font-size: 16px;
-    }
+
+.grupo-formulario label {
+    font-size: 16px;
+}
 
 
-    
-    .linha-formulario {
-        flex-direction: row;
-        gap: 15px;
-    }
+
+.linha-formulario {
+    flex-direction: row;
+    gap: 15px;
+}
 
 
-    
-    .linha-formulario {
-        flex-direction: column;
-        gap: 0;
-    }
+
+.linha-formulario {
+    flex-direction: column;
+    gap: 0;
+}
 
 
 
@@ -3304,12 +3277,11 @@ body.escuro .email-usuario {
 .formulario-perfil {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 20px;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
 }
-
 
 
 .linha-formulario {
@@ -3319,7 +3291,6 @@ body.escuro .email-usuario {
     max-width: 100%;
     box-sizing: border-box;
 }
-
 
 
 .grupo-formulario {
@@ -3362,9 +3333,7 @@ body.escuro .email-usuario {
     max-width: 100%;
 }
 
-
-
-.botao-salvar {
+.botao-salvar-conta {
     align-self: flex-start;
     padding: 12px 24px;
     background: linear-gradient(90deg, #3cc771 0%, #00b27a 100%);
@@ -3373,8 +3342,21 @@ body.escuro .email-usuario {
     border-radius: 5px;
     cursor: pointer;
     font-weight: 600;
-    max-width: 100%;
+    width: 100%;
 }
+
+.botao-excluir-conta {
+    align-self: flex-start;
+    padding: 12px 24px;
+    background: linear-gradient(90deg, #ff4d4d 0%, #b30000 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 80%;
+}
+
 
 
 
@@ -3415,12 +3397,6 @@ body.escuro .email-usuario {
 
 
 
-.formulario-perfil {
-    gap: 15px;
-}
-
-
-
 
 
 .tipo-usuario {
@@ -3435,9 +3411,7 @@ body.escuro .email-usuario {
 
 
 
-.formulario-perfil {
-    gap: 12px;
-}
+
 
 
 
