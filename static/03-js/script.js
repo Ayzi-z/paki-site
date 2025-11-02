@@ -1622,10 +1622,12 @@ function configurarAbasPerfil() {
 
 /* Função para excluir a conta */
 document.addEventListener('DOMContentLoaded', function() {
+    
     const botaoExcluir = document.querySelector('.botao-excluir-conta');
 
     if (botaoExcluir) {
-        botaoExcluir.addEventListener('click', () => {
+        botaoExcluir.addEventListener('click', (event) => {
+            event.preventDefault()
             if (confirm("Tem certeza que quer excluir sua conta? Esta ação não pode ser desfeita!")) {
                 fetch('/sobremim', {
                     method: 'DELETE'
